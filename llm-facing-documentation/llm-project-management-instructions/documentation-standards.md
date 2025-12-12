@@ -2,8 +2,9 @@
 
 **Document Type**: Meta-documentation framework  
 **Target Audience**: Large Language Models (AI assistants)  
-**Purpose**: Establish standards for creating, maintaining, and interpreting documentation within this project  
-**Last Updated**: 2025-12-12
+**Purpose**: Core rules for creating, maintaining, and interpreting documentation within this project  
+**Last Updated**: 2025-12-12  
+**Status**: Active
 
 ---
 
@@ -11,50 +12,14 @@
 
 This project uses **LLM-first documentation** - optimized for machine parsing and reasoning rather than human narrative reading. Documentation should be structured, explicit, and context-efficient.
 
----
-
-## Key Resources
-
-### Prompt Engineering & Best Practices
-
-**OpenAI Prompt Engineering Guide**  
-https://platform.openai.com/docs/guides/prompt-engineering
-
-Key takeaways:
-- Use clear hierarchical structure (Markdown headers, XML tags)
-- Separate Identity/Instructions/Examples/Context into distinct sections
-- Position reusable context at the beginning (prompt caching optimization)
-- Use few-shot examples for pattern establishment
-- Explicit instructions outperform implicit assumptions
-- Developer messages > User messages in priority hierarchy
-
-**Anthropic Research on AI Safety & Interpretability**  
-https://www.anthropic.com/research
-
-Key findings:
-- Models exhibit limited introspection capabilities
-- Alignment can be achieved through constitutional principles
-- Circuit tracing reveals shared conceptual reasoning spaces
-- Models benefit from explicit reasoning frameworks
-
-**Principled Instructions Paper (arXiv:2312.16171)**  
-https://arxiv.org/abs/2312.16171
-
-26 core principles for LLM prompting validated across LLaMA, GPT-3.5/4:
-- Be specific and detailed in requirements
-- Break complex tasks into sequential steps
-- Use positive framing ("do this" not "don't do that")
-- Include examples of desired outputs
-- Specify output format explicitly
-- Use delimiters to mark distinct sections
+**For detailed implementation guidance**: See [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md)  
+**For external research references**: See [../../meta-maintenance/data-sources.md](../../meta-maintenance/data-sources.md)
 
 ---
 
-## Documentation Architecture for LLMs
+## Document Metadata Template
 
-### 1. Document Metadata Block
-
-Every LLM-facing document MUST begin with a metadata block:
+Every LLM-facing document MUST begin with this metadata block (copy-paste ready):
 
 ```markdown
 # [Document Title]
@@ -63,18 +28,20 @@ Every LLM-facing document MUST begin with a metadata block:
 **Target Audience**: [LLMs | humans | both]
 **Purpose**: [One-sentence description]
 **Last Updated**: YYYY-MM-DD
-**Dependencies**: [Links to prerequisite documents]
+**Dependencies**: [[linked-doc.md](path/to/doc.md)] (optional)
 **Status**: [draft | active | deprecated]
 ```
 
 **Rationale**: Provides immediate context for document classification and relevance assessment.
 
-### 2. Structural Hierarchy
+---
+
+## Structural Hierarchy
 
 Use **strict Markdown hierarchy** for logical relationships:
 
 ```markdown
-# Top-level concept (H1)
+# Top-level concept (H1) - use once per document
 ## Major section (H2)
 ### Subsection (H3)
 #### Detail level (H4)
@@ -82,118 +49,62 @@ Use **strict Markdown hierarchy** for logical relationships:
 
 **Rules**:
 - Never skip heading levels (H1 → H3 invalid)
-- Use H1 only once per document (title)
 - Each section should be self-contained and referenceable
 - Keep heading text concise (<10 words)
 
-### 3. Content Formatting Patterns
+---
 
-#### Lists for Discrete Items
+## Content Formatting Patterns (Quick Reference)
 
-```markdown
-**Purpose**: Enumerate distinct elements without implicit ordering
+**For detailed examples and templates**: See [../../meta-maintenance/writing-guide.md#content-formatting-patterns](../../meta-maintenance/writing-guide.md#content-formatting-patterns)
 
-- Item one
-- Item two
-- Item three
-```
+| Pattern | When to Use | Example |
+|---------|-------------|---------|
+| **Bullet lists** | Discrete items, no ordering | `- Item one\n- Item two` |
+| **Numbered lists** | Steps, procedures, sequences | `1. First\n2. Second` |
+| **Definition lists** | Vocabulary, terms | `**Term**: Definition` |
+| **Code blocks** | Executable examples | ` ```python\ndef func(): pass\n``` ` |
+| **Tables** | Compare 3+ dimensions | See below |
+| **XML tags** | Nested structures, metadata | `<concept id="...">...</concept>` |
 
-#### Numbered Lists for Sequences
-
-```markdown
-**Purpose**: Steps, procedures, ranked priorities
-
-1. First action
-2. Second action (depends on 1)
-3. Third action (depends on 2)
-```
-
-#### Definition Lists for Term Clarification
-
-```markdown
-**Term**: Precise definition or explanation
-
-**Another Term**: Its specific meaning in this context
-```
-
-#### Code Blocks with Language Tags
-
-```markdown
-**Purpose**: Executable examples, schemas, configurations
-
-```python
-def example_function():
-    """Docstring explains purpose."""
-    return "value"
-```
-```
-
-#### Tables for Comparative Data
-
+**Tables** - Use when comparing multiple items across multiple dimensions:
 ```markdown
 | Column A | Column B | Column C |
 |----------|----------|----------|
 | Value 1  | Value 2  | Value 3  |
 ```
 
-Use when comparing 3+ dimensions across multiple items.
-
-### 4. XML Delimiters for Complex Content
-
-Use XML-style tags when content needs **strict boundaries** or **metadata**:
-
+**XML Delimiters** - Use for complex nested content with metadata:
 ```xml
-<concept id="n-link-theory" category="graph-theory">
-  <definition>
-    A deterministic traversal rule on finite directed graphs...
-  </definition>
-  
+<concept id="unique-id" category="type">
+  <definition>Content here</definition>
   <properties>
-    <property name="termination">Guaranteed</property>
-    <property name="outcome">HALT or CYCLE</property>
+    <property name="key">value</property>
   </properties>
 </concept>
 ```
 
-**When to use**:
-- Nested conceptual structures
-- Content with multiple attributes
-- Cross-referenced sections
-- Examples with metadata
+---
 
-### 5. Explicit Relationship Markers
+## Explicit Relationship Markers
 
-Use explicit markers for logical relationships:
+Use these markers to show logical relationships between sections:
 
 ```markdown
-**PREREQUISITE**: Must understand [Document A] before this section
+**PREREQUISITE**: Must read [doc.md](path/to/doc.md) before this section
 
-**IMPLIES**: This fact leads to [Consequence B]
+**IMPLIES**: This fact leads to [consequence]
 
-**CONTRADICTS**: Conflicts with assumption in [Section X]
+**CONTRADICTS**: Conflicts with assumption in [section]
 
-**ALTERNATIVE**: Another approach is described in [Document Y]
+**ALTERNATIVE**: Another approach in [doc.md](path/to/doc.md)
 
-**DEPRECATED**: Replaced by [New Approach Z]
+**DEPRECATED** (YYYY-MM-DD): Replaced by [new-doc.md](path/to/new-doc.md)
 ```
 
 ---
 
-## Context Window Optimization
-
-### Token Budget Awareness
-
-LLMs have finite context windows. Optimize for token efficiency:
-
-**Priority Order** (most to least important):
-1. **Metadata & Purpose** (front-load context)
-2. **Core Definitions** (establish vocabulary)
-3. **Algorithmic Logic** (procedures, decision trees)
-4. **Examples** (illustrative cases)
-5. **Edge Cases** (corner conditions)
-6. **Historical Context** (why decisions were made)
-
-### Document Length Guidelines
+## Token Budget & Document Length
 
 | Document Type | Target Length | Max Length |
 |---------------|---------------|------------|
@@ -205,87 +116,77 @@ LLMs have finite context windows. Optimize for token efficiency:
 
 **Exceed max length?** → Split into multiple documents with clear navigation.
 
-### Redundancy Strategy
+**Token Estimation**: ~1 token = 0.75 words = 4 characters (English text)
 
-**AVOID**: Repeating information across documents  
-**INSTEAD**: Use explicit cross-references
-
-```markdown
-For the complete N-Link algorithm, see [n-link-rule-theory.md#algorithm]
-
-Instead of: "The N-Link algorithm works by selecting the Nth link..."
-```
-
-### Caching-Friendly Structure
-
-Place **static, reusable content** at document start:
-
-1. Definitions (rarely change)
-2. Core principles (stable)
-3. Data schemas (version-controlled)
-4. Examples (illustrative)
-
-Place **volatile content** at document end:
-
-1. Status updates
-2. Open questions
-3. Temporary notes
-4. TODOs
+**Priority Order** (front-load critical content):
+1. Metadata & Purpose
+2. Core Definitions
+3. Algorithmic Logic
+4. Examples
+5. Edge Cases
+6. Historical Context
 
 ---
 
-## Semantic Precision
+## Semantic Precision Rules
 
-### Vocabulary Control
-
-**CRITICAL**: Maintain a project glossary (`glossary.md`) with canonical terms.
-
-**Rules**:
-- Use **exact** glossary terms (case-sensitive)
-- Link first usage of glossary terms: `[N-Link](#n-link-definition)`
+**Vocabulary Control**:
+- Use **exact** canonical terms consistently (case-sensitive)
+- Link first usage: `[Term](#term-definition)`
 - Never use synonyms interchangeably
 - Define abbreviations on first use
 
-**Example**:
-```markdown
-**Correct**: "The pagelinks table contains outlinks."
-**Incorrect**: "The pagelinks table has links going out."
-```
+**Eliminate Ambiguity**:
 
-### Ambiguity Elimination
-
-**AVOID vague language**:
-- "might", "could", "possibly" → State probability or conditions
-- "some", "several", "many" → Provide numbers or ranges
-- "recently", "soon", "later" → Provide dates or versions
-- "simple", "complex", "large" → Quantify
+| Vague | Precise |
+|-------|---------|
+| "might", "could", "possibly" | State probability or conditions |
+| "some", "several", "many" | Provide numbers or ranges |
+| "recently", "soon", "later" | Provide dates or versions |
+| "simple", "complex", "large" | Quantify with metrics |
+| "it", "this", "that" (without antecedent) | Repeat noun or use [concept-name] |
 
 **Example**:
-```markdown
-**Vague**: "The XML dump is large and might take a while to process."
-
-**Precise**: "The enwiki XML dump is ~25GB compressed. Processing takes 4-8 hours on an 8-core system with 16GB RAM."
-```
-
-### Imperative vs. Declarative
-
-**Procedures (steps to execute)**: Use imperative mood
-```markdown
-1. Download the page table from Quarry
-2. Build the lookup dictionary
-3. Stream the XML dump
-```
-
-**Facts (state of reality)**: Use declarative mood
-```markdown
-The page table contains three columns: page_id, page_title, page_namespace.
-```
+- **Vague**: "The XML dump is large and might take a while to process."
+- **Precise**: "The enwiki XML dump is ~25GB compressed. Processing takes 4-8 hours on an 8-core system with 16GB RAM."
 
 ---
 
-## Self-Referential Documentation Maintenance
+## Code Documentation Standards
 
-### Update Protocols
+**Python Docstring Template** (copy-paste ready):
+```python
+def function_name(param1: Type1, param2: Type2) -> ReturnType:
+    """
+    One-sentence summary of function purpose.
+    
+    Args:
+        param1: Description of first parameter
+        param2: Description of second parameter
+        
+    Returns:
+        Description of return value
+        
+    Algorithm:
+        1. Step one
+        2. Step two
+        
+    References:
+        See [doc.md](path/to/doc.md#section) for details
+    """
+    pass
+```
+
+**Inline Comments** - Use ONLY for:
+- Edge cases not obvious from code
+- Workarounds for external API quirks
+- Performance optimizations that look strange
+
+**For complete templates and examples**: See [../../meta-maintenance/writing-guide.md#code-documentation-integration](../../meta-maintenance/writing-guide.md#code-documentation-integration)
+
+---
+
+## Update & Maintenance Protocols
 
 When modifying documentation, an LLM MUST:
 
@@ -295,221 +196,76 @@ When modifying documentation, an LLM MUST:
 4. **Log Changes**: Append to document changelog (if present)
 5. **Validate Format**: Confirm Markdown renders correctly
 
-### Change Documentation Pattern
-
-Add a changelog section at document end:
-
+**Changelog Pattern** (add to document end):
 ```markdown
 ---
 
 ## Changelog
 
-### 2025-12-12
-- Added section on XML delimiters
-- Clarified token budget guidelines
-- Fixed broken link to external-docs.md
+### YYYY-MM-DD
+- Added section on X
+- Fixed broken link to Y
+- Clarified Z guidelines
 
-### 2025-12-10
+### YYYY-MM-DD
 - Initial document creation
-- Established metadata format
 ```
 
-### Deprecation Protocol
+**Deprecation Protocol**:
+- Mark section with `## ~~Old Approach~~ [DEPRECATED YYYY-MM-DD]`
+- State reason for deprecation
+- Link to replacement: `**REPLACEMENT**: See [new-doc.md](path/to/doc.md)`
 
-When information becomes outdated:
-
-**DON'T**: Delete immediately  
-**DO**: Mark deprecated with replacement
-
-```markdown
-## ~~Old Approach~~ [DEPRECATED 2025-12-12]
-
-This section described using the pagelinks table directly for N-Link traversal.
-
-**REASON FOR DEPRECATION**: pagelinks includes template-expanded links, causing contamination.
-
-**REPLACEMENT**: See [wikipedia-link-graph-decomposition.md#extraction-pipeline]
-```
+**For complete maintenance procedures**: See [project-management-practices.md](./project-management-practices.md)
 
 ---
 
-## Query Patterns for LLMs
+## Validation Checklist
 
-### Efficient Information Retrieval
-
-When an LLM needs information from this codebase:
-
-**STEP 1**: Check `llm-facing-documentation/` directory structure  
-**STEP 2**: Read document metadata blocks  
-**STEP 3**: Use grep/search for specific terms  
-**STEP 4**: Read full relevant sections
-
-**DON'T**: Read entire files sequentially without purpose
-
-### Semantic Search Recommendations
-
-When using semantic search tools:
-
-**GOOD QUERIES**:
-- "How to normalize Wikipedia page titles for lookup"
-- "Algorithm for stripping templates from wikitext"
-- "Definition of N-Link HALT condition"
-
-**BAD QUERIES**:
-- "Wikipedia" (too broad)
-- "code" (non-specific)
-- "how does it work" (ambiguous referent)
-
-### Context Assembly Strategy
-
-When solving a complex task:
-
-1. **Identify subtasks**: Break into discrete components
-2. **Find relevant docs**: Use file search + grep
-3. **Extract key facts**: Read only necessary sections
-4. **Synthesize**: Combine information with explicit citations
-5. **Verify**: Cross-check for contradictions
-
----
-
-## Code Documentation Integration
-
-### Docstring Standards (Python)
-
-```python
-def normalize_link_text(raw_text: str, page_lookup: dict) -> Optional[int]:
-    """
-    Normalize wikitext link and match to page_id.
-    
-    Args:
-        raw_text: Link text from [[...]] pattern (may be lowercase, underscored)
-        page_lookup: Dict mapping canonical page_title -> page_id
-        
-    Returns:
-        page_id if match found, None if unmatched
-        
-    Algorithm:
-        1. Strip whitespace
-        2. Replace underscores with spaces
-        3. Try exact match
-        4. Fallback: capitalize first char and retry
-        5. Fallback: case-insensitive search
-        
-    References:
-        See external-docs.md#page-name-normalization for Wikipedia rules
-    """
-    pass
-```
-
-**Key elements**:
-- One-sentence summary
-- Args/Returns with types
-- Algorithm steps (if non-trivial)
-- Cross-references to documentation
-
-### Inline Comments (Sparingly)
-
-```python
-# Edge case: Some pages like "eBay" have forced lowercase first char
-if raw_text in page_lookup:
-    return page_lookup[raw_text]
-```
-
-Use inline comments ONLY for:
-- Edge cases not obvious from code
-- Workarounds for external API quirks
-- Performance optimizations that look strange
-
-**AVOID**:
-```python
-# Loop through items
-for item in items:
-    # Process item
-    process(item)
-```
-
----
-
-## Testing Documentation Effectiveness
-
-### Validation Checklist
-
-When creating/updating documentation, verify:
+When creating/updating documentation:
 
 - [ ] Metadata block present and complete
 - [ ] All links resolve correctly
 - [ ] Code examples are syntactically valid
 - [ ] Markdown renders without errors
-- [ ] No ambiguous pronouns ("it", "this", "that" without clear antecedent)
-- [ ] Technical terms defined or linked to glossary
-- [ ] Examples demonstrate edge cases
-- [ ] Cross-references use absolute paths
-
-### Readability Metrics for LLMs
-
-**GOOD INDICATORS**:
-- Information density: 1 key fact per paragraph
-- Consistent terminology: Same term for same concept
-- Explicit structure: Headers reveal content without reading body
-- Minimal forward references: Definitions before usage
-
-**WARNING SIGNS**:
-- Narrative flow: "As we mentioned earlier..." (use links instead)
-- Implicit knowledge: "Obviously..." (state explicitly)
-- Tangled dependencies: Must read 5+ docs to understand one section
+- [ ] No ambiguous pronouns without clear antecedent
+- [ ] Technical terms defined or linked
+- [ ] Cross-references use absolute paths or workspace-relative paths
 
 ---
 
-## Directory Structure Conventions
-
-### LLM-Facing Documentation Organization
-
-```
-llm-facing-documentation/
-├── llm-project-management-instructions/  ← Meta-docs about the project
-│   ├── documentation-standards.md  ← This file
-│   ├── development-workflow.md
-│   └── testing-protocols.md
-├── theories-proofs-conjectures/  ← Mathematical/conceptual foundations
-│   ├── n-link-rule-theory.md
-│   └── database-inference-graph-theory.md
-├── external-docs/  ← Curated external resources
-│   └── external-docs.md
-├── implementation-guides/  ← How-to guides for specific tasks
-└── api-references/  ← Function/class documentation
-```
-
-### Naming Conventions
+## Directory Structure & Naming
 
 **Files**: `kebab-case-descriptive-name.md`  
 **Directories**: `kebab-case-plural-nouns/`  
 **Avoid**: Spaces, underscores, CamelCase in file paths
 
+**Standard Structure**:
+```
+llm-facing-documentation/       ← Tier 1: Read every session
+├── llm-project-management-instructions/
+│   ├── documentation-standards.md  ← This file
+│   └── project-management-practices.md
+├── theories-proofs-conjectures/
+└── project-timeline.md
+
+meta-maintenance/               ← Tier 2: Documentation system details
+├── implementation.md
+├── writing-guide.md
+├── data-sources.md
+├── session-log.md
+└── future.md
+
+data-pipeline/                  ← Tier 2: Directory-based discovery
+├── wikipedia-decomposition/
+│   ├── implementation.md
+│   └── data-sources.md
+└── ...other-pipelines/
+```
+
 ---
 
-## Communication with Human Users
-
-### When Writing for Humans
-
-If a human asks a question, provide:
-
-1. **Direct answer first** (concise)
-2. **Explanation second** (if needed)
-3. **Code/examples third** (if applicable)
-4. **References last** (links to docs)
-
-### When Updating Documentation
-
-**ALWAYS** inform humans:
-- What changed
-- Why it changed
-- What they need to review (if anything)
-
-**NEVER** make silent updates to critical documentation without user awareness.
-
----
-
-## Summary: Golden Rules for LLM-Facing Docs
+## Golden Rules for LLM-Facing Documentation
 
 1. **Structure over prose**: Use hierarchy, not narrative flow
 2. **Explicit over implicit**: State assumptions, don't assume shared context
@@ -524,31 +280,57 @@ If a human asks a question, provide:
 
 ---
 
-## Meta-Note: Using This Document
+## Bootstrap Instructions for New LLMs
 
-**For LLMs**: This is your reference manual. When uncertain how to structure documentation, consult this file. When maintaining docs, follow the protocols in "Self-Referential Documentation Maintenance" section.
+**Starting a new session?**
 
-**For Humans**: This document prioritizes machine parsing over human reading comfort. For human-facing documentation needs, create separate files in a `human-docs/` directory.
+1. Read [project-timeline.md](../project-timeline.md) - Recent project history
+2. Read [project-management-practices.md](./project-management-practices.md) - Maintenance patterns
+3. Read this document - Documentation standards
+4. Navigate to directory you're working in
+5. Read directory-specific documentation (Tier 2)
 
----
+**Creating new documentation?**
 
-## Changelog
+1. Copy metadata template from this document (top section)
+2. Consult [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md) for detailed patterns
+3. Follow golden rules above
+4. Validate using checklist before committing
 
-### 2025-12-12
-- Initial creation of documentation standards
-- Established metadata format, structural hierarchy, content patterns
-- Defined context window optimization strategies
-- Set protocols for self-referential maintenance
-- Created validation checklist and golden rules
+**Need detailed examples or research references?**
+
+- See [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md) - Complete guide with examples
+- See [../../meta-maintenance/data-sources.md](../../meta-maintenance/data-sources.md) - External research links
+- See [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md) - Documentation system architecture
 
 ---
 
 ## Related Documents
 
-- [Project workspace structure](../../README.md) - Overview of entire project
-- [Wikipedia decomposition strategy](../wikipedia-link-graph-decomposition.md) - Major implementation guide
-- [N-Link theory](../theories-proofs-conjectures/n-link-rule-theory.md) - Foundational concept
-- [External resources](../external-docs/external-docs.md) - Curated third-party documentation
+- [project-management-practices.md](./project-management-practices.md) - How to maintain project documentation
+- [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md) - Detailed examples and templates
+- [../../meta-maintenance/data-sources.md](../../meta-maintenance/data-sources.md) - External research references
+- [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md) - Documentation system architecture
+- [../project-timeline.md](../project-timeline.md) - Project history and milestones
+
+---
+
+## Changelog
+
+### 2025-12-12 (Second Update)
+- **Token budget optimization**: Compressed from 20k+ tokens to ~3k tokens
+- Extracted detailed examples to [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md)
+- Extracted external research to [../../meta-maintenance/data-sources.md](../../meta-maintenance/data-sources.md)
+- Added bootstrap instructions for new LLM sessions
+- Converted detailed patterns to quick-reference tables with pointers
+- Added copy-paste ready templates (metadata, docstring)
+
+### 2025-12-12 (Initial)
+- Initial creation of documentation standards
+- Established metadata format, structural hierarchy, content patterns
+- Defined context window optimization strategies
+- Set protocols for self-referential maintenance
+- Created validation checklist and golden rules
 
 ---
 

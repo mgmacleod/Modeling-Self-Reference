@@ -2,9 +2,9 @@
 
 **Document Type**: Meta-documentation  
 **Target Audience**: LLMs  
-**Purpose**: Define how LLMs should maintain project documentation and track progress  
+**Purpose**: How LLMs should maintain project documentation, create new directories, and track progress  
 **Last Updated**: 2025-12-12  
-**Dependencies**: [documentation-standards.md](./documentation-standards.md)  
+**Dependencies**: [documentation-standards.md](./documentation-standards.md), [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)  
 **Status**: Active
 
 ---
@@ -13,116 +13,116 @@
 
 This project uses **cumulative, sparse documentation** that grows over time rather than rewriting "current status" snapshots. Each session appends new information to living documents rather than replacing what came before.
 
----
-
-## Document Taxonomy
-
-### Tier 1: Read Every Session
-**Purpose**: Orient new LLM sessions to project state
-
-#### Static Documents (Rarely Change)
-- [documentation-standards.md](./documentation-standards.md) - Rules for writing docs
-- [project-management-practices.md](./project-management-practices.md) - Rules for maintaining project (this document)
-- Theory papers in [theories-proofs-conjectures/](../theories-proofs-conjectures/)
-
-**Update Policy**: Only when fundamental approach changes  
-**Update Trigger**: Explicit user request
-
-#### Cumulative Documents (Append-Only History)
-- [project-timeline.md](../project-timeline.md) - Brief journey narrative with major milestones
-- Session summaries of major decisions/detours
-
-**Update Policy**: Append new entries at each milestone  
-**Update Trigger**: User prompt OR end-of-session summary
-
-### Tier 2: Context-Specific (Directory-Based)
-**Purpose**: Deep-dive when working on specific subsystems
-
-**Heuristic**: Read documentation in the directory you're currently working in.
-
-**Examples**:
-- Working in `data-pipeline/wikipedia-decomposition/`? Read:
-  - [implementation-guide.md](../../data-pipeline/wikipedia-decomposition/implementation-guide.md)
-  - [data-sources.md](../../data-pipeline/wikipedia-decomposition/data-sources.md)
-  
-- Working in `n-link-analysis/`? Read docs in that directory
-- Working in `graph-inference/`? Read docs in that directory
-
-**Update Policy**: 
-- Docs evolve with their directory's code
-- Co-located documentation stays synchronized
-- No central registry needed
-
-**Update Trigger**: As work progresses in that directory
+**For complete architecture specification**: See [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)
 
 ---
 
-## Document Registry
+## Three-Tier Documentation System (Quick Reference)
 
-This registry classifies Tier 1 documents (universal, read every session). Tier 2 documents are discovered via directory-based heuristic.
+| Tier | Purpose | Read When | Token Budget | Update Pattern |
+|------|---------|-----------|--------------|----------------|
+| **Tier 1** | Universal orientation | Every session | <12k total | Rare (user prompt) |
+| **Tier 2** | Context-specific details | Working in directory | <20k per session | Per feature/milestone |
+| **Tier 3** | Granular debugging | Deep-dive needed | No limit | As needed |
 
-### Tier 1: Read Every Session
+**Heuristic**: Read Tier 1 always. Read Tier 2 docs in the directory you're working in. Read Tier 3 only when debugging specific issues.
 
-| Document Path | Type | Update Frequency | Update Method |
-|---------------|------|------------------|---------------|
-| `llm-project-management-instructions/documentation-standards.md` | Static | Rare | User prompt |
-| `llm-project-management-instructions/project-management-practices.md` | Static | Rare | User prompt |
-| `project-timeline.md` | Cumulative | Every milestone | User prompt / End-of-session |
-| `theories-proofs-conjectures/n-link-rule-theory.md` | Static | Never (foundational) | N/A |
-| `theories-proofs-conjectures/database-inference-graph-theory.md` | Static | Never (foundational) | N/A |
-| `theories-proofs-conjectures/inference-summary.md` | Static | Never (foundational) | N/A |
-| `theories-proofs-conjectures/inference-summary-with-event-tunneling.md` | Static | Never (foundational) | N/A |
-
-### Tier 2: Directory-Based Discovery
-
-**No central registry needed.** When working in a directory:
-1. Check for `README.md` or `*.md` files in that directory
-2. Read documentation specific to that subsystem
-3. Examples:
-   - `data-pipeline/wikipedia-decomposition/*.md`
-   - `n-link-analysis/*.md`
-   - `graph-inference/*.md`
-
-**Benefit**: Self-organizing, scales with project growth, prevents stale central registry.
+**For detailed tier definitions and workflows**: See [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)
 
 ---
 
-## Self-Healing Protocol for Broken References
+## Starting a New Session (Bootstrap Instructions)
 
-**Philosophy**: Lazy validation - fix broken references on encounter, not proactively.
+**Step 1: Read Tier 1 (Universal Context)**
+1. [project-timeline.md](../project-timeline.md) - Recent history, latest 3-5 entries
+2. [documentation-standards.md](./documentation-standards.md) - How to write docs
+3. This document - How to maintain project
 
-**When LLM Encounters Broken File Path**:
+**Step 2: Identify Current Work**
+- Check timeline for active tasks
+- User will provide context
 
-1. **Attempt file_search**:
-   ```
-   file_search("filename.md")
-   ```
-   
-2. **If not found, check git history**:
-   ```powershell
-   git log --all --full-history -- '**/filename.md'
-   ```
-   
-3. **Update document** with correct path
+**Step 3: Load Tier 2 (Directory-Specific Context)**
+- Navigate to working directory
+- Read `implementation.md`, `data-sources.md`, etc. in that directory
+- No central registry needed - docs co-located with code
 
-4. **Log the correction** to project-timeline.md:
-   ```markdown
-   ### YYYY-MM-DD - Documentation Maintenance
-   **Fixed**: Broken reference to `old-path.md` → updated to `new-path.md`
-   **Reason**: File was renamed/moved in commit [hash]
-   ```
+**Step 4: Load Tier 3 (If Debugging)**
+- Read granular debugging docs in subdirectories
+- Max depth: 3 levels
 
-5. **Update "Last Updated"** timestamp in document metadata
+**Total tokens loaded**: ~8-12k (Tier 1) + ~10-20k (Tier 2) = 18-32k typical session
 
-**Git as Source of Truth**:
-- Git history tracks all file renames/moves automatically
-- `git log --follow <file>` shows complete movement history
-- No need for preemptive validation scripts
+---
 
-**VSCode Auto-Update**:
-- Relative markdown links enable VSCode to auto-update on file rename
-- LLM should verify links resolve correctly when reading documents
-- If link fails, trigger self-healing protocol above
+## Creating a New Directory with Documentation
+
+**Template for new directory** (copy-paste ready):
+
+```
+new-directory-name/
+├── implementation.md       # WHAT + HOW (required)
+├── data-sources.md         # External resources (optional)
+├── session-log.md          # Working history (optional)
+└── future.md               # TODOs (optional)
+```
+
+**Minimum Required**: `implementation.md` with this structure:
+
+```markdown
+# [Directory Purpose] Implementation
+
+**Document Type**: Implementation  
+**Target Audience**: LLMs  
+**Purpose**: [One-sentence description]  
+**Last Updated**: YYYY-MM-DD  
+**Status**: [draft | active | deprecated]
+
+---
+
+## Overview
+
+Brief description of what this directory contains and why it exists.
+
+---
+
+## Architecture
+
+High-level design decisions, data flow, component relationships.
+
+---
+
+## Implementation Details
+
+Specific algorithms, data structures, file formats.
+
+---
+
+## Usage Examples
+
+How to use code in this directory.
+
+---
+
+## Open Questions
+
+- [ ] Question 1
+- [ ] Question 2
+
+---
+
+## Changelog
+
+### YYYY-MM-DD
+- Initial creation
+```
+
+**When to create new directory**:
+- Starting a new subsystem (e.g., `data-pipeline/`, `graph-analysis/`)
+- Grouping related functionality
+- Need Tier 2 context isolation
+
+**For more standard files and patterns**: See [../../meta-maintenance/implementation.md#standard-files](../../meta-maintenance/implementation.md#standard-files)
 
 ---
 
@@ -130,38 +130,35 @@ This registry classifies Tier 1 documents (universal, read every session). Tier 
 
 ### User-Prompted Updates
 
-**When**: User explicitly says "update the timeline" or "log this decision"
+**Trigger**: User says "update the timeline" or "log this decision"
 
-**Procedure**:
-1. Identify target document from registry
+**Action**:
+1. Identify target document (usually [project-timeline.md](../project-timeline.md))
 2. If cumulative: Append new entry with timestamp
 3. If static: Modify relevant section
-4. If active: Update current understanding
-5. Always update "Last Updated" in metadata block
+4. Always update "Last Updated" metadata
 
-**Example User Prompts**:
-- "Add to project timeline that we completed the venv setup"
-- "Update the decomposition doc with the template stripping algorithm"
-- "Log that we decided to use TSV instead of JSON"
+**Example**: "Add to timeline that we completed template stripping algorithm"
+
+---
 
 ### End-of-Session Updates
 
-**When**: User says "wrap up this session" or "summarize what we did today"
+**Trigger**: User says "wrap up" or "summarize what we did"
 
-**Procedure**:
-1. Review conversation history
-2. Extract:
+**Action**:
+1. Extract from conversation:
    - Completed tasks
    - Key decisions made
    - Blockers encountered
-   - Next steps identified
-3. Append to `project-timeline.md`
-4. Update any active working documents
-5. Optionally: Create git commit with summary
+   - Next steps
+2. Append to [project-timeline.md](../project-timeline.md) using template below
+3. Update any active working documents
+4. Suggest git commit message
 
-**Format for Timeline Entry**:
+**Timeline Entry Template** (copy-paste ready):
 ```markdown
-### Session: YYYY-MM-DD [Optional: Session Title]
+### Session: YYYY-MM-DD [Optional Title]
 
 **Completed**:
 - Item 1
@@ -173,258 +170,95 @@ This registry classifies Tier 1 documents (universal, read every session). Tier 
 
 **Blockers/Discoveries**:
 - Issue X: Description
-- Discovery Y: Implications
 
 **Next Steps**:
 - Task 1
 - Task 2
 ```
 
-### Git-Commit Triggered Updates (Future Enhancement)
+---
 
-**When**: On git commit (via pre-commit hook)
+### Milestone-Triggered Updates
 
-**Procedure** (not yet implemented):
-1. Parse commit message
-2. If commit message contains `[timeline]` tag: Extract summary
-3. Append to `project-timeline.md`
-4. Update document registry if new files added
+**Trigger**: Completed a major feature or subsystem
 
-**Example Commit Message**:
-```
-Add template stripping algorithm [timeline: Completed wikitext cleaning]
-
-- Implemented recursive template removal
-- Handles nested {{...}} blocks
-- Tested on 100 sample pages
-```
+**Action**:
+1. Update directory-specific `implementation.md` (mark feature complete)
+2. Add to [project-timeline.md](../project-timeline.md) (brief entry)
+3. Update "Current Status" sections in active docs
+4. Close open questions if resolved
 
 ---
 
-## Maintenance Patterns
+## Self-Healing Protocol for Broken References
 
-### Cumulative Documents (Append-Only)
+**When encountering broken file path**:
 
-**Structure**:
-```markdown
-# Document Title
+1. **Attempt file_search**:
+   ```
+   file_search("filename.md")
+   ```
 
-[Metadata block]
+2. **If not found, check git history**:
+   ```powershell
+   git log --all --full-history -- '**/filename.md'
+   ```
 
----
+3. **Update document** with correct path
 
-## Latest First (Reverse Chronological)
+4. **Log correction** to [project-timeline.md](../project-timeline.md):
+   ```markdown
+   ### YYYY-MM-DD - Documentation Maintenance
+   **Fixed**: Broken reference to `old-path.md` → `new-path.md`
+   **Reason**: File moved in commit [hash]
+   ```
 
-### YYYY-MM-DD Entry Title
-Content of latest entry
+5. **Update "Last Updated"** timestamp in corrected document
 
-### YYYY-MM-DD Earlier Entry
-Content of earlier entry
-
----
-
-## Archive (Optional)
-
-Older entries moved here after 6+ months
-```
-
-**Rules**:
-- Never delete entries (unless correcting factual errors)
-- New entries go at top (after metadata)
-- Each entry has timestamp
-- Keep active entries visible; archive old ones
-
-### Active Working Documents
-
-**Structure**:
-```markdown
-# Document Title
-
-[Metadata block]
+**Philosophy**: Git history is source of truth. Lazy validation (fix on encounter, not proactively).
 
 ---
 
-## Current Status
-Brief 1-2 sentence summary of where we are
+## What Gets Logged to Timeline
+
+**High Priority (Always Log)**:
+- Architectural decisions with rationale
+- Completed milestones
+- Critical discoveries (e.g., "pagelinks table contaminated")
+- Blockers resolved
+
+**Medium Priority (Log If Significant)**:
+- Non-obvious implementation details
+- Research findings that change approach
+- Major refactoring
+
+**Low Priority (Usually Skip)**:
+- Routine tasks (typo fixes, minor edits)
+- Exploratory work without outcome
 
 ---
 
-## [Main Content Sections]
-Continuously updated as understanding evolves
+## Document Types & Maintenance Patterns
+
+| Type | Update Pattern | Example |
+|------|----------------|---------|
+| **Static** | Rare, user-prompted | documentation-standards.md, theories |
+| **Cumulative** | Append-only, timestamped entries | project-timeline.md, session-log.md |
+| **Active** | In-place edits + decision log | implementation.md (Tier 2) |
+
+**Static Documents**: Foundational rules, rarely change  
+**Cumulative Documents**: Append new entries at top (reverse chronological)  
+**Active Documents**: "Current Status" section gets rewritten, but includes cumulative "Decision Log"
 
 ---
 
-## Decision Log
-### YYYY-MM-DD Decision
-Why we chose approach X over Y
-
----
-
-## Open Questions
-- [ ] Question 1
-- [ ] Question 2
-```
-
-**Rules**:
-- "Current Status" section gets rewritten (not cumulative)
-- Main content sections updated in-place
-- Decision Log is cumulative (append-only)
-- Open Questions checked off when resolved
-
----
-
-## What Gets Logged
-
-### High Priority (Always Log)
-
-**Architectural Decisions**:
-- "Chose Path 1 (DB + XML hybrid) over Path 2 (pure XML parsing)"
-- Rationale for the choice
-- Alternatives considered
-
-**Completed Milestones**:
-- "Established git repository and venv"
-- "Created documentation standards framework"
-- "Completed Wikipedia page name research"
-
-**Critical Discoveries**:
-- "Found that pagelinks table includes template-expanded links"
-- "Discovered Quarry provides public SQL access"
-- Implications for project approach
-
-**Blockers Resolved**:
-- "Solved: How to handle lowercase first-character page names (eBay, iPhone)"
-- Solution applied
-
-### Medium Priority (Log If Significant)
-
-**Implementation Details**:
-- "Template stripping uses recursive depth-first search"
-- Only if non-obvious or required future reference
-
-**Research Findings**:
-- "Reviewed 3 external resources on prompt engineering"
-- Only if changes project approach
-
-**Refactoring**:
-- "Split decomposition doc into subsections"
-- Only if major restructure
-
-### Low Priority (Usually Skip)
-
-**Routine Tasks**:
-- "Fixed typo in documentation"
-- "Added comment to function"
-
-**Exploratory Work Without Outcome**:
-- "Investigated approach X but abandoned it"
-- Unless the abandonment is a key decision
-
----
-
-## Meta-Note: The Genesis of This System
-
-This document itself is an example of the system it describes. Here's how it came to exist:
-
-**2025-12-12 Session**:
-1. User and LLM discussed the problem of "snapshot documentation" becoming stale
-2. Identified need for cumulative, append-only approach
-3. Designed document taxonomy (Tier 1/Tier 2, Static/Cumulative/Active)
-4. User said: "This conversation should be captured in project-management-practices.md"
-5. LLM created this document, including this meta-story
-
-**Key Insight**: The system is self-referential - it describes its own creation, providing future sessions with context about WHY the system exists and HOW it was designed.
-
----
-
-## Common Scenarios
-
-### Scenario 1: Starting a New Session
-
-**LLM Action**:
-1. Read [documentation-standards.md](./documentation-standards.md)
-2. Read [project-management-practices.md](./project-management-practices.md) (this doc)
-3. Read [project-timeline.md](../project-timeline.md) (latest 3-5 entries)
-4. Identify current active work from timeline
-5. Read relevant Tier 2 documents for that work
-6. If any links fail: Execute self-healing protocol
-
-**Total tokens**: ~8,000-12,000 (efficient context loading)
-
-### Scenario 2: Completing a Feature
-
-**User**: "We finished the template stripping algorithm"
-
-**LLM Action**:
-1. Update active working doc in current directory (e.g., [implementation-guide.md](../../data-pipeline/wikipedia-decomposition/implementation-guide.md)):
-   - Mark section as complete
-   - Add to Decision Log if relevant
-2. Ask user: "Should I log this to project timeline?"
-3. If yes: Append entry to [project-timeline.md](../project-timeline.md)
-
-### Scenario 3: Discovering a Problem
-
-**User**: "I found out pagelinks includes template links - that's a problem"
-
-**LLM Action**:
-1. Immediately log to [project-timeline.md](../project-timeline.md):
-   - Under "Blockers/Discoveries"
-   - Explain implication
-2. Update relevant active doc with new understanding
-3. Propose solution or next steps
-
-### Scenario 4: End of Session
-
-**User**: "Let's wrap up for today"
-
-**LLM Action**:
-1. Summarize conversation
-2. Append to [project-timeline.md](../project-timeline.md)
-3. Update any active docs with current status
-4. Suggest git commit message
-5. List next steps for future session
-
----
-
-## Future Enhancements
-
-### Git Hook Integration (Not Yet Implemented)
-
-Could automate timeline updates via commit messages:
-
-```bash
-# .git/hooks/post-commit
-#!/bin/bash
-# Extract [timeline: ...] tag from commit message
-# Append to project-timeline.md
-# Auto-commit the timeline update
-```
-
-### Session Summary Templates
-
-Create reusable templates for common session types:
-- Research session
-- Implementation session
-- Debugging session
-- Planning session
-
-### Automated Staleness Detection
-
-Script to check:
-- Are "Current Status" sections older than 7 days?
-- Are open questions marked but not checked off?
-- Are active docs not updated in 30 days?
-
----
-
-## Validation Checklist
+## Validation Checklist (Before Committing)
 
 When maintaining documentation:
 
 - [ ] Updated "Last Updated" timestamp
 - [ ] Used correct update pattern (append vs. rewrite)
 - [ ] Added entry to timeline if milestone
-- [ ] Checked document registry for classification
 - [ ] Cross-referenced related docs if needed
 - [ ] Preserved all historical entries (cumulative docs)
 - [ ] Verified markdown renders correctly
@@ -432,17 +266,63 @@ When maintaining documentation:
 
 ---
 
+## Common Scenarios (Quick Reference)
+
+**Scenario: Completing a Feature**
+1. Update directory `implementation.md` (mark complete, add to decision log)
+2. Ask user: "Should I log to timeline?"
+3. If yes: Append to [project-timeline.md](../project-timeline.md)
+
+**Scenario: Discovering a Problem**
+1. Immediately log to timeline under "Blockers/Discoveries"
+2. Update relevant active doc with new understanding
+3. Propose solution or next steps
+
+**Scenario: Creating New Subsystem**
+1. Create new directory with `implementation.md`
+2. Use template from "Creating a New Directory" section above
+3. Add brief entry to timeline: "Created [subsystem] directory"
+
+---
+
+## Meta-Story: System Genesis
+
+This documentation system emerged from a 2025-12-12 session where user and LLM recognized that "snapshot documentation" becomes stale. Solution: Three-tier pyramid with cumulative append-only pattern, directory-based discovery, and self-healing protocol.
+
+**The recursive insight**: The system documents its own creation, providing future LLM sessions with context about WHY and HOW it was designed.
+
+**For complete design history**: See [../../meta-maintenance/session-log.md](../../meta-maintenance/session-log.md)
+
+---
+
 ## Related Documents
 
-- [Documentation Standards](./documentation-standards.md) - How to format docs
-- [Project Timeline](../project-timeline.md) - Cumulative project history
-- [Wikipedia Decomposition Guide](../../data-pipeline/wikipedia-decomposition/implementation-guide.md) - Example of directory-based documentation
+**Tier 1 (Read Every Session)**:
+- [documentation-standards.md](./documentation-standards.md) - How to format docs
+- [../project-timeline.md](../project-timeline.md) - Cumulative project history
+
+**Tier 2 (Documentation System Details)**:
+- [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md) - Complete architecture spec
+- [../../meta-maintenance/writing-guide.md](../../meta-maintenance/writing-guide.md) - Detailed examples
+- [../../meta-maintenance/session-log.md](../../meta-maintenance/session-log.md) - Design history
+- [../../meta-maintenance/future.md](../../meta-maintenance/future.md) - TODOs for system
+
+**Tier 2 (Example Directory Documentation)**:
+- [../../data-pipeline/wikipedia-decomposition/implementation.md](../../data-pipeline/wikipedia-decomposition/implementation.md) - Example of directory-based docs
 
 ---
 
 ## Changelog
 
-### 2025-12-12
+### 2025-12-12 (Second Update)
+- **Token budget optimization**: Compressed from ~8-10k to ~3k tokens
+- Removed redundant content covered in [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)
+- Added bootstrap instructions (how to start new session)
+- Added "Creating a New Directory" section with copy-paste templates
+- Converted detailed procedures to quick-reference tables
+- Added pointers to Tier 2 documentation for complete details
+
+### 2025-12-12 (Initial)
 - Initial creation
 - Established document taxonomy (Tier 1/2)
 - Defined update triggers and procedures
@@ -450,7 +330,7 @@ When maintaining documentation:
 - Documented meta-story of system genesis
 - Established maintenance patterns and common scenarios
 - Added self-healing protocol for broken references (lazy validation with git history)
-- **Directory-based heuristic**: Tier 2 docs co-located with code, discovered via directory structure
+- Directory-based heuristic: Tier 2 docs co-located with code
 - Restructured: Moved Wikipedia docs to `data-pipeline/wikipedia-decomposition/`
 
 ---

@@ -45,19 +45,31 @@ Thumbs.db
 
 # Project-specific: Wikipedia data
 wikipedia_decomposition*/
+*.xml
 *.xml.bz2
-*.tsv
+*.xml.gz
+*.sql
 *.sql.gz
+*.sql.bz2
+*.tsv
+*.csv
 quarry_source/
 wikitext_raw/
 wikitext_clean/
 templates_extracted/
+data/wikipedia/
+data/quarry/
+data/raw/
+data/processed/
 
-# Large data files
+# Large data files (>100MB threshold)
 *.gz
 *.bz2
 *.zip
 *.7z
+*.tar
+*.tar.gz
+*.tgz
 
 # Logs
 *.log

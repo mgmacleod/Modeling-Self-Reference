@@ -18,6 +18,82 @@
 
 ## Timeline Entries
 
+### Session: 2025-12-15 (Evening) - Tier System Clarification & INDEX Standardization
+
+**Completed**:
+- Clarified tier system as context depth (functional), not directory nesting (structural)
+  - Tier 0: .vscode/settings.json (system prompts, experimental apparatus)
+  - Tier 1: Universal (every session)
+  - Tier 2: Contextual (working in functional area)
+  - Tier 3: Reference (deep-dive, as-needed)
+
+- Corrected tier classifications across all documents
+  - Theory documents reclassified as Tier 2 (load all when working on theory)
+  - data-sources.md files reclassified as Tier 3 (historical reproducibility)
+  - end-of-session-protocol.md reclassified as Tier 2 (triggered by system prompt)
+
+- Updated meta-maintenance/implementation.md
+  - Added Tier 0 definition (system prompts outside hierarchy)
+  - Clarified functional vs structural tier semantics
+  - Updated tier descriptions with "context depth" principle
+
+- Standardized all INDEX.md files with relay node pattern
+  - meta-maintenance/: Core (implementation.md, session-log.md) vs Reference (writing-guide.md, data-sources.md, future.md)
+  - theories-proofs-conjectures/: All Tier 2 (load all when working on theory)
+  - llm-project-management-instructions/: All Tier 1 (always loaded)
+  - data-pipeline/wikipedia-decomposition/: Core (implementation-guide.md) vs Reference (data-sources.md)
+  - human-facing-documentation/: Marked "Not for LLM loading"
+
+- Added initialization.md for automated environment setup
+  - LLM-executable setup steps (venv, dependencies)
+  - Platform-specific commands (Windows/macOS/Linux)
+  - Updated project-setup.md with Quick Start reference
+
+- Configured workspace-specific system prompts
+  - Created .vscode/settings.json (end-of-session protocol trigger)
+  - Version-controlled as experimental apparatus
+  - Updated system-prompts.md to document workspace approach
+
+**Decisions Made**:
+
+| Decision | Rationale | Impact |
+|----------|-----------|--------|
+| Tiers measure context depth, not directory nesting | Previous ambiguity conflated structural with functional tiers | Clear guidance for which files to load in any context |
+| INDEX files as relay nodes | "First time here? Load core files. Need more? References available" | Simple directory entry pattern, no complex dependency mappings |
+| Theory documents all Tier 2 | Formalized = lightweight tokens, load all for complete context | ~25k tokens when working on theory (manageable) |
+| data-sources.md as Tier 3 | Historical reproducibility, not routine loading | Reduces unnecessary context pollution |
+| Workspace-specific settings | System prompts only active in this project | Zero manual switching, version-controlled configuration |
+
+**Discoveries**:
+- Previous session encoded ambiguity: directories ≠ tiers (structural ≠ functional)
+- Directory structure encodes semantics: WITH implementation.md = workspace (Tier 2), WITHOUT = library (Tier 3)
+- Tier structure naturally handles dependency cascading (no explicit "to edit X load Y" needed)
+- System prompts are Tier 0 (outside hierarchy but critical for reproducibility)
+
+**Validation**:
+- All INDEX files follow relay node pattern ✓
+- Tier classifications consistent across all documents ✓
+- implementation.md correctly specifies functional tier system ✓
+- Meta-maintenance updated to reflect architectural changes ✓
+
+**Architecture Impact**:
+- Tier system now correctly specified and consistently applied
+- INDEX files provide clear directory entry guidance
+- System maintains self-referential consistency (meta-docs follow own patterns)
+- Workspace configuration version-controlled (reproducible experimental apparatus)
+
+**Git Commits**:
+- 709fc95: Added initialization.md and updated project-setup.md
+- e343e8e: Added .vscode/settings.json to repository
+- 15ed3d0: Tier clarification and INDEX standardization
+
+**Next Steps**:
+- Test tier system with fresh session (verify bootstrap → directory navigation)
+- Begin Wikipedia pipeline implementation using documented patterns
+- Monitor token budgets in practice (validate tier estimates)
+
+---
+
 ### Session: 2025-12-15 (Afternoon) - End-of-Session Protocol & Per-Directory INDEX Pattern
 
 **Completed**:

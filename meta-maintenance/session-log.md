@@ -17,7 +17,96 @@ This log documents the design, refinement, and evolution of the self-referential
 
 ---
 
-## 2025-12-15 - Documentation System Refinements and Self-Referential Application
+## 2025-12-15 (Evening) - Tier System Clarification & INDEX Standardization
+
+### Context
+User identified ambiguity in tier system: LLM (and previous session) had conflated directory nesting with context depth. Session focused on clarifying tier semantics and standardizing INDEX files.
+
+### Work Completed
+
+**1. Tier System Clarification**:
+- Corrected fundamental confusion: tiers measure **context depth** (functional), not directory nesting (structural)
+- Added Tier 0 to implementation.md: .vscode/settings.json (system prompts as experimental apparatus)
+- Updated tier definitions with explicit "context depth" principle
+- Clarified that theory documents are Tier 2 (contextual), not Tier 1 (universal)
+
+**2. Tier Reclassifications**:
+- Theory documents (theories-proofs-conjectures/) → Tier 2 (load all when working on theory, ~25k tokens)
+- data-sources.md files (all directories) → Tier 3 (historical reproducibility, as-needed)
+- end-of-session-protocol.md → Tier 2 (triggered by system prompt, not bootstrap)
+
+**3. INDEX File Standardization**:
+- Created tier-classification-draft.md (working document for corrections)
+- User corrected tier assignments and context lineage specifications
+- Updated all 5 INDEX.md files with relay node pattern:
+  - meta-maintenance/: Core files (implementation.md, session-log.md) vs Reference (writing-guide.md, data-sources.md, future.md)
+  - theories-proofs-conjectures/: All Tier 2 (load all when working on theory)
+  - llm-project-management-instructions/: All Tier 1 (always loaded)
+  - data-pipeline/wikipedia-decomposition/: Core (implementation-guide.md) vs Reference (data-sources.md)
+  - human-facing-documentation/: Marked "Not for LLM loading"
+
+**4. Workspace Configuration**:
+- Identified issue: system prompts in user settings.json are system-wide (not project-specific)
+- Solution: Created .vscode/settings.json (workspace-specific, version-controlled)
+- Updated system-prompts.md to document workspace approach
+- Committed workspace settings as experimental apparatus
+
+**5. Initialization Automation**:
+- Created initialization.md at project root (LLM-executable setup steps)
+- Platform-specific commands (Windows/macOS/Linux)
+- Updated project-setup.md with Quick Start reference to initialization.md
+- Enables automated environment setup via LLM
+
+### Key Insights
+
+**Tier Structure Discovery**:
+- Directory structure encodes semantic distinction: WITH implementation.md = workspace (Tier 2), WITHOUT = library (Tier 3)
+- Tier system naturally handles dependency cascading (no need for explicit "to edit X load Y" mappings)
+- INDEX files function as relay nodes: "First time here? Load core. Need more? References available"
+
+**Previous Ambiguity Identified**:
+- Earlier session (Dec 15 afternoon) established INDEX pattern but conflated structural with functional tiers
+- Ambiguity propagated through implementation.md tier descriptions
+- User caught confusion: "You've mistaken the tier system as DIRECTORY DEPTH. It is not, it is CONTEXT DEPTH!"
+
+**System Prompts as Tier 0**:
+- System prompts exist outside tier hierarchy but govern navigation within it
+- Version-controlled as experimental apparatus (reproducibility requirement)
+- Workspace-specific configuration enables project-specific LLM behavior
+
+### Decisions Made
+
+| Decision | Rationale | Impact |
+|----------|-----------|--------|
+| Tiers = context depth, not directory nesting | Functional classification more useful than structural | Clear guidance for which files to load |
+| INDEX files as relay nodes | Simplifies directory entry ("load these, references available") | No complex dependency mappings needed |
+| Theory docs all Tier 2 | Formalized = lightweight, load all for complete context | ~25k manageable when working on theory |
+| data-sources.md Tier 3 | Historical reproducibility, not routine | Reduces context pollution |
+| Workspace settings | Project-specific system prompts | Zero manual switching, version-controlled |
+
+### Validation
+
+- All INDEX files follow relay node pattern ✓
+- Tier classifications consistent across all documents ✓
+- implementation.md correctly specifies functional tier system ✓
+- Meta-maintenance follows own documented patterns ✓
+
+### Git Commits from This Session
+
+1. **709fc95**: Added initialization.md and updated project-setup.md
+2. **e343e8e**: Added .vscode/settings.json to repository (forced despite gitignore)
+3. **15ed3d0**: Tier clarification and INDEX standardization
+
+### Next Session Preparation
+
+When resuming work on documentation system:
+1. Read implementation.md (updated tier definitions)
+2. Read this session-log.md entry (context for today's clarifications)
+3. Verify tier system works in practice (test fresh session navigation)
+
+---
+
+## 2025-12-15 (Afternoon) - Documentation System Refinements and Self-Referential Application
 
 ### Context
 User requested evaluation of llm-facing-documentation directory quality. Session evolved into comprehensive architecture improvements implementing the system's own principles.

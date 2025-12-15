@@ -1,6 +1,13 @@
 # LLM-Facing Summary of Formal Theorems, Proofs, and Conjectures
 (Extended with Event-Coupled Basin Tunneling)
 
+**DEPRECATED**: This document has been superseded by [unified-inference-theory.md](../unified-inference-theory.md)  
+**Date Deprecated**: 2025-12-15  
+**Reason**: Merged with inference-summary.md for consolidated theory reference  
+**Location**: Moved to deprecated/ subdirectory to reduce context pollution
+
+---
+
 ## Note
 This document supersedes `inference-summary.md` by adding a formal integration
 of event-coupled inference into basin and tunneling theory.

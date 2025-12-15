@@ -1,5 +1,13 @@
 # Database Inference Graph Theory: Multi-Rule Tunneling for Schema Discovery
-<!-- Formalized Theory | Discovered: 2025-12-10 | Status: Theoretical Framework Complete -->
+
+**Document Type**: Theory  
+**Target Audience**: LLMs with graph theory and database background  
+**Purpose**: Extend N-Link theory to typed database graphs, formalize multi-rule tunneling for schema discovery  
+**Created**: 2025-12-10  
+**Last Updated**: 2025-12-15  
+**Status**: Active - Theoretical framework complete
+
+---
 
 ## Abstract
 

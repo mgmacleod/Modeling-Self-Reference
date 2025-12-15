@@ -3,7 +3,7 @@
 **Document Type**: Meta-documentation  
 **Target Audience**: LLMs  
 **Purpose**: How LLMs should maintain project documentation, create new directories, and track progress  
-**Last Updated**: 2025-12-12  
+**Last Updated**: 2025-12-15  
 **Dependencies**: [documentation-standards.md](./documentation-standards.md), [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)  
 **Status**: Active
 
@@ -123,6 +123,104 @@ How to use code in this directory.
 - Need Tier 2 context isolation
 
 **For more standard files and patterns**: See [../../meta-maintenance/implementation.md#standard-files](../../meta-maintenance/implementation.md#standard-files)
+
+---
+
+## Document Deprecation Policy
+
+### When to Deprecate vs. Git Version
+
+**Deprecate (create deprecated/ subdirectory)**:
+- **Theory documents** undergoing major revision/merger
+  - Example: Multiple theory summaries → unified comprehensive document
+  - Rationale: Substantial divergence from original; old version may confuse if accidentally loaded
+  - Pattern: Major conceptual evolution, not incremental improvement
+
+**Use git version history (no deprecation)**:
+- **Code files** (Python, scripts, notebooks)
+  - Rationale: Git tracks changes; old versions not in namespace
+- **Implementation documentation** (iterative updates)
+  - Rationale: In-place edits with decision log; git shows history
+- **Project management docs** (standards, practices)
+  - Rationale: Rare updates; git sufficient for historical reference
+
+### Deprecation Procedure
+
+**When deprecating a document**:
+
+1. **Create deprecated/ subdirectory** in document's directory
+   ```
+   theories-proofs-conjectures/
+   ├── active-doc.md
+   ├── deprecated/
+   │   └── old-doc.md
+   ```
+
+2. **Move superseded document(s)** to deprecated/
+   ```powershell
+   mv old-doc.md deprecated/
+   ```
+
+3. **Add deprecation notice** to moved document:
+   ```markdown
+   **DEPRECATED**: This document has been superseded by [new-doc.md](../new-doc.md)
+   **Date Deprecated**: YYYY-MM-DD
+   **Reason**: [Brief explanation]
+   **Location**: Moved to deprecated/ subdirectory to reduce context pollution
+   ```
+
+4. **Create INDEX.md** (if first deprecation in directory):
+   ```markdown
+   # [Directory Name] Index
+   
+   ## Active Documents
+   - [active-doc.md](active-doc.md) - Description
+   
+   ## Deprecated Documents
+   **Location**: [deprecated/](deprecated/)
+   - `old-doc.md` - Superseded by active-doc.md
+   
+   **Never load** documents in deprecated/ directory.
+   ```
+
+5. **Update cross-references** in other documents pointing to deprecated doc
+
+6. **Log to timeline** with:
+   - What was deprecated and why
+   - Token savings (if applicable)
+   - Pattern established for future
+
+### INDEX.md Pattern
+
+**Purpose**: Guide LLMs to load only active documents
+
+**Create INDEX.md when**:
+- First deprecation occurs in a directory
+- Directory has multiple related documents (theory, implementation guides)
+- Need to prevent accidental loading of deprecated content
+
+**INDEX.md structure**:
+- List of active documents with brief descriptions
+- List of deprecated documents (location only, not content)
+- Explicit "never load deprecated/" instruction
+- Token budget guidance if applicable
+
+**Example**: See [../theories-proofs-conjectures/INDEX.md](../theories-proofs-conjectures/INDEX.md)
+
+### Git vs. Deprecation Decision Tree
+
+```
+Does document need major revision?
+├─ YES: Is it theory/foundational?
+│  ├─ YES: Deprecate old version
+│  │  └─ Action: Create deprecated/, move old, update links
+│  └─ NO: Is it code/implementation?
+│     └─ Action: Edit in place, git tracks history
+└─ NO: Minor update?
+   └─ Action: Edit in place, update timestamp
+```
+
+**Philosophy**: Deprecation for namespace hygiene (prevent wrong document loading), git for change history (understand evolution).
 
 ---
 
@@ -313,6 +411,14 @@ This documentation system emerged from a 2025-12-12 session where user and LLM r
 ---
 
 ## Changelog
+
+### 2025-12-15
+- **Added**: Document Deprecation Policy section
+  - Formalized when to deprecate (theory evolutions) vs. use git (code, iterative docs)
+  - Documented deprecation procedure (deprecated/ subdirectory, INDEX.md pattern)
+  - Added decision tree for deprecation vs. git versioning
+  - Example reference: theories-proofs-conjectures deprecation
+- **Rationale**: Namespace hygiene for theory documents while preserving history
 
 ### 2025-12-12 (Second Update)
 - **Token budget optimization**: Compressed from ~8-10k to ~3k tokens

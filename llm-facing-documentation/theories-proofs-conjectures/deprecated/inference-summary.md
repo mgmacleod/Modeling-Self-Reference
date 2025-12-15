@@ -1,5 +1,12 @@
 # LLM-Facing Summary of Formal Theorems, Proofs, and Conjectures
 
+**DEPRECATED**: This document has been superseded by [unified-inference-theory.md](../unified-inference-theory.md)  
+**Date Deprecated**: 2025-12-15  
+**Reason**: Merged with inference-summary-with-event-tunneling.md for consolidated theory reference  
+**Location**: Moved to deprecated/ subdirectory to reduce context pollution
+
+---
+
 ## 1. System Context
 
 This document summarizes the formal structures, theorems, proofs, and conjectures arising from the conversation regarding:

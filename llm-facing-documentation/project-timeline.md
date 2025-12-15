@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history  
 **Target Audience**: LLMs  
 **Purpose**: Chronological record of project evolution, decisions, and discoveries  
-**Last Updated**: 2025-12-12  
+**Last Updated**: 2025-12-15  
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,70 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2025-12-15 - Theory Documentation Cleanup & Deprecation Policy
+
+**Completed**:
+- Created `theories-proofs-conjectures/deprecated/` subdirectory
+  - Moved superseded inference summary files out of active namespace
+  - Preserved historical documents with updated links to merged version
+  
+- Created `theories-proofs-conjectures/INDEX.md` (~500 tokens)
+  - Clear listing of 3 active theory documents vs. deprecated documents
+  - Explicit "never load deprecated/" instruction
+  - Token budget guidance (~15-20k for all theory)
+  
+- Created `theories-proofs-conjectures/unified-inference-theory.md` (~4-5k tokens)
+  - Merged inference-summary.md and inference-summary-with-event-tunneling.md
+  - Comprehensive integration: N-Link theory, database inference, tunneling, event-coupled inference
+  - Proper metadata blocks following documentation standards
+  
+- Standardized theory document metadata
+  - Replaced HTML comments in n-link-rule-theory.md and database-inference-graph-theory.md
+  - Added proper metadata blocks with theory-appropriate fields
+  
+- Created `llm-facing-documentation/README.md` (~700 tokens)
+  - 3-sentence project summary for new sessions
+  - Bootstrap instructions with tier system
+  - Theory overview pointing to unified document
+
+**Decisions Made**:
+- **Deprecation Policy Established**: Theory documents get explicit deprecation
+  - Rationale: Major theory evolutions create substantial divergence from original
+  - Pattern: Create deprecated/ subdirectory, move old versions, update links
+  - Add INDEX.md to directories with deprecated content
+  - Code and project documentation rely on git version history (not deprecated/)
+  
+- **Namespace Hygiene**: Active vs. deprecated content separation
+  - Rationale: Prevents accidental loading of superseded documents
+  - Achievement: Reduced theory context pollution by ~8-10k tokens
+  - New sessions load only current theory via INDEX.md guidance
+
+**Discoveries**:
+- **Documentation System Self-Application**: System properly documents its own maintenance patterns
+  - Theory documents needed same rigor as implementation documents
+  - Metadata standardization applies across all document types
+  - Deprecation is a documented, repeatable process
+
+**Validation**:
+- All deprecated documents updated with new paths and deprecation notices
+- INDEX.md provides clear active/deprecated distinction
+- README.md provides fast onboarding (<1 min read for project summary)
+- Cross-references verified in unified-inference-theory.md
+
+**Architecture Impact**:
+- Theory directory now self-documenting via INDEX.md
+- Clear separation: active theory (3 files) vs. historical archive (deprecated/)
+- Deprecation policy formalized in project-management-practices.md
+- Pattern established for future theory evolutions
+- **Theory documents classified as Tier 2** (resolved open question from 2025-12-12)
+
+**Next Steps**:
+- Begin Wikipedia extraction implementation using documented theory foundation
+- Consider applying INDEX.md pattern to other directories as they grow
+- Monitor theory context load in practice (target: 15-20k tokens)
+
+---
 
 ### Session: 2025-12-12 (Evening) - Tier 1 Documentation Token Budget Optimization
 
@@ -82,7 +146,6 @@
 **Next Steps**:
 - Test bootstrap path with actual new session (verify Tier 1 sufficient)
 - Begin Wikipedia extraction implementation with new documentation patterns
-- Consider: Are theory documents in theories-proofs-conjectures/ also Tier 1? (May need review)
 
 ---
 

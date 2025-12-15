@@ -1,5 +1,13 @@
 # N-Link Rule Theory: Mathematical Structures in Self-Referential Link Graphs
-<!-- Formalized Theory | Discovered: 2025-12-10 | Status: Awaiting Empirical Validation -->
+
+**Document Type**: Theory  
+**Target Audience**: LLMs with mathematical background  
+**Purpose**: Formalize deterministic link-selection rules on finite directed graphs, prove basin partition structure  
+**Created**: 2025-12-10  
+**Last Updated**: 2025-12-15  
+**Status**: Active - Awaiting empirical validation
+
+---
 
 ## Abstract
 

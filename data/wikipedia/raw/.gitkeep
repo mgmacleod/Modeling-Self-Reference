@@ -1,0 +1,10 @@
+# This directory contains raw Wikipedia dumps (XML, SQL)
+# Files are gitignored - see root .gitignore
+# 
+# Expected files:
+# - enwiki-YYYYMMDD-pages-articles-multistream.xml.bz2  (~22GB)
+# - enwiki-YYYYMMDD-page.sql.gz                         (~600MB)
+# - enwiki-YYYYMMDD-redirect.sql.gz                     (~50MB)
+# - enwiki-YYYYMMDD-page_props.sql.gz                   (~100MB)
+#
+# Download from: https://dumps.wikimedia.org/enwiki/

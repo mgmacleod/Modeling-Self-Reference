@@ -51,16 +51,22 @@ wikipedia_decomposition*/
 *.sql
 *.sql.gz
 *.sql.bz2
-*.tsv
-*.csv
 quarry_source/
 wikitext_raw/
 wikitext_clean/
 templates_extracted/
-data/wikipedia/
-data/quarry/
-data/raw/
-data/processed/
+
+# Data directory - ignore contents but keep structure
+data/**
+!data/
+!data/*/
+!data/*/*/
+!data/**/.gitkeep
+
+# Parquet and DuckDB files
+*.parquet
+*.duckdb
+*.duckdb.wal
 
 # Large data files (>100MB threshold)
 *.gz

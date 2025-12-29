@@ -3,9 +3,9 @@
 **Document Type**: Technical Specification  
 **Target Audience**: LLMs + Developers  
 **Purpose**: Complete extraction pipeline from Wikipedia XML to clean N-Link dataset  
-**Last Updated**: 2025-12-12  
+**Last Updated**: 2025-12-29  
 **Dependencies**: [data-sources.md](./data-sources.md)  
-**Status**: Design Complete - Implementation Pending
+**Status**: Design Revised - Implementation Pending
 
 ---
 
@@ -17,88 +17,95 @@ Complete extraction from enwiki XML dumps with full metadata preservation. This 
 
 ---
 
-## Output Files Structure
+## Data Directory Structure
+
+All data stored in `data/wikipedia/` (gitignored, see `.gitkeep` for documentation).
 
 ```
-wikipedia_decomposition/
-├── metadata/
-│   ├── pages.tsv              # All pages with flags
-│   ├── redirects.tsv          # page_id → target_title
-│   ├── disambiguations.tsv    # page_id list
-│   └── decomposition_log.json # Extraction metadata
+data/wikipedia/
+├── raw/                           # Downloaded dumps (~23GB total)
+│   ├── enwiki-YYYYMMDD-pages-articles-multistream.xml.bz2
+│   ├── enwiki-YYYYMMDD-page.sql.gz
+│   ├── enwiki-YYYYMMDD-redirect.sql.gz
+│   └── enwiki-YYYYMMDD-page_props.sql.gz
 │
-├── links/
-│   ├── links_ordered.tsv      # page_id → [link_id:pos, ...]
-│   ├── links_unmatched.tsv    # page_id → [raw_text:pos, ...]
-│   └── links_stats.tsv        # page_id → link_count, match_rate
-│
-├── content/
-│   ├── wikitext_raw/          # Optional: page_id.txt (original)
-│   ├── wikitext_clean/        # Optional: page_id.txt (templates stripped)
-│   └── templates_extracted/   # Optional: page_id_templates.json
-│
-└── quarry_source/
-    ├── page_table.tsv         # Downloaded from Quarry
-    ├── page_props.tsv         # Downloaded from Quarry
-    └── redirect_table.tsv     # Downloaded from Quarry
+└── processed/                     # Extracted data (~3GB total)
+    ├── pages.parquet              # All pages with flags
+    ├── links.parquet              # page_id → ordered link sequence
+    ├── redirects.parquet          # page_id → target_page_id
+    ├── unmatched_links.parquet    # Failed matches for debugging
+    ├── wikipedia.duckdb           # Combined queryable database
+    └── extraction_log.json        # Provenance metadata
 ```
+
+**Storage Format**: Parquet (columnar, compressed, portable) + DuckDB for queries.
+
+**Rationale**: Parquet enables efficient columnar access and compression. DuckDB provides SQL queries without server overhead. Both are industry-standard for analytical workloads.
 
 ---
 
 ## Core File Specifications
 
-### `pages.tsv`
+### `pages.parquet`
 
 Complete metadata for all extracted pages.
 
-**Format**: Tab-separated values, UTF-8 encoded
+**Format**: Apache Parquet (columnar, compressed)
 
-**Columns**:
-```tsv
-page_id	page_title	namespace	is_redirect	is_disambiguation	is_stub	byte_size	link_count	extraction_status
+**Schema**:
+```
+page_id: int64 (primary key)
+page_title: string (canonical, exact case)
+namespace: int32 (0 = main article)
+is_redirect: bool
+is_disambiguation: bool
+is_stub: bool
+byte_size: int64
+link_count: int32
+extraction_status: string (enum: success|partial|failed|skipped)
 ```
 
-**Example**:
-```tsv
-page_id	page_title	namespace	is_redirect	is_disambiguation	is_stub	byte_size	link_count	extraction_status
-12	Anarchism	0	false	false	false	82456	342	success
-89342	Snow	0	false	false	false	45123	187	success
-175623	SNOW	0	false	true	false	1205	23	success
-892	EBay	0	false	false	false	34567	156	success
+**Example** (as DataFrame):
+```
+   page_id    page_title  namespace  is_redirect  is_disambiguation  ...
+0       12     Anarchism          0        False              False
+1    89342          Snow          0        False              False
+2   175623          SNOW          0        False               True
+3      892          EBay          0        False              False
 ```
 
 **Field Descriptions**:
-- `page_id`: Integer, primary key from Wikipedia `page` table
-- `page_title`: String, canonical page title (exact case, underscores preserved)
-- `namespace`: Integer, 0 = main article namespace
-- `is_redirect`: Boolean, true if redirect page
-- `is_disambiguation`: Boolean, true if disambiguation page
-- `is_stub`: Boolean, true if stub article
-- `byte_size`: Integer, size of raw wikitext in bytes
-- `link_count`: Integer, number of internal links found
-- `extraction_status`: Enum: `success`, `partial`, `failed`, `skipped`
+- `page_id`: Primary key from Wikipedia `page` table
+- `page_title`: Canonical page title (exact case, underscores converted to spaces in XML)
+- `namespace`: 0 = main article namespace (we only extract namespace 0)
+- `is_redirect`: True if redirect page
+- `is_disambiguation`: True if disambiguation page (from `page_props`)
+- `is_stub`: True if stub article (from `page_props`)
+- `byte_size`: Size of raw wikitext in bytes
+- `link_count`: Number of internal links found after template stripping
+- `extraction_status`: `success`, `partial`, `failed`, or `skipped`
 
 ---
 
-### `links_ordered.tsv`
+### `links.parquet`
 
 Ordered link sequences for each page, preserving document order from prose.
 
-**Format**: Tab-separated values, UTF-8 encoded
+**Format**: Apache Parquet (columnar, compressed)
 
-**Columns**:
-```tsv
-page_id	link_sequence
+**Schema**:
+```
+page_id: int64
+link_sequence: list<int64>  # Ordered list of target page_ids
+positions: list<int64>      # Corresponding byte positions (parallel array)
 ```
 
-**Link Sequence Format**: `target_page_id:byte_position,target_page_id:byte_position,...`
-
-**Example**:
-```tsv
-page_id	link_sequence
-12	8091:145,9382:567,12890:892,8091:1234,23456:1890
-89342	175623:234,8091:456,23456:789,8091:1023
-175623	89342:120,89342:450,89342:680
+**Example** (as DataFrame):
+```
+   page_id               link_sequence              positions
+0       12  [8091, 9382, 12890, 8091]  [145, 567, 892, 1234]
+1    89342      [175623, 8091, 23456]        [234, 456, 789]
+2   175623          [89342, 89342, 89342]        [120, 450, 680]
 ```
 
 **Properties**:
@@ -109,25 +116,20 @@ page_id	link_sequence
 
 ---
 
-### `links_unmatched.tsv`
+### `unmatched_links.parquet`
 
 Failed link matches for debugging and redlink analysis.
 
-**Format**: Tab-separated values, UTF-8 encoded
+**Format**: Apache Parquet
 
-**Columns**:
-```tsv
-page_id	unmatched_links
+**Schema**:
+```
+page_id: int64
+link_text: string      # Original link text that failed to match
+position: int64        # Byte offset in cleaned wikitext
 ```
 
-**Unmatched Links Format**: JSON array of objects `[{"text": "...", "pos": 123}, ...]`
-
-**Example**:
-```tsv
-page_id	unmatched_links
-12	[{"text":"some obscure thing","pos":456},{"text":"Red link","pos":789}]
-89342	[{"text":"Future article","pos":234}]
-```
+**Note**: One row per unmatched link (denormalized for easy querying).
 
 **Use Cases**:
 - Identify redlinks (links to non-existent pages)
@@ -137,60 +139,57 @@ page_id	unmatched_links
 
 ---
 
-### `redirects.tsv`
+### `redirects.parquet`
 
-Redirect mappings extracted from pages.
+Redirect mappings from SQL dump.
 
-**Format**: Tab-separated values, UTF-8 encoded
+**Format**: Apache Parquet
 
-**Columns**:
-```tsv
-page_id	page_title	redirect_target_title
+**Schema**:
+```
+page_id: int64              # Redirect page's ID
+page_title: string          # Redirect page's title
+target_title: string        # Target page title (as stored in redirect table)
+target_page_id: int64       # Resolved target page_id (nullable if target doesn't exist)
 ```
 
-**Example**:
-```tsv
-page_id	page_title	redirect_target_title
-456789	USA	United_States
-234567	Colour	Color
-891234	GWB	George_W._Bush
-```
+**Note**: `target_page_id` is resolved by joining with `pages.parquet`. If target doesn't exist (broken redirect), field is null.
 
 ---
 
-### `disambiguations.tsv`
-
-List of disambiguation pages for separate analysis.
-
-**Format**: Tab-separated values, UTF-8 encoded
-
-**Columns**:
-```tsv
-page_id	page_title	disambiguation_links_count
-```
-
-**Example**:
-```tsv
-page_id	page_title	disambiguation_links_count
-175623	SNOW	3
-234891	Mercury_(disambiguation)	12
-```
+**Note on Disambiguation Pages**: Disambiguation status is stored as `is_disambiguation` boolean in `pages.parquet`. No separate file needed - query with: `SELECT * FROM pages WHERE is_disambiguation = true`
 
 ---
 
-### `decomposition_log.json`
+### `extraction_log.json`
 
 Complete provenance and statistics for the extraction.
 
 **Example**:
 ```json
 {
-  "extraction_date": "2025-12-12T10:30:00Z",
-  "xml_source": "enwiki-20251201-pages-articles-multistream.xml.bz2",
-  "xml_sha256": "abc123...",
-  "xml_url": "https://dumps.wikimedia.org/enwiki/20251201/",
-  "quarry_query_date": "2025-12-10",
-  "page_table_count": 6847301,
+  "extraction_date": "2025-12-29T10:30:00Z",
+  "dump_date": "20251201",
+  
+  "sources": {
+    "xml_dump": {
+      "file": "enwiki-20251201-pages-articles-multistream.xml.bz2",
+      "sha256": "abc123...",
+      "url": "https://dumps.wikimedia.org/enwiki/20251201/"
+    },
+    "page_sql": {
+      "file": "enwiki-20251201-page.sql.gz",
+      "sha256": "def456..."
+    },
+    "redirect_sql": {
+      "file": "enwiki-20251201-redirect.sql.gz",
+      "sha256": "ghi789..."
+    },
+    "page_props_sql": {
+      "file": "enwiki-20251201-page_props.sql.gz",
+      "sha256": "jkl012..."
+    }
+  },
   
   "extraction_config": {
     "strip_templates": true,
@@ -198,14 +197,7 @@ Complete provenance and statistics for the extraction.
     "strip_comments": true,
     "strip_tables": false,
     "strip_galleries": true,
-    "link_pattern": "\\[\\[([^|\\]]+)(?:\\|[^\\]]+)?\\]\\]",
-    "template_pattern": "\\{\\{[^}]+\\}\\}",
-    "normalization_rules": [
-      "Exact match priority",
-      "First-char capitalization fallback",
-      "Underscore to space conversion",
-      "Case-insensitive final fallback"
-    ]
+    "link_pattern": "\\[\\[([^|\\]]+)(?:\\|[^\\]]+)?\\]\\]"
   },
   
   "statistics": {
@@ -245,52 +237,77 @@ Complete provenance and statistics for the extraction.
 
 ## Extraction Pipeline
 
-### Step 1: Download Quarry Tables
+### Step 1: Download SQL Dumps
 
+Download from https://dumps.wikimedia.org/enwiki/YYYYMMDD/ to `data/wikipedia/raw/`:
+
+| File | Size | Contents |
+|------|------|----------|
+| `enwiki-YYYYMMDD-pages-articles-multistream.xml.bz2` | ~22GB | Article content (wikitext) |
+| `enwiki-YYYYMMDD-page.sql.gz` | ~600MB | Page table (id, title, namespace, redirect flag) |
+| `enwiki-YYYYMMDD-redirect.sql.gz` | ~50MB | Redirect mappings |
+| `enwiki-YYYYMMDD-page_props.sql.gz` | ~100MB | Page properties (disambiguation, stub flags) |
+
+**Critical**: All files must be from the **same dump date** to ensure consistency.
+
+**SQL Dump Format**: MySQL INSERT statements. Example:
 ```sql
--- 1. Main page table (all articles)
-SELECT page_id, page_title, page_namespace, page_is_redirect, page_len
-FROM page
-WHERE page_namespace = 0;
--- Save as: quarry_source/page_table.tsv
-
--- 2. Page properties (for disambiguation detection)
-SELECT pp_page, pp_propname
-FROM page_props
-WHERE pp_propname IN ('disambiguation', 'stub');
--- Save as: quarry_source/page_props.tsv
-
--- 3. Redirect targets
-SELECT rd_from, rd_title
-FROM redirect
-WHERE rd_namespace = 0;
--- Save as: quarry_source/redirect_table.tsv
+INSERT INTO `page` VALUES (10,0,'AccessibleComputing','',0,1,0,0.33167112649574004,'20230903080914','20230903080914',1002250816,94,'wikitext',NULL),...
 ```
 
-### Step 2: Build Lookup Structures
+We need to parse these INSERT statements to extract the data.
+
+### Step 2: Parse SQL Dumps into Parquet
 
 ```python
-# Load page table
-page_lookup = {}  # {title: page_id}
-page_lookup_lower = {}  # {title.lower(): [page_ids]} for fallback
-page_metadata = {}  # {page_id: {title, is_redirect, ...}}
+import re
+import pyarrow as pa
+import pyarrow.parquet as pq
+import gzip
 
-for row in load_tsv('quarry_source/page_table.tsv'):
-    page_id = int(row['page_id'])
+def parse_sql_dump(sql_path: str, table_name: str) -> pa.Table:
+    """
+    Parse MySQL INSERT statements from a .sql.gz file.
+    Returns a PyArrow Table.
+    """
+    # Pattern matches: INSERT INTO `table` VALUES (...),(...),(...);
+    insert_pattern = re.compile(
+        rf"INSERT INTO `{table_name}` VALUES \((.+?)\);",
+        re.DOTALL
+    )
+    
+    rows = []
+    with gzip.open(sql_path, 'rt', encoding='utf-8', errors='replace') as f:
+        for line in f:
+            if line.startswith('INSERT INTO'):
+                # Parse value tuples
+                # ... parsing logic ...
+                pass
+    
+    return pa.Table.from_pydict(rows)
+```
+
+### Step 3: Build Lookup Structures
+
+```python
+import pyarrow.parquet as pq
+
+# Load parsed page table from Parquet
+pages_df = pq.read_table('data/wikipedia/processed/pages.parquet').to_pandas()
+
+# Build lookup structures
+page_lookup = {}       # {title: page_id} for exact match
+page_lookup_lower = {} # {title.lower(): [page_ids]} for fallback
+
+for _, row in pages_df.iterrows():
+    page_id = row['page_id']
     title = row['page_title']
     
     page_lookup[title] = page_id
     page_lookup_lower.setdefault(title.lower(), []).append(page_id)
-    page_metadata[page_id] = row
 
-# Load disambiguation flags
-disambig_set = set()
-stub_set = set()
-for row in load_tsv('quarry_source/page_props.tsv'):
-    if row['pp_propname'] == 'disambiguation':
-        disambig_set.add(int(row['pp_page']))
-    elif row['pp_propname'] == 'stub':
-        stub_set.add(int(row['pp_page']))
+# Disambiguation and stub flags already in pages_df
+# Access via: pages_df[pages_df['is_disambiguation'] == True]
 ```
 
 ### Step 3: Template Stripper
@@ -393,51 +410,67 @@ def normalize_and_match(link_text, page_lookup, page_lookup_lower):
 ### Step 6: Main Processing Loop
 
 ```python
-from xml.etree import ElementTree as ET
 import bz2
+from xml.etree import ElementTree as ET
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-def process_xml_dump(xml_path, page_lookup, page_lookup_lower, output_dir):
-    """Stream process XML dump."""
+def process_xml_dump(xml_path: str, page_lookup: dict, output_dir: str):
+    """Stream process XML dump, output to Parquet."""
     
-    pages_output = open(f'{output_dir}/metadata/pages.tsv', 'w', encoding='utf-8')
-    links_output = open(f'{output_dir}/links/links_ordered.tsv', 'w', encoding='utf-8')
-    unmatched_output = open(f'{output_dir}/links/links_unmatched.tsv', 'w', encoding='utf-8')
-    
-    # Write headers
-    pages_output.write('page_id\tpage_title\tnamespace\tis_redirect\tis_disambiguation\tis_stub\tbyte_size\tlink_count\textraction_status\n')
-    links_output.write('page_id\tlink_sequence\n')
-    unmatched_output.write('page_id\tunmatched_links\n')
+    # Accumulators (flush periodically for memory management)
+    pages_data = {'page_id': [], 'page_title': [], 'namespace': [], 
+                  'is_redirect': [], 'is_disambiguation': [], 'is_stub': [],
+                  'byte_size': [], 'link_count': [], 'extraction_status': []}
+    links_data = {'page_id': [], 'link_sequence': [], 'positions': []}
+    unmatched_data = {'page_id': [], 'link_text': [], 'position': []}
     
     stats = {'processed': 0, 'matched': 0, 'unmatched': 0}
     
-    # Stream XML (pseudo-code - actual implementation uses iterparse)
+    # Stream XML using iterparse (memory efficient)
     for page in stream_xml(xml_path):
         page_id = page['id']
-        title = page['title']
         wikitext = page['text']
         
-        # Clean wikitext
-        clean = strip_comments(wikitext)
-        clean = strip_templates(clean)
-        clean = strip_refs(clean)
+        # Clean wikitext (strip templates, refs, comments)
+        clean = strip_templates(strip_refs(strip_comments(wikitext)))
         
-        # Extract links
+        # Extract and match links
         raw_links = extract_links_with_positions(clean)
-        
-        matched_links = []
-        unmatched_links = []
+        matched_ids, matched_pos, unmatched = [], [], []
         
         for link_text, pos in raw_links:
-            matched_id = normalize_and_match(link_text, page_lookup, page_lookup_lower)
+            matched_id = normalize_and_match(link_text, page_lookup)
             if matched_id:
-                matched_links.append(f'{matched_id}:{pos}')
+                matched_ids.append(matched_id)
+                matched_pos.append(pos)
                 stats['matched'] += 1
             else:
-                unmatched_links.append({'text': link_text, 'pos': pos})
+                unmatched.append((link_text, pos))
                 stats['unmatched'] += 1
         
-        # Write outputs
-        pages_output.write(f'{page_id}\t{title}\t...\n')
+        # Append to accumulators
+        links_data['page_id'].append(page_id)
+        links_data['link_sequence'].append(matched_ids)
+        links_data['positions'].append(matched_pos)
+        
+        for text, pos in unmatched:
+            unmatched_data['page_id'].append(page_id)
+            unmatched_data['link_text'].append(text)
+            unmatched_data['position'].append(pos)
+        
+        stats['processed'] += 1
+        if stats['processed'] % 100000 == 0:
+            print(f"Processed {stats['processed']} pages...")
+    
+    # Write final Parquet files
+    pq.write_table(pa.Table.from_pydict(links_data), 
+                   f'{output_dir}/links.parquet')
+    pq.write_table(pa.Table.from_pydict(unmatched_data), 
+                   f'{output_dir}/unmatched_links.parquet')
+    
+    return stats
+```
         links_output.write(f'{page_id}\t{",".join(matched_links)}\n')
         
         if unmatched_links:
@@ -459,31 +492,25 @@ def process_xml_dump(xml_path, page_lookup, page_lookup_lower, output_dir):
 ### N-Link Analysis (Strict - Prose Only)
 
 ```python
-import pandas as pd
+import pyarrow.parquet as pq
+import duckdb
 
-# Load decomposition
-pages = pd.read_csv('metadata/pages.tsv', sep='\t')
-links = pd.read_csv('links/links_ordered.tsv', sep='\t')
+# Load pages and links from Parquet
+pages_df = pq.read_table('data/wikipedia/processed/pages.parquet').to_pandas()
+links_df = pq.read_table('data/wikipedia/processed/links.parquet').to_pandas()
 
 # Filter: main namespace, not redirects, not disambiguation
-valid_pages = pages[
-    (pages['namespace'] == 0) & 
-    (~pages['is_redirect']) & 
-    (~pages['is_disambiguation'])
+valid_pages = pages_df[
+    (pages_df['namespace'] == 0) & 
+    (~pages_df['is_redirect']) & 
+    (~pages_df['is_disambiguation'])
 ]
 
-# Build N-Link graph
-n_link_graph = {}
-for _, row in valid_pages.iterrows():
-    page_id = row['page_id']
-    link_seq = links[links['page_id'] == page_id]['link_sequence'].values[0]
-    
-    # Parse link sequence
-    link_ids = [int(x.split(':')[0]) for x in link_seq.split(',') if x]
-    n_link_graph[page_id] = link_ids
+# Build N-Link graph (dict for O(1) lookup during traversal)
+n_link_graph = dict(zip(links_df['page_id'], links_df['link_sequence']))
 
-# Now run N-Link traversal
-def n_link_traverse(start_page, n, graph):
+# N-Link traversal
+def n_link_traverse(start_page: int, n: int, graph: dict) -> tuple[list, str]:
     current = start_page
     visited = set()
     path = [current]
@@ -503,9 +530,32 @@ def n_link_traverse(start_page, n, graph):
 ### Redirect Resolution Layer
 
 ```python
+import pyarrow.parquet as pq
+
 # Load redirects
-redirects = pd.read_csv('metadata/redirects.tsv', sep='\t')
-redirect_map = dict(zip(redirects['page_id'], redirects['redirect_target_title']))
+redirects_df = pq.read_table('data/wikipedia/processed/redirects.parquet').to_pandas()
+redirect_map = dict(zip(redirects_df['page_id'], redirects_df['target_page_id']))
+
+def resolve_redirects(link_ids: list[int], redirect_map: dict) -> list[int]:
+    """Resolve redirect chains in link sequences."""
+    resolved = []
+    for link_id in link_ids:
+        current = link_id
+        seen = set()
+        
+        # Follow redirect chain (max 10 hops to prevent infinite loops)
+        while current in redirect_map and current not in seen and len(seen) < 10:
+            seen.add(current)
+            target = redirect_map[current]
+            if target is not None:
+                current = target
+            else:
+                break  # Broken redirect
+        
+        resolved.append(current)
+    
+    return resolved
+```
 
 # Apply resolution to link sequences
 def resolve_redirects(link_ids, redirect_map, page_lookup):
@@ -529,19 +579,18 @@ def resolve_redirects(link_ids, redirect_map, page_lookup):
 ### Disambiguation Research
 
 ```python
-# Load disambiguation pages
-disambig_pages = pages[pages['is_disambiguation']]
+import duckdb
 
-# Analyze patterns
-for _, page in disambig_pages.iterrows():
-    page_id = page['page_id']
-    title = page['page_title']
-    
-    # Get links from disambiguation page
-    link_seq = links[links['page_id'] == page_id]['link_sequence'].values[0]
-    link_ids = [int(x.split(':')[0]) for x in link_seq.split(',') if x]
-    
-    # These are the ambiguous targets
+# Load disambiguation pages and their links
+result = duckdb.sql("""
+    SELECT p.page_id, p.page_title, l.link_sequence
+    FROM 'data/wikipedia/processed/pages.parquet' p
+    JOIN 'data/wikipedia/processed/links.parquet' l ON p.page_id = l.page_id
+    WHERE p.is_disambiguation = true
+    LIMIT 100
+""").fetchall()
+
+for page_id, title, link_ids in result:
     print(f"'{title}' disambiguates to: {link_ids}")
 ```
 
@@ -549,31 +598,56 @@ for _, page in disambig_pages.iterrows():
 
 ## File Format Specifications
 
-### TSV Encoding Standards
+### Parquet Format Standards
 
-- **Character Encoding**: UTF-8 (no BOM)
-- **Delimiter**: Tab character (`\t`, 0x09)
-- **Line Terminator**: Unix LF (`\n`, 0x0A)
-- **Header Row**: First line contains column names
-- **Quoting**: Fields quoted only if they contain tabs, newlines, or quotes
-- **Escaping**: Quotes escaped as `""` (double-quote)
-- **Null Values**: Empty string for missing values
-- **Boolean Values**: Lowercase `true` / `false`
+- **Compression**: Snappy (default) or ZSTD for smaller files
+- **Row Group Size**: ~128MB (default)
+- **Data Types**: Use native Arrow types (int64, string, list, bool)
+- **Null Handling**: Native Parquet null support
+
+### DuckDB Integration
+
+All Parquet files can be queried directly with DuckDB without loading into memory:
+
+```python
+import duckdb
+
+# Query Parquet files directly
+result = duckdb.sql("""
+    SELECT page_title, link_count 
+    FROM 'data/wikipedia/processed/pages.parquet'
+    WHERE is_redirect = false AND link_count > 100
+    ORDER BY link_count DESC
+    LIMIT 10
+""")
+```
 
 ### Size Estimates
 
 Based on enwiki (English Wikipedia) as of December 2025:
 
-| File | Compressed | Uncompressed |
-|------|------------|--------------|
-| pages.tsv | ~80MB | ~500MB |
-| links_ordered.tsv | ~1.2GB | ~8GB |
-| links_unmatched.tsv | ~30MB | ~200MB |
-| redirects.tsv | ~15MB | ~80MB |
-| disambiguations.tsv | ~5MB | ~25MB |
-| **Total** | **~1.4GB** | **~9GB** |
+**Raw Downloads** (to `data/wikipedia/raw/`):
 
-Storage recommendation: Keep both compressed and uncompressed versions.
+| File | Compressed |
+|------|------------|
+| XML dump | ~22GB |
+| page.sql.gz | ~600MB |
+| redirect.sql.gz | ~50MB |
+| page_props.sql.gz | ~100MB |
+| **Total** | **~23GB** |
+
+**Processed Output** (to `data/wikipedia/processed/`):
+
+| File | Size (Parquet) |
+|------|----------------|
+| pages.parquet | ~100MB |
+| links.parquet | ~1.5GB |
+| redirects.parquet | ~30MB |
+| unmatched_links.parquet | ~50MB |
+| wikipedia.duckdb | ~2GB |
+| **Total** | **~3-4GB** |
+
+**Note**: Parquet compression is very effective for this data (repetitive integers, sorted).
 
 ---
 
@@ -607,29 +681,36 @@ For small updates (new pages added since last dump):
 ### Validation Checks
 
 ```python
-# 1. Link count consistency
-pages_df = pd.read_csv('metadata/pages.tsv', sep='\t')
-links_df = pd.read_csv('links/links_ordered.tsv', sep='\t')
+import duckdb
 
-for _, page in pages_df.iterrows():
-    declared_count = page['link_count']
-    link_seq = links_df[links_df['page_id'] == page['page_id']]['link_sequence'].values[0]
-    actual_count = len(link_seq.split(',')) if link_seq else 0
-    
-    assert declared_count == actual_count, f"Mismatch for page {page['page_id']}"
+# 1. Link count consistency
+result = duckdb.sql("""
+    SELECT p.page_id, p.link_count, len(l.link_sequence) as actual_count
+    FROM 'data/wikipedia/processed/pages.parquet' p
+    JOIN 'data/wikipedia/processed/links.parquet' l ON p.page_id = l.page_id
+    WHERE p.link_count != len(l.link_sequence)
+""").fetchall()
+assert len(result) == 0, f"Link count mismatches: {len(result)}"
 
 # 2. No self-loops in links
-for _, row in links_df.iterrows():
-    page_id = row['page_id']
-    link_ids = [int(x.split(':')[0]) for x in row['link_sequence'].split(',') if x]
-    assert page_id not in link_ids, f"Self-loop detected: {page_id}"
+result = duckdb.sql("""
+    SELECT page_id
+    FROM 'data/wikipedia/processed/links.parquet'
+    WHERE list_contains(link_sequence, page_id)
+""").fetchall()
+assert len(result) == 0, f"Self-loops detected: {len(result)}"
 
-# 3. All link targets exist
-all_page_ids = set(pages_df['page_id'])
-for _, row in links_df.iterrows():
-    link_ids = [int(x.split(':')[0]) for x in row['link_sequence'].split(',') if x]
-    for link_id in link_ids:
-        assert link_id in all_page_ids, f"Dangling link: {link_id}"
+# 3. All link targets exist (sample check)
+result = duckdb.sql("""
+    WITH all_targets AS (
+        SELECT DISTINCT unnest(link_sequence) as target_id
+        FROM 'data/wikipedia/processed/links.parquet'
+    )
+    SELECT target_id FROM all_targets
+    WHERE target_id NOT IN (SELECT page_id FROM 'data/wikipedia/processed/pages.parquet')
+    LIMIT 100
+""").fetchall()
+print(f"Dangling links (sample): {len(result)}")
 ```
 
 ### Match Rate Targets
@@ -658,7 +739,7 @@ Compare decompositions across monthly dumps to track Wikipedia growth.
 Identify long redirect chains, circular redirects, orphaned redirects.
 
 ### 6. Redlink Mining
-From `links_unmatched.tsv`, identify most-linked non-existent pages (future article candidates).
+From `unmatched_links.parquet`, identify most-linked non-existent pages (future article candidates).
 
 ---
 
@@ -686,16 +767,21 @@ From `links_unmatched.tsv`, identify most-linked non-existent pages (future arti
 
 ### Required Data Sources
 
-1. **Wikipedia XML Dump**: `enwiki-YYYYMMDD-pages-articles-multistream.xml.bz2`
-2. **XML Index File**: `enwiki-YYYYMMDD-pages-articles-multistream-index.txt.bz2`
-3. **Quarry Access**: https://quarry.wmcloud.org/ (free Wikimedia account required)
+All from https://dumps.wikimedia.org/enwiki/YYYYMMDD/:
+
+1. **Wikipedia XML Dump**: `enwiki-YYYYMMDD-pages-articles-multistream.xml.bz2` (~22GB)
+2. **Page SQL Dump**: `enwiki-YYYYMMDD-page.sql.gz` (~600MB)
+3. **Redirect SQL Dump**: `enwiki-YYYYMMDD-redirect.sql.gz` (~50MB)
+4. **Page Props SQL Dump**: `enwiki-YYYYMMDD-page_props.sql.gz` (~100MB)
+
+**No external account required** - all files publicly downloadable.
 
 ### Software Requirements
 
 - Python 3.10+
-- Libraries: `pandas`, `lxml`, `regex`
-- Disk Space: 50GB+ free (for extraction + output)
-- RAM: 16GB+ recommended
+- Libraries: `pyarrow`, `duckdb`, `lxml`, `regex`
+- Disk Space: 30GB+ free (raw downloads + processed output)
+- RAM: 8GB minimum, 16GB+ recommended
 
 ---
 
@@ -706,13 +792,13 @@ From `links_unmatched.tsv`, identify most-linked non-existent pages (future arti
 **Symptoms**: <90% links matched
 
 **Causes**:
-- Quarry page table out of sync with XML dump dates
+- SQL dumps from different date than XML dump
 - Template stripping too aggressive (removing valid links)
 - Case normalization failures
 
 **Solutions**:
-- Ensure Quarry query date ≤ XML dump date
-- Review `links_unmatched.tsv` for patterns
+- Ensure all dump files from **same date**
+- Review `unmatched_links.parquet` for patterns
 - Add logging to normalization function
 
 ### Issue: Memory Exhaustion
@@ -721,11 +807,11 @@ From `links_unmatched.tsv`, identify most-linked non-existent pages (future arti
 
 **Causes**:
 - Loading entire XML into memory
-- Accumulating links list without flushing
+- Accumulating data without flushing to Parquet
 
 **Solutions**:
-- Use streaming XML parser
-- Write outputs incrementally
+- Use streaming XML parser (iterparse)
+- Flush to Parquet in batches (every 100k pages)
 - Process in page_id chunks
 
 ### Issue: Missing Disambiguation Flags
@@ -756,7 +842,7 @@ This decomposition methodology is released under CC-BY-SA 4.0, compatible with W
 
 For issues with this decomposition schema, consult:
 - MediaWiki API Documentation: https://www.mediawiki.org/
-- Quarry Support: https://quarry.wmcloud.org/
+- Wikipedia Dumps: https://dumps.wikimedia.org/
 - Wikipedia Database Documentation: https://www.mediawiki.org/wiki/Manual:Database_layout
 
 ---

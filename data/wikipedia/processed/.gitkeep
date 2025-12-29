@@ -1,0 +1,8 @@
+# This directory contains processed Wikipedia data (Parquet, DuckDB)
+# Files are gitignored - see root .gitignore
+#
+# Expected files:
+# - pages.parquet          (~100MB)
+# - links.parquet          (~2GB)
+# - redirects.parquet      (~50MB)
+# - wikipedia.duckdb       (combined database)

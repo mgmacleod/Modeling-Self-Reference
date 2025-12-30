@@ -3,7 +3,7 @@
 **Document Type**: Meta-documentation  
 **Target Audience**: LLMs  
 **Purpose**: How LLMs should maintain project documentation, create new directories, and track progress  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Dependencies**: [documentation-standards.md](./documentation-standards.md), [../../meta-maintenance/implementation.md](../../meta-maintenance/implementation.md)  
 **Status**: Active
 
@@ -45,7 +45,14 @@ This project uses **cumulative, sparse documentation** that grows over time rath
 **Step 3: Load Tier 2 (Directory-Specific Context)**
 - Navigate to working directory
 - Read `implementation.md`, `data-sources.md`, etc. in that directory
-- No central registry needed - docs co-located with code
+- No central registry needed for directory-local docs - docs are co-located with code
+
+**Cross-cutting exception (contracts layer)**:
+- When work spans theory ↔ experiment ↔ evidence, use the contracts registry:
+   - `llm-facing-documentation/contracts/README.md`
+   - `llm-facing-documentation/contracts/contract-registry.md`
+
+This exists specifically to prevent “stealth edits” to canonical theory documents by recording linkages and status updates in a dedicated, additive layer.
 
 **Step 4: Load Tier 3 (If Debugging)**
 - Read granular debugging docs in subdirectories

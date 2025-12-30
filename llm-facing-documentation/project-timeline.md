@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history  
 **Target Audience**: LLMs  
 **Purpose**: Chronological record of project evolution, decisions, and discoveries  
-**Last Updated**: 2025-12-29  
+**Last Updated**: 2025-12-30  
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,36 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2025-12-30 - Contracts Layer for Theory↔Experiment↔Evidence + Empirical N-Link Analysis
+
+**Completed**:
+- Built N-link empirical analysis scripts (trace, sampling, preimages, basin mapping) and documented investigation streams under `n-link-analysis/empirical-investigations/`.
+- Introduced a dedicated contracts layer under `llm-facing-documentation/contracts/`:
+  - Contract registry binds canonical theory ↔ experiments ↔ evidence without rewriting theory.
+  - Added external artifact tracking (`EXT-*`) and a citation/integration contract for `sqsd.html` (Ryan Querin).
+- Updated onboarding + session protocols to reflect the contracts layer and empirical workflow bootstrap.
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Canonical theory docs are additive/append-only for routine evolution | Avoid stealth edits; preserve lineage |
+| Major theory rewrites use deprecation, not silent modification | Namespace hygiene + historical integrity |
+| Evidence/status updates live in contracts + investigation streams | Keeps theory stable while enabling fast empirics |
+
+**Discoveries**:
+- Under fixed-$N$ traversal, Wikipedia exhibits strong cycle dominance at $N=5$ with a heavy-tailed basin size distribution (documented in investigation stream).
+
+**Validation**:
+- Empirical workflows are reproducible via the documented scripts and investigation runbooks.
+
+**Architecture Impact**:
+- Documentation system now includes an explicit cross-cutting contract registry (exception to “no central registry” for directory-local discovery).
+
+**Next Steps**:
+- Run Phase 1 across multiple $N$ values and promote results into additional investigation docs + updated contract statuses.
+
+---
 
 ### Session: 2025-12-29 - N-Link Sequence Pipeline Complete
 

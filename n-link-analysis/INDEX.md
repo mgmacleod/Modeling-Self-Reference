@@ -41,3 +41,8 @@
 
 **First time here**: Load implementation.md  
 **Running analysis**: Use scripts under `scripts/` (to be implemented)
+
+**Empirical session bootstrap (minimal)**:
+1. Verify inputs exist: `data/wikipedia/processed/nlink_sequences.parquet` (and optionally `pages.parquet`).
+2. Run a small sanity sample (example): `python n-link-analysis/scripts/sample-nlink-traces.py --n 5 --samples 100`.
+3. Record results in the relevant investigation doc under `empirical-investigations/` and update the contracts registry if the result changes evidence status.

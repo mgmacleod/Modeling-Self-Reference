@@ -4,7 +4,7 @@
 **Target Audience**: LLMs (executing setup)  
 **Purpose**: Get project environment running from fresh clone  
 **Usage**: Run once after cloning repository, never again  
-**Last Updated**: 2025-12-15
+**Last Updated**: 2025-12-30
 
 ---
 
@@ -75,9 +75,13 @@ pip install -r requirements.txt
 **Expected result**: All packages from requirements.txt installed
 
 **Current dependencies** (as of 2025-12-15):
-- mwparserfromhell
-- mwxml
-- requests
+**Current dependencies**: See `requirements.txt` (source of truth).
+
+Key packages used by the empirical Wikipedia N-link analysis include:
+- duckdb
+- pyarrow
+- numpy
+- pandas
 
 ---
 

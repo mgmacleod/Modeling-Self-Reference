@@ -3,7 +3,7 @@
 **Document Type**: TODO List  
 **Target Audience**: LLMs + Developers  
 **Purpose**: Track planned improvements to the documentation system  
-**Last Updated**: 2025-12-12  
+**Last Updated**: 2025-12-30  
 **Dependencies**: [project-management-practices.md](../llm-facing-documentation/llm-project-management-instructions/project-management-practices.md)  
 **Status**: Active
 
@@ -49,6 +49,14 @@
 ---
 
 ## Medium Priority
+
+### Contract Registry Validation
+- [ ] Extend (or integrate with) `doc-check` to validate `llm-facing-documentation/contracts/contract-registry.md`:
+  - links resolve
+  - status values are from the allowed vocabulary
+  - `EXT-*` entries include attribution + permission/license status
+
+**Rationale**: Contracts are now a cross-cutting index; lightweight validation prevents silent drift.
 
 ### Documentation Health Dashboard
 - [ ] Script to generate metrics:

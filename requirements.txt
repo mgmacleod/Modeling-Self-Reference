@@ -2,6 +2,10 @@
 pandas>=2.0.0
 numpy>=1.24.0
 
+# Columnar / analytical engine
+duckdb>=0.10.0
+pyarrow>=14.0.0
+
 # XML parsing
 lxml>=4.9.0
 

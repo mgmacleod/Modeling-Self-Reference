@@ -13,11 +13,16 @@ This project applies **formal graph theory to self-referential systems** (Wikipe
 2. [project-timeline.md](project-timeline.md) - Read latest 3-5 entries for current state
 3. [llm-project-management-instructions/documentation-standards.md](llm-project-management-instructions/documentation-standards.md) - How to write documentation
 4. [llm-project-management-instructions/project-management-practices.md](llm-project-management-instructions/project-management-practices.md) - How to maintain the project
+5. [contracts/README.md](contracts/README.md) - Theory ↔ experiment ↔ evidence contracts (prevents stealth edits)
 
 **Step 2 - Load working context** (Tier 2, ~10-20k tokens):
 - **If working on theory**: Load [theories-proofs-conjectures/INDEX.md](theories-proofs-conjectures/INDEX.md), then specific theory docs as needed
 - **If working on implementation**: Navigate to working directory, read `implementation.md`, `data-sources.md`, etc.
+- **If linking theory ↔ empirics**: Use [contracts/contract-registry.md](contracts/contract-registry.md) as the authoritative index of theory–experiment–evidence linkages
+- **If resuming empirical work**: Load [../n-link-analysis/INDEX.md](../n-link-analysis/INDEX.md) and the relevant investigation doc(s) under `n-link-analysis/empirical-investigations/`
 - These are co-located with code - no central registry needed
+
+**Note**: The contracts registry is an intentional exception: it is a cross-cutting index used to bind theory, experiments, and evidence without rewriting canonical theory documents.
 
 **Step 3 - Deep dive if needed** (Tier 3, no token limit):
 - Read granular debugging documentation only when troubleshooting specific issues
@@ -41,5 +46,5 @@ This project uses **cumulative, sparse documentation** that grows over time rath
 
 ---
 
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Status**: Active development

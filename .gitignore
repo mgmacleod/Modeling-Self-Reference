@@ -90,3 +90,32 @@ temp/
 output/
 results/
 cache/
+
+# ---------------------------------------------------------------------------
+# Analysis artifacts (generated)
+#
+# Rationale: These files are derived outputs (often large) and should not end
+# up in Git, even if they get moved out of data/ into some other folder.
+# ---------------------------------------------------------------------------
+
+# DuckDB artifacts (these are almost always generated)
+*.duckdb
+*.duckdb.wal
+*.duckdb.tmp
+
+# Analysis output directories (generated)
+analysis/
+analysis-artifacts/
+**/processed/analysis/**
+data/**/analysis/**
+
+# Common analysis outputs (targeted to analysis output dirs)
+analysis/**/*.tsv
+analysis/**/*.csv
+analysis/**/*.feather
+analysis-artifacts/**/*.tsv
+analysis-artifacts/**/*.csv
+analysis-artifacts/**/*.feather
+**/processed/analysis/**/*.tsv
+**/processed/analysis/**/*.csv
+**/processed/analysis/**/*.feather

@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history  
 **Target Audience**: LLMs  
 **Purpose**: Chronological record of project evolution, decisions, and discoveries  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,69 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2025-12-30 - Contracts Layer for Theory↔Experiment↔Evidence + Empirical N-Link Analysis
+
+**Completed**:
+- Built N-link empirical analysis scripts (trace, sampling, preimages, basin mapping) and documented investigation streams under `n-link-analysis/empirical-investigations/`.
+- Introduced a dedicated contracts layer under `llm-facing-documentation/contracts/`:
+  - Contract registry binds canonical theory ↔ experiments ↔ evidence without rewriting theory.
+  - Added external artifact tracking (`EXT-*`) and a citation/integration contract for `sqsd.html` (Ryan Querin).
+- Updated onboarding + session protocols to reflect the contracts layer and empirical workflow bootstrap.
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Canonical theory docs are additive/append-only for routine evolution | Avoid stealth edits; preserve lineage |
+| Major theory rewrites use deprecation, not silent modification | Namespace hygiene + historical integrity |
+| Evidence/status updates live in contracts + investigation streams | Keeps theory stable while enabling fast empirics |
+
+**Discoveries**:
+- Under fixed-$N$ traversal, Wikipedia exhibits strong cycle dominance at $N=5$ with a heavy-tailed basin size distribution (documented in investigation stream).
+
+**Validation**:
+- Empirical workflows are reproducible via the documented scripts and investigation runbooks.
+
+**Architecture Impact**:
+- Documentation system now includes an explicit cross-cutting contract registry (exception to “no central registry” for directory-local discovery).
+
+**Next Steps**:
+- Run Phase 1 across multiple $N$ values and promote results into additional investigation docs + updated contract statuses.
+
+---
+
+### Session: 2025-12-29 - N-Link Sequence Pipeline Complete
+
+**Completed**:
+- Prose-only link extraction (`parse-xml-prose-links.py`)
+  - Strips templates, tables, refs, comments from wikitext
+  - Output: `links_prose.parquet` (214.2M prose links with position, 1.67 GB)
+  - Processing: 53 minutes over 69 XML files
+
+- N-Link sequence builder (`build-nlink-sequences-v3.py`)
+  - Vectorized Pandas approach (1000x faster than iterrows, DuckDB-compatible)
+  - Resolves titles → page IDs while preserving order
+  - Output: `nlink_sequences.parquet` (17.97M pages, 206.3M ordered links, 686 MB)
+  - Processing: ~5 minutes for full resolution + sort + groupby
+
+- Deprecated slower/failed implementations
+  - Moved to `scripts/deprecated/` with explanations
+  - `build-nlink-sequences.py`: DuckDB OOM on list() aggregation
+  - `build-nlink-sequences-v2.py`: Too slow with Pandas iterrows()
+
+- Updated documentation with Quick Start
+  - INDEX.md: Added run order, output summary, script categorization
+  - implementation-guide.md: Added prerequisites, step-by-step execution, file specs
+
+**Impact**:
+- **Data pipeline complete**: All extraction work finished. Future sessions do analysis only (reads parquet)
+- **N-Link ready**: Can now compute f_N(page_id) = link_sequence[N-1] for basin partition experiments
+- **Pattern documented**: Vectorized approach + streaming for large datasets
+
+**Key Discovery**:
+- Vectorized Pandas on 200M+ rows beats row-by-row iteration and DuckDB aggregation by orders of magnitude
+
+---
 
 ### Session: 2025-12-15 (Evening) - Tier System Clarification & INDEX Standardization
 

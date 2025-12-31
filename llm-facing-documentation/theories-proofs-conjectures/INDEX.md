@@ -1,7 +1,7 @@
 # Theory Documents Index
 
 **Purpose**: Mathematical foundations for self-referential graph analysis  
-**Last Updated**: 2025-12-15
+**Last Updated**: 2025-12-30
 
 ---
 
@@ -14,6 +14,14 @@
 | [database-inference-graph-theory.md](database-inference-graph-theory.md) | Extension to typed graphs and multi-rule tunneling | ~10k |
 
 **Total**: ~25k tokens (formalized = lightweight)
+
+---
+
+## External / Non-canonical Artifacts
+
+These are reference artifacts and must not be treated as canonical theory.
+
+- [sqsd.html](sqsd.html) — **Author**: Ryan Querin. External artifact explicitly based on project work; integrate only via explicit contract entries in [llm-facing-documentation/contracts/contract-registry.md](../contracts/contract-registry.md).
 
 ---
 

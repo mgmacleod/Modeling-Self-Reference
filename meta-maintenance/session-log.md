@@ -3,7 +3,7 @@
 **Document Type**: Cumulative (Append-Only)  
 **Target Audience**: LLMs + Developers  
 **Purpose**: Track evolution of the documentation system itself  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Dependencies**: [documentation-standards.md](../llm-facing-documentation/llm-project-management-instructions/documentation-standards.md), [project-management-practices.md](../llm-facing-documentation/llm-project-management-instructions/project-management-practices.md)  
 **Status**: Active
 
@@ -14,6 +14,38 @@
 This log documents the design, refinement, and evolution of the self-referential documentation system. It follows the same cumulative append-only pattern it describes.
 
 **Meta-note**: This file is an example of the system eating its own dog food - the documentation system documents itself using its own patterns.
+
+---
+
+## 2025-12-30 - Introduced Contract Registry Layer (Theory ↔ Experiment ↔ Evidence)
+
+### Context
+Empirical work accelerated and created a new failure mode: “stealth edits” to canonical theory (unintended rewrites, implicit status updates, and untracked evidence linkages). We also needed explicit attribution tracking for external artifacts (e.g., `sqsd.html`).
+
+### Work Completed
+
+**1. Added a cross-cutting contracts layer**:
+- Created `llm-facing-documentation/contracts/` with a registry + template.
+- Established contract IDs for theory–experiment–evidence bindings and `EXT-*` entries for external artifacts.
+
+**2. Updated Tier 1 bootstrap and session protocols**:
+- Bootstrap docs now instruct new sessions to load the contracts README/registry when linking theory ↔ empirics.
+- End-of-session protocol includes a “contracts check” when evidence/investigations are produced.
+
+**3. Refined the “no central registry” rule**:
+- Clarified scope: no central registry for *directory-local* context discovery.
+- Exception: a dedicated, cross-cutting contracts registry exists specifically to bind theory, experiments, and evidence.
+
+### Key Decisions
+
+| Decision | Rationale | Impact |
+|----------|-----------|--------|
+| Canonical theory is append-only for routine evolution | Avoid stealth edits and preserve lineage | Evidence/status moves into contracts layer |
+| Major rewrites require deprecation, not silent edits | Preserve history + prevent accidental context pollution | Establishes stable evolution semantics |
+| External artifacts are integrated only via contracts | Attribution and permission/licensing must be explicit | Prevents accidental uncredited incorporation |
+
+### Next Steps
+- Consider lightweight tooling to validate contract entries (links resolve, status vocabulary consistent).
 
 ---
 

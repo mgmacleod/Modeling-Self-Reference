@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Structural Query Semantics as a Deterministic Space</title>
+
+<!-- Author -->
+<meta name="author" content="Ryan Querin">
+
+<!-- MathJax for LaTeX Rendering -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<style>
+  body {
+    font-family: Georgia, serif;
+    max-width: 950px;
+    margin: 40px auto;
+    line-height: 1.6;
+    padding: 0 20px;
+  }
+  code, pre {
+    background: #f6f8fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-top: 32px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  .theorem-box, .assumption-box {
+    background:#eef3ff;
+    padding:12px 14px;
+    border-radius:7px;
+    border:1px solid #ccd2ff;
+    margin:16px 0;
+  }
+  .small-note {
+    font-size: 13px;
+    color:#666;
+  }
+  hr {
+    margin:28px 0;
+  }
+  .author {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 30px;
+  }
+</style>
+
+</head>
+
+<body>
+
+<h1>Structural Query Semantics as a Deterministic Space</h1>
+<div class="author">Ryan Querin</div>
+
+<p>
+This document presents the formal framework for Structural Query Semantics (SQS),
+including canonical query spaces, a determinism theorem for natural language
+resolution, and a schema synthesis theorem that constructs a minimal schema
+from a finite set of canonical queries. We explicitly state assumptions and
+scope limitations under which the results hold, and we refine several structural
+aspects (disambiguation, realizability, simplification, and minimality) to
+obtain unconditional robustness. We then extend the framework with a canonical
+interaction layer and an interface grammar that support multi-turn dialogue and
+stateful navigation of the question space without sacrificing determinism or
+reversibility.
+</p>
+
+<hr>
+
+<h2>1. Structural Query Semantics Framework</h2>
+
+<h3>1.1 Schemas and the FK-Path Category</h3>
+
+<p>
+Let \( \mathbf{Sch} \) denote the category of relational schemas.
+An object \( R \in \mathbf{Sch} \) is a tuple
+</p>
+
+\[
+  R = (T, A, \mathrm{PK}, \mathrm{FK}, \dots)
+\]
+
+<p>where:</p>
+
+<ul>
+<li>\(T\) is a finite set of tables,</li>
+<li>\(A\) is a set of attributes distributed across tables,</li>
+<li>\(\mathrm{PK}\) assigns a primary key to each table,</li>
+<li>\(\mathrm{FK}\) is the set of foreign keys.</li>
+</ul>
+
+<p>
+A <em>schema morphism</em> \( h : R \to R' \) is a structure-preserving mapping of tables,
+attributes, primary keys, and foreign keys.
+</p>
+
+<p>
+For each schema \(R\), define the <em>foreign-key path category</em> \( C_R \):
+</p>
+
+<ul>
+<li>Objects: tables \( t \in T \).</li>
+<li>Morphisms: all finite compositions of foreign keys and their inverses,
+reduced to a fixed canonical normal form.</li>
+<li>Identities: empty paths at each table.</li>
+</ul>
+
+<p>
+This category captures all canonical navigation paths between entities, including
+isolated tables as components of size \(1\) (with only identity morphisms).
+</p>
+
+<hr>
+
+<h3>1.2 Canonical Query Space</h3>
+
+<p>
+Fix, for each schema \(R\), a relational query fragment \( \mathcal{Q}_R \) (e.g. full SQL)
+together with a <em>terminating, confluent</em> term rewriting system \( T_R \) on
+\(\mathcal{Q}_R\). The rewriting system \(T_R\) reduces any query to a unique
+normal form.
+</p>
+
+<p>
+A <em>canonical query</em> over \(R\) is represented as a tuple:
+</p>
+
+\[
+  q = (T_0, P, \varphi, \pi, \kappa)
+\]
+
+<ul>
+<li>\(T_0 \in T\): base table,</li>
+<li>\(P\): finite sequence of canonical FK-paths in \(C_R\) beginning at \(T_0\),</li>
+<li>\(\varphi\): filter formula in a canonical logical normal form (induced by \(T_R\)),</li>
+<li>\(\pi\): canonically ordered list of projected attributes,</li>
+<li>\(\kappa\): answer mode (e.g. list, count, exists, aggregate).</li>
+</ul>
+
+<p>
+Define the canonicalization function:
+</p>
+
+\[
+  \mathrm{canon}_R : \mathcal{Q}_R \to Q_{\mathrm{canon}}(R)
+\]
+
+<p>and the canonical query space:</p>
+
+\[
+  Q_{\mathrm{canon}}(R) := \mathrm{Im}(\mathrm{canon}_R).
+\]
+
+<p>
+By termination and confluence of \(T_R\), each well-typed query in \(\mathcal{Q}_R\)
+has a unique normal form, and thus \(Q_{\mathrm{canon}}(R)\) is well-defined.
+</p>
+
+<p>
+We view the canonical query space as a category \( \mathbf{SQS}(R) \):
+</p>
+
+<ul>
+<li>Objects: canonical queries \( q \in Q_{\mathrm{canon}}(R) \).</li>
+<li>Morphisms: <em>refinement arrows</em> \( q \to q' \) corresponding to operations
+such as adding filters or projections, provided typings are preserved.</li>
+</ul>
+
+<hr>
+
+<h3>1.3 SQS as a Functor</h3>
+
+<p>
+Define the functor
+</p>
+
+\[
+  \mathrm{SQS} : \mathbf{Sch} \to \mathbf{Cat}
+\]
+
+<p>by:</p>
+
+<ul>
+<li>\(\mathrm{SQS}(R) = \mathbf{SQS}(R)\),</li>
+<li>for a schema morphism \( h : R \to R' \), let
+\[
+  \mathrm{SQS}(h)(q) := \mathrm{canon}_{R'}(h(q)),
+\]
+where \(h(q)\) is the query obtained by transporting \(q\)'s tables/attributes
+along \(h\), followed by re-canonicalization.</li>
+</ul>
+
+<p>
+This endows the structural query semantics with a schema-parametric, functorial
+structure.
+</p>
+
+<hr>
+
+<h3>1.4 Metadata, Encoding, and Surface Language</h3>
+
+<p>
+For each schema \(R\), let \( E_R \) be the set of schema elements (tables,
+attributes, foreign keys, etc.). Define an injective <em>metadata map</em>:
+</p>
+
+\[
+ M_R : E_R \to S
+\]
+
+<p>
+assigning a unique identifier to each schema element.
+</p>
+
+<p>
+Define an injective <em>encoding</em>:
+</p>
+
+\[
+ \mathrm{enc}_R : Q_{\mathrm{canon}}(R) \to C_R
+\]
+
+<p>
+into some code space \(C_R\) (e.g. canonical JSON, a canonical grammar string),
+with:
+</p>
+
+\[
+ q_1 \neq q_2 \implies \mathrm{enc}_R(q_1) \neq \mathrm{enc}_R(q_2).
+\]
+
+<p>
+Let \( L_{\mathrm{valid}}(R) \subseteq V^* \) be the set of surface expressions
+(phrases, strings) that the system accepts for schema \(R\). We assume an
+unambiguous grammar \( G_R \) for \( L_{\mathrm{valid}}(R) \), such that each
+\( w \in L_{\mathrm{valid}}(R) \) has at most one parse tree.
+</p>
+
+<p>
+For schema elements \(e \in E_R\) and constants \(c\), we define synonym sets:
+</p>
+
+\[
+  \mathrm{Syn}_{\text{schema}}(e) \subseteq V^*, \quad
+  \mathrm{Syn}_{\text{value}}(c) \subseteq V^*.
+\]
+
+<p>
+Unlike earlier formulations that demanded pairwise disjointness of synonym sets,
+we now allow overlaps in these sets: the same surface phrase may appear as a
+candidate synonym for multiple schema elements or constants. Resolution of such
+ambiguities is delegated to a deterministic disambiguation function.
+</p>
+
+<p>
+Specifically, we assume a total <em>disambiguation function</em>
+</p>
+
+\[
+  \mathrm{Disambig}_R : \mathcal{C}_R \to E_R \cup \mathrm{Const}_R \cup \{\bot\},
+\]
+
+<p>
+where \(\mathcal{C}_R\) is the set of candidate surface mentions (tokens or
+phrases) that can denote schema elements or constants, and \(\bot\) is a special
+symbol meaning “unresolvable”. The function \(\mathrm{Disambig}_R\) is
+schema-parametric and deterministic: for any mention and its local context in
+\(R\), its output is uniquely determined by fixed, pre-defined tie-breaking
+rules (e.g. statistics, domain priorities). We require that for every
+\(w \in L_{\mathrm{valid}}(R)\), all mentions relevant to query construction
+resolve to a value distinct from \(\bot\).
+</p>
+
+<p>
+The <em>extraction function</em>:
+</p>
+
+\[
+  \mathrm{extract}_R : L_{\mathrm{valid}}(R) \to Q_{\mathrm{canon}}(R)
+\]
+
+<p>
+is defined by:
+</p>
+
+<ol>
+<li>Parsing \(w\) under \(G_R\) to obtain a unique parse tree \(\tau\),</li>
+<li>Resolving schema and constant mentions in \(\tau\) via
+\(\mathrm{Disambig}_R\), which may internally consult synonym sets and
+metadata \(M_R\), subject to the requirement that no mention yields \(\bot\),</li>
+<li>Building a query \(Q \in \mathcal{Q}_R\) from \(\tau\) and then applying
+\(\mathrm{canon}_R\) to produce \(\mathrm{canon}_R(Q)\).</li>
+</ol>
+
+<hr>
+
+<h2>2. Determinism Theorem</h2>
+
+<div class="theorem-box">
+<b>Theorem 2.1 (SQS Determinism).</b><br>
+Let \(R\) be a schema satisfying the conditions above. Then:
+<ol>
+<li>The extraction map \(\mathrm{extract}_R : L_{\mathrm{valid}}(R) \to Q_{\mathrm{canon}}(R)\) is a well-defined function: each \(w \in L_{\mathrm{valid}}(R)\) yields a unique canonical query.</li>
+
+<li>The encoding \(\mathrm{enc}_R : Q_{\mathrm{canon}}(R) \to C_R\) is injective, so each canonical query has a unique code representation.</li>
+</ol>
+
+In particular, on \(L_{\mathrm{valid}}(R)\) the system has <em>deterministic semantics</em>:
+every accepted surface utterance denotes exactly one canonical query and one code.
+</div>
+
+<hr>
+
+<h2>3. Schema Synthesis from Canonical Queries</h2>
+
+<p>
+Let \( Q^* = \{q_1, \dots, q_n\} \) be a finite set of canonical queries, not
+assumed to originate from any particular schema. Each
+</p>
+
+\[
+  q_i = (T_0^{(i)}, P^{(i)}, \varphi^{(i)}, \pi^{(i)}, \kappa^{(i)})
+\]
+
+<p>
+is a canonical query shape over an abstract vocabulary (base roles, paths,
+filters, projections, modes).
+</p>
+
+<p><b>Definition 3.1 (Joint Realizability Check).</b><br>
+We define a predicate
+\[
+  \mathrm{Check\_real}(Q^*)
+\]
+that holds if and only if the following structural conditions are satisfied:
+</p>
+
+<ul>
+  <li><em>No base-role clash.</em>  
+      No canonical query in \(Q^*\) requires the same abstract base role to
+      behave as two incompatible entity types in any realization.</li>
+  <li><em>No path inconsistency.</em>  
+      For any pair of paths that are required to compose in the canonical
+      queries, the induced abstract navigation graph is well-typed and free of
+      contradictions (e.g. requiring a path to simultaneously land in
+      incompatible entity roles).</li>
+  <li><em>No attribute conflict.</em>  
+      An attribute symbol is never required by \(Q^*\) to belong to two distinct
+      entity roles or to have incompatible types in a single realization.</li>
+</ul>
+
+<p>
+We refer to these as the <em>absence of structural contradictions</em> in \(Q^*\).
+</p>
+
+<p><b>Lemma 3.1.1 (Abstract Schema Constructability).</b><br>
+Let \(Q^*\) be a finite set of canonical queries. If
+\(\mathrm{Check\_real}(Q^*)\) holds (i.e. there are no structural contradictions),
+then there exists at least one relational schema \(R\) in which all
+\(q_i \in Q^*\) are jointly realizable as canonical queries.
+</p>
+
+<p><em>Sketch of proof.</em><br>
+From \(Q^*\), construct an <em>abstract schema graph</em> whose nodes are abstract
+entity roles induced by base roles and path endpoints, and whose edges represent
+abstract relationships induced by canonical paths. Attach attributes to entities
+according to their usage in projections and filters. The structural conditions in
+\(\mathrm{Check\_real}(Q^*)\) guarantee that:
+</p>
+
+<ul>
+  <li>the abstract schema graph is well-typed and free of incompatible role
+      identifications;</li>
+  <li>attributes can be consistently assigned without conflict; and</li>
+  <li>primary and foreign keys can be introduced to realize each path without
+      violating typing.</li>
+</ul>
+
+<p>
+Folding this abstract graph into a relational schema \(R\) by assigning a table
+to each abstract entity and keys/foreign keys to each relationship yields a
+schema in which every \(q_i\) is representable, and thus jointly realizable.
+\(\square\)
+</p>
+
+<h3>3.1 Synthesis Procedure \(\mathsf{Synth}(Q^*)\)</h3>
+
+<p>
+We define \(\mathsf{Synth}(Q^*)\) as a constructive procedure that produces a
+schema \(R^*\) as follows:
+</p>
+
+<ol>
+<li><b>Entity creation from base roles.</b><br>
+For each \(q_i\), introduce a candidate entity corresponding to its base role
+\(T_0^{(i)}\). Entities whose base roles share the same metadata identifier
+are merged into a single entity.</li>
+
+<li><b>Attribute assignment.</b><br>
+Scan each \(q_i\) and collect attributes mentioned in \(\pi^{(i)}\),
+\(\varphi^{(i)}\), and relevant group/aggregate constructs. Assign each attribute
+to the entity determined by the canonical query structure. Attributes are
+deduplicated per entity.</li>
+
+<li><b>Relationship inference from paths.</b><br>
+For each path in \(P^{(i)}\), add candidate relationships between the entities
+appearing at successive steps in the path. Multiple paths can induce parallel
+candidate relationships between the same pair of entities.</li>
+
+<li><b>Primary key inference.</b><br>
+For each entity, if a natural identifier is present in the metadata, declare it
+as the primary key; otherwise, introduce a synthetic primary key attribute. For
+each relationship, introduce appropriate foreign key attributes referencing
+target entity primary keys.</li>
+
+<li><b>Initial realizability.</b><br>
+The resulting schema realizes all queries in \(Q^*\), since each query’s base
+role, paths, attributes, and conditions are explicitly represented.</li>
+
+<li><b>Shrink phase.</b><br>
+Starting from this initial schema, repeatedly apply the following
+<em>simplification operations</em>:
+  <ul>
+  <li>Remove any relationship that is never used by any \(q_i\) to realize
+      its required paths.</li>
+  <li>Merge parallel relationships between the same entities when they do not
+      distinguish the realizability of any \(q_i\).</li>
+  <li>Merge entities only when their metadata identifiers coincide and this
+      merge does not break realizability of any \(q_i\).</li>
+  </ul>
+A candidate simplification is accepted only if, after the modification, every
+\(q_i\) remains realizable as a canonical query. We measure schema size using
+the well-founded lexicographic order on pairs
+\[
+  \mathrm{size}(R) := (\#\mathrm{rel}(R), \#\mathrm{ent}(R)),
+\]
+where \(\#\mathrm{rel}(R)\) is the number of relationships and
+\(\#\mathrm{ent}(R)\) the number of entities. Each accepted simplification is
+required to strictly decrease \(\mathrm{size}(R)\) in this lexicographic order.
+The shrink phase continues, in any order of applicable simplifications,
+until no such simplification is accepted (a fixed point is reached).</li>
+</ol>
+
+<p>
+Let \(R^*\) denote the final schema produced by \(\mathsf{Synth}(Q^*)\).
+</p>
+
+<div class="theorem-box">
+<b>Theorem 3.1 (Schema Synthesis: Correctness, Minimality, Determinism up to Isomorphism).</b><br>
+Let \(Q^* = \{q_1, \dots, q_n\}\) be a finite set of canonical queries such that
+\(\mathrm{Check\_real}(Q^*)\) holds. Then the synthesis procedure
+\(\mathsf{Synth}(Q^*)\) produces a schema \(R^*\) such that:
+<ol>
+<li><b>(Realizability)</b>  
+Every \(q_i \in Q^*\) is realizable as a canonical query in
+\(Q_{\mathrm{canon}}(R^*)\).</li>
+
+<li><b>(Minimality)</b>  
+No allowed simplification (entity merge under metadata equality, relationship
+removal, or relationship merge) can be applied to \(R^*\) without making some
+\(q_i\) unrealizable. Equivalently, \(R^*\) is a fixed point of the allowed
+simplifications that is minimal with respect to the lexicographic size
+\(\mathrm{size}(R) = (\#\mathrm{rel}(R), \#\mathrm{ent}(R))\).</li>
+
+<li><b>(Determinism up to Isomorphism)</b>  
+\(\mathsf{Synth}(Q^*)\) is deterministic up to schema isomorphism: for a fixed
+\(Q^*\), any two runs of the procedure (possibly applying simplifications in
+different orders) produce schemas \(R^*_1\) and \(R^*_2\) such that
+\(R^*_1 \cong R^*_2\). Moreover, each \(R^*_j\) is a fixed point under the
+allowed simplifications.</li>
+</ol>
+</div>
+
+<hr>
+
+<h2>4. Assumptions and Scope</h2>
+
+<div class="assumption-box">
+<b>Assumption A1 (Rewriting System).</b><br>
+For each schema \(R\), there exists a rewriting system \(T_R\) on the query
+fragment \(\mathcal{Q}_R\) that is terminating and confluent. Consequently,
+every query has a unique normal form, and canonical queries are well-defined.
+</div>
+
+<div class="assumption-box">
+<b>Assumption A2 (Grammar Design).</b><br>
+For each schema \(R\), the accepted surface language \(L_{\mathrm{valid}}(R)\)
+is defined together with a grammar \(G_R\) that is unambiguous. Only expressions
+in \(L_{\mathrm{valid}}(R)\) are in scope of the determinism theorem; arbitrary
+free-form natural language outside \(L_{\mathrm{valid}}(R)\) need not be
+handled or uniquely parsed.
+</div>
+
+<div class="assumption-box">
+<b>Assumption A3 (Deterministic Disambiguation).</b><br>
+For each schema \(R\), there exists a total, deterministic disambiguation
+function
+\[
+  \mathrm{Disambig}_R : \mathcal{C}_R \to E_R \cup \mathrm{Const}_R \cup \{\bot\}
+\]
+on candidate surface mentions, as described in §1.4. For utterances
+\(w \in L_{\mathrm{valid}}(R)\), all schema-relevant mentions are required to
+resolve to a value distinct from \(\bot\). This replaces any structural
+disjointness requirement on synonym sets with a constructive, deterministic
+mechanism for resolving overlaps.
+</div>
+
+<div class="assumption-box">
+<b>Assumption A4 (Effectivity of Joint Realizability Check).</b><br>
+For any finite set \(Q^*\) of canonical queries, the predicate
+\(\mathrm{Check\_real}(Q^*)\) from Definition 3.1 is effectively computable
+by analyzing the structural constraints induced by \(Q^*\) (base roles, paths,
+and attribute typings). In particular, when \(\mathrm{Check\_real}(Q^*)\) holds,
+Lemma 3.1.1 guarantees the existence of at least one schema realizing \(Q^*\).
+</div>
+
+<div class="assumption-box">
+<b>Assumption A5 (Algebraic Simplification System).</b><br>
+The family of allowed simplification operations in the shrink phase of
+\(\mathsf{Synth}(Q^*)\) induces a rewrite relation
+\(\to_{\mathrm{simp}}\) on schemas that:
+<ul>
+  <li>is <em>terminating</em> with respect to the lexicographic size
+      \(\mathrm{size}(R) = (\#\mathrm{rel}(R), \#\mathrm{ent}(R))\), and</li>
+  <li>is <em>confluent up to schema isomorphism</em>: any two finite maximal
+      simplification sequences starting from the same initial schema yield
+      terminal schemas \(R^*_1, R^*_2\) with \(R^*_1 \cong R^*_2\).</li>
+</ul>
+In particular, in each equivalence class of schemas realizing a fixed \(Q^*\),
+there is a unique (up to isomorphism) minimal fixed point under the allowed
+simplifications. This replaces any dependence on a fixed, arbitrary ordering
+of simplifications.
+</div>
+
+<div class="assumption-box">
+<b>Scope S1 (Single-turn Semantics).</b><br>
+The determinism theorem concerns single-turn mapping from surface expressions
+in \(L_{\mathrm{valid}}(R)\) to canonical queries. Multi-turn dialogue
+phenomena such as context, anaphora, or ellipsis require an additional stateful
+layer and are outside the scope of the present <em>base</em> formalization.
+Section 6 introduces such a stateful interaction layer and proves that it
+preserves determinism and reversibility when built on top of SQS.
+</div>
+
+<div class="assumption-box">
+<b>Scope S2 (Query Fragment).</b><br>
+The query fragment \(\mathcal{Q}_R\) may contain joins, selections, projections,
+aggregates, subqueries, and window functions, provided they are covered by
+\(T_R\) and can be reduced to the canonical tuple form. We do not attempt to
+characterize the expressive completeness of \(\mathcal{Q}_R\) relative to any
+specific DBMS; we only require that the fragment and rewriting system are
+well-defined and schema-parametric.
+</div>
+
+<div class="assumption-box">
+<b>Scope S3 (Global Minimality and Uniqueness).</b><br>
+The schema \(R^*\) produced by \(\mathsf{Synth}(Q^*)\) is minimal <em>with respect
+to the allowed simplifications</em> in the shrink phase and the lexicographic
+size measure, not necessarily minimal in a global sense among all schemas
+realizing \(Q^*\). Likewise, we do not claim that \(R^*\) is unique up to
+isomorphism among all such minimal schemas outside the rewrite system
+generated by the allowed simplifications. Within that system, Assumption A5
+ensures uniqueness up to isomorphism.
+</div>
+
+<p class="small-note">
+These assumptions and scope boundaries clarify that the theorems are conditional
+on specific design choices (rewriting system, grammar, disambiguation function,
+and simplification operations). Within these conditions, the structural query
+space and synthesis behavior are fully deterministic (up to isomorphism on the
+schema side).
+</p>
+
+<hr>
+
+<h2>5. Proofs</h2>
+
+<h3>5.1 Proof of SQS Determinism</h3>
+
+<div class="theorem-box">
+<b>Theorem 2.1 (restated).</b><br>
+Let \(R\) be a schema with:
+<ul>
+<li>a canonical query space \(Q_{\mathrm{canon}}(R)\) induced by a terminating, confluent rewriting system \(T_R\),</li>
+<li>injective metadata \(M_R : E_R \to S\) on schema elements,</li>
+<li>injective encoding \(\mathrm{enc}_R : Q_{\mathrm{canon}}(R) \to C_R\),</li>
+<li>a surface language \(L_{\mathrm{valid}}(R)\) and an unambiguous grammar \(G_R\),</li>
+<li>a deterministic disambiguation function
+    \(\mathrm{Disambig}_R : \mathcal{C}_R \to E_R \cup \mathrm{Const}_R \cup \{\bot\}\)
+    such that no mention relevant to query construction yields \(\bot\) on
+    \(L_{\mathrm{valid}}(R)\),</li>
+<li>and an extraction procedure \(\mathrm{extract}_R\) defined by parsing under \(G_R\),
+    resolving mentions via \(\mathrm{Disambig}_R\), and normalizing via \(T_R\).</li>
+</ul>
+Then:
+<ol>
+<li>\(\mathrm{extract}_R : L_{\mathrm{valid}}(R) \to Q_{\mathrm{canon}}(R)\) is a well-defined function.</li>
+<li>\(\mathrm{enc}_R\) is injective.</li>
+</ol>
+Thus every \(w \in L_{\mathrm{valid}}(R)\) has a unique semantic interpretation
+as a canonical query and code.
+</div>
+
+<p><b>Proof.</b></p>
+
+<p><em>Step 1: Unique canonical forms.</em><br>
+By Assumption A1, the rewriting system \(T_R\) is terminating and confluent
+over the query fragment \(\mathcal{Q}_R\). Standard results from rewriting
+theory imply that every query \(Q \in \mathcal{Q}_R\) has a unique normal form.
+Define \(\mathrm{canon}_R(Q)\) to be this normal form. Thus, each query admits
+a unique canonical representative, and the set \(Q_{\mathrm{canon}}(R)\) is
+well-defined.
+</p>
+
+<p><em>Step 2: Unique parsing under \(G_R\).</em><br>
+By Assumption A2, the grammar \(G_R\) is unambiguous on \(L_{\mathrm{valid}}(R)\):
+for each \(w \in L_{\mathrm{valid}}(R)\) there is at most one parse tree
+\(\tau\) such that \(\tau \vdash_{G_R} w\). Hence the structural decomposition
+of \(w\) into base role, paths, filters, projections, and mode is uniquely
+determined by the grammar.
+</p>
+
+<p><em>Step 3: Unique disambiguation.</em><br>
+Assumption A3 provides a total, deterministic disambiguation function
+\(\mathrm{Disambig}_R : \mathcal{C}_R \to E_R \cup \mathrm{Const}_R \cup \{\bot\}\).
+For any fixed schema \(R\) and any parse tree \(\tau\) for
+\(w \in L_{\mathrm{valid}}(R)\), the sequence of mentions extracted from
+\(\tau\) is fixed, and applying \(\mathrm{Disambig}_R\) to each such mention
+yields a unique sequence of schema elements and constants, because
+\(\mathrm{Disambig}_R\) is a function (not a relation). By the design of
+\(L_{\mathrm{valid}}(R)\), we exclude utterances that would trigger the value
+\(\bot\). Thus each mention relevant for query construction resolves to a
+single, definite schema element or constant, and the disambiguation step is
+single-valued even when synonym sets overlap.
+</p>
+
+<p><em>Step 4: Building a unique pre-canonical query.</em><br>
+From the unique parse tree \(\tau\) and uniquely resolved schema elements
+and constants, we construct a unique query \(Q \in \mathcal{Q}_R\) by:
+identifying the base table, following canonical path structure, inserting
+the resolved attributes and constants into \(\varphi\) and \(\pi\), and
+selecting the answer mode \(\kappa\). The unambiguous grammar and deterministic
+disambiguation ensure that no alternative \(Q\) arises from the same \(w\).
+</p>
+
+<p><em>Step 5: Canonicalization and extraction.</em><br>
+Applying \(\mathrm{canon}_R\) to \(Q\) yields a unique canonical query
+\[
+  q := \mathrm{canon}_R(Q) \in Q_{\mathrm{canon}}(R).
+\]
+Define \(\mathrm{extract}_R(w) := q\). Since both the construction of \(Q\)
+and the canonicalization step are deterministic and yield unique outputs,
+\(\mathrm{extract}_R\) is a well-defined function from \(L_{\mathrm{valid}}(R)\)
+to \(Q_{\mathrm{canon}}(R)\).
+</p>
+
+<p><em>Step 6: Injective encoding.</em><br>
+By definition of \(\mathrm{enc}_R\), we have:
+\[
+  q_1 \neq q_2 \implies \mathrm{enc}_R(q_1) \neq \mathrm{enc}_R(q_2).
+\]
+Thus, canonical queries are encoded uniquely in \(C_R\). Note that we do not
+require \(\mathrm{extract}_R\) to be injective—distinct surface forms may map
+to the same canonical query via synonyms. However, the combination of
+single-valued extraction and injective encoding is sufficient to guarantee
+deterministic semantics.
+</p>
+
+<p>
+This proves both claims of Theorem 2.1. \(\square\)
+</p>
+
+<hr>
+
+<h3>5.2 Proof of Schema Synthesis Theorem</h3>
+
+<div class="theorem-box">
+<b>Theorem 3.1 (restated).</b><br>
+Let \(Q^* = \{q_1, \dots, q_n\}\) be a finite set of canonical queries such that
+\(\mathrm{Check\_real}(Q^*)\) holds. Then the synthesis procedure
+\(\mathsf{Synth}(Q^*)\) produces a schema \(R^*\) such that:
+<ol>
+<li>Every \(q_i\) is realizable as a canonical query in \(Q_{\mathrm{canon}}(R^*)\).</li>
+<li>No allowed simplification (entity merge under metadata equality, relationship removal, relationship merge) can be applied without making some \(q_i\) unrealizable, i.e. \(R^*\) is minimal with respect to the allowed simplifications and the lexicographic size measure.</li>
+<li>\(\mathsf{Synth}(Q^*)\) is deterministic up to schema isomorphism: for a fixed \(Q^*\), any two runs produce fixed-point schemas that are isomorphic.</li>
+</ol>
+</div>
+
+<p><b>Proof.</b></p>
+
+<p>
+By Assumption A4 and Lemma 3.1.1, the condition \(\mathrm{Check\_real}(Q^*)\)
+ensures that there exists at least one relational schema \(R\) in which all
+\(q_i\) are jointly realizable. The initial schema \(R_0\) constructed by
+\(\mathsf{Synth}(Q^*)\) is an explicit such realization, built from the abstract
+schema structure induced by \(Q^*\).
+</p>
+
+<p><em>Step 1: Initial schema realizes all queries.</em><br>
+We first show that the schema constructed before the shrink phase realizes all
+queries in \(Q^*\). For each canonical query
+\[
+  q_i = (T_0^{(i)}, P^{(i)}, \varphi^{(i)}, \pi^{(i)}, \kappa^{(i)}),
+\]
+the synthesis algorithm:
+</p>
+
+<ul>
+<li>introduces an entity for the base role \(T_0^{(i)}\), merging entities only
+when metadata identifiers coincide,</li>
+<li>assigns attributes mentioned in \(\pi^{(i)}\) and \(\varphi^{(i)}\) to the
+appropriate entities determined by the canonical structure,</li>
+<li>adds candidate relationships corresponding to the paths in \(P^{(i)}\), and</li>
+<li>defines primary keys and foreign keys to implement these relationships.</li>
+</ul>
+
+<p>
+By construction, all entity roles and navigation paths required by each
+\(q_i\) exist in this initial schema. Under Assumption A1, we can define a
+rewriting system \(T_R\) on the synthesized schema as well, allowing each
+\(q_i\) to be represented and canonicalized there. Thus the initial schema
+realizes all queries in \(Q^*\).
+</p>
+
+<p><em>Step 2: Invariant during shrink phase.</em><br>
+Let \(R_0\) be the initial schema, and let \(R_0, R_1, \dots, R_k, \dots\) be
+the sequence of schemas obtained by applying accepted simplification operations
+in the shrink phase. Define the invariant:
+</p>
+
+<p style="margin-left:2em;">
+\(\mathsf{Inv}(R_j):\) every \(q_i \in Q^*\) is realizable as a canonical query
+in \(Q_{\mathrm{canon}}(R_j)\).
+</p>
+
+<p>
+We have already established \(\mathsf{Inv}(R_0)\). The algorithm accepts a
+candidate simplification \(R_j \to R_{j+1}\) only if \(\mathsf{Inv}(R_{j+1})\)
+holds, i.e. only if all queries remain realizable after the change. Therefore,
+if \(\mathsf{Inv}(R_j)\) holds, then \(\mathsf{Inv}(R_{j+1})\) holds. By induction,
+\(\mathsf{Inv}(R_j)\) holds for every intermediate schema in the shrink phase,
+including the final schema \(R^*\). This proves realizability (item 1).
+</p>
+
+<p><em>Step 3: Termination of the shrink phase.</em><br>
+The set of entities and relationships introduced in the initial schema is
+finite, as \(Q^*\) is finite and each query mentions only finitely many roles
+and attributes. Each accepted simplification in the shrink phase is required
+to strictly reduce the lexicographic size
+\[
+  \mathrm{size}(R) := (\#\mathrm{rel}(R), \#\mathrm{ent}(R)),
+\]
+in the order where
+\[
+  (\ell', e') <_{\mathrm{lex}} (\ell, e)
+\]
+if either \(\ell' < \ell\), or \(\ell' = \ell\) and \(e' < e\). Concretely:
+</p>
+
+<ul>
+<li>removing a relationship decreases \(\#\mathrm{rel}(R)\);</li>
+<li>merging parallel relationships decreases \(\#\mathrm{rel}(R)\);</li>
+<li>merging entities (without increasing relationships) decreases
+    \(\#\mathrm{ent}(R)\), possibly also reducing \(\#\mathrm{rel}(R)\).</li>
+</ul>
+
+<p>
+Since the lexicographic order on \(\mathbb{N} \times \mathbb{N}\) is
+well-founded, there cannot be an infinite descending chain of schemas under
+\(\mathrm{size}(\cdot)\). Hence the shrink phase must terminate in finitely
+many steps, yielding a fixed-point schema \(R^*\) for which no further allowed
+simplification is both size-decreasing and realizability-preserving.
+</p>
+
+<p><em>Step 4: Minimality w.r.t. allowed simplifications.</em><br>
+At the end of the shrink phase, the algorithm has reached a schema \(R^*\) such
+that every candidate simplification is rejected on the grounds that it would
+violate \(\mathsf{Inv}(R)\) or fail to decrease the lexicographic size. By the
+definition of allowed simplifications and the acceptance criterion, this means:
+</p>
+
+<ul>
+<li>no relationship can be removed without making some query unrealizable,</li>
+<li>no parallel relationships can be merged without making some query unrealizable,</li>
+<li>no further entity merges (consistent with metadata equality) can be applied
+without making some query unrealizable.</li>
+</ul>
+
+<p>
+Therefore, \(R^*\) is minimal with respect to the family of simplification
+operations used by \(\mathsf{Synth}\) and the lexicographic size measure:
+there is no strictly smaller schema (under these operations and measure) that
+still satisfies \(\mathsf{Inv}\). This proves the minimality claim (item 2)
+in the precise sense defined by the algorithm.
+</p>
+
+<p><em>Step 5: Determinism up to isomorphism.</em><br>
+Assumption A5 states that the rewrite relation \(\to_{\mathrm{simp}}\) induced by
+the allowed simplifications is terminating (by the lexicographic measure) and
+confluent up to schema isomorphism. Termination ensures that every maximal
+simplification sequence starting from the same initial schema \(R_0\) reaches
+some fixed point; confluence up to isomorphism ensures that any two such
+terminal schemas \(R^*_1, R^*_2\) are isomorphic:
+\[
+  R^*_1 \cong R^*_2.
+\]
+</p>
+
+<p>
+The construction of the initial schema \(R_0\) is completely determined by
+\(Q^*\), and the effect of each simplification step on schema structure is
+algebraically specified. Thus, for a fixed \(Q^*\), all possible runs of
+\(\mathsf{Synth}(Q^*)\) (varying only in the order in which applicable
+simplifications are chosen) yield fixed-point schemas that are mutual
+isomorphs. It follows that \(\mathsf{Synth}(Q^*)\) is deterministic up to
+schema isomorphism, establishing item 3.
+</p>
+
+<p>
+This completes the proof of Theorem 3.1. \(\square\)
+</p>
+
+<hr>
+
+<h2>6. Interactive Interface and Canonical Grammar Layer</h2>
+
+<p>
+The previous sections treat SQS as a single-turn mapping from a surface language
+to a canonical query space. In practice, users (and LLM-based assistants) engage
+in multi-turn, incremental refinement of questions. This section introduces a
+canonical interaction layer and an interface grammar that project multi-turn
+dialogue into the same structural space without compromising determinism,
+minimality, or reversibility. The goal is to treat interaction as <em>navigation
+within</em> the question space rather than ad hoc query generation.
+</p>
+
+<hr>
+
+<h3>6.1 Interaction Operators</h3>
+
+<p>
+Fix a schema \(R\) and its canonical query space \(Q_{\mathrm{canon}}(R)\). We
+define a finite family of <em>interaction operators</em>:
+</p>
+
+\[
+  I = \{
+    \mathrm{AddDim}(d),\ \mathrm{RemoveDim}(d),\
+    \mathrm{AddMeasure}(m),\ \mathrm{RemoveMeasure}(m),\
+    \mathrm{AddFilter}(f),\ \mathrm{RemoveFilter}(f),\
+    \mathrm{ChangeBase}(T_0),\
+    \mathrm{ChangeMode}(\kappa),\
+    \dots
+  \}.
+\]
+
+<p>
+Each operator \(o \in I\) is a total, deterministic function:
+</p>
+
+\[
+  o : Q_{\mathrm{canon}}(R) \to Q_{\mathrm{canon}}(R)
+\]
+
+<p>
+subject to the following constraints:
+</p>
+
+<ul>
+<li><em>Type safety.</em>  
+    Operators preserve well-typedness: applying \(o\) to a canonical query
+    yields another canonical query over the same schema.</li>
+<li><em>Locality.</em>  
+    Each operator effects a small, structured change (e.g. adding a single
+    dimension, measure, or filter) rather than arbitrary replacements.</li>
+<li><em>Reversibility / idempotence.</em>  
+    For each operator there exists either:
+    <ul>
+      <li>an inverse operator \(o^{-1}\) in \(I\), or</li>
+      <li>an idempotent behavior: \(o(o(q)) = o(q)\) for all \(q\).</li>
+    </ul>
+</li>
+</ul>
+
+<p>
+We write \(I^*\) for the free monoid of finite sequences of operators, viewed
+as endomorphisms on \(Q_{\mathrm{canon}}(R)\) by composition.
+</p>
+
+<hr>
+
+<h3>6.2 Canonical Interaction Grammar \(G_I\)</h3>
+
+<p>
+We distinguish a <em>front-end interaction language</em> \(L_{\mathrm{front}}(R)\)
+from the base surface language \(L_{\mathrm{valid}}(R)\). Elements of
+\(L_{\mathrm{front}}(R)\) are short utterances expressing modifications of an
+existing question, such as:
+</p>
+
+<ul>
+<li>&ldquo;add region&rdquo;</li>
+<li>&ldquo;filter to 2023 only&rdquo;</li>
+<li>&ldquo;show by race instead of age&rdquo;</li>
+<li>&ldquo;remove this filter&rdquo;</li>
+</ul>
+
+<p>
+We assume an <em>interaction grammar</em>:
+</p>
+
+\[
+  G_I : L_{\mathrm{front}}(R) \to I^*
+\]
+
+<p>
+with the following properties:
+</p>
+
+<ul>
+<li><em>Unambiguous.</em>  
+    For each \(w \in L_{\mathrm{front}}(R)\), there is at most one operator
+    sequence \(G_I(w)\). (In practice, if a front-end parser produces multiple
+    candidates, the system must explicitly branch and let the user choose, thus
+    restoring single-valuedness at the semantic level.)</li>
+
+<li><em>Schema-parametric.</em>  
+    The grammar and its interpretation depend on \(R\) only through the
+    known dimensions, measures, filters, and modes; they cannot fabricate
+    new schema elements.</li>
+
+<li><em>Total on in-scope utterances.</em>  
+    For utterances considered &ldquo;well-formed&rdquo; in the front-end, \(G_I\)
+    produces a valid operator sequence. Out-of-scope requests are either
+    rejected or handled via separate mechanisms (e.g. help text) rather than
+    mapped into \(I^*\).</li>
+</ul>
+
+<p>
+Intuitively, \(G_I\) plays the same role for interaction that \(G_R\) plays
+for single-turn query construction: it provides an unambiguous syntactic layer
+that feeds into a compositional semantic algebra, here given by the operators
+in \(I\).
+</p>
+
+<hr>
+
+<h3>6.3 Deterministic Interaction Semantics</h3>
+
+<div class="theorem-box">
+<b>Theorem 6.1 (Deterministic Interaction Semantics).</b><br>
+Let \(R\) be a schema with canonical query space \(Q_{\mathrm{canon}}(R)\),
+and let \(G_I : L_{\mathrm{front}}(R) \to I^*\) be an interaction grammar as
+above. Fix a starting canonical query \(q_0 \in Q_{\mathrm{canon}}(R)\),
+and a single front-end utterance \(w \in L_{\mathrm{front}}(R)\). Then:
+<ol>
+<li>The operator sequence \(G_I(w) = o_1, \dots, o_k\) is uniquely determined
+    (unambiguous parsing).</li>
+<li>The resulting query
+\[
+  q' := o_k(\dots o_1(q_0)\dots)
+\]
+is uniquely determined and belongs to \(Q_{\mathrm{canon}}(R)\).</li>
+</ol>
+In particular, for fixed \(q_0\) and \(w\), the interaction semantics is
+deterministic.
+</div>
+
+<p><b>Proof.</b></p>
+
+<p>
+Unambiguity of \(G_I\) ensures that the operator sequence associated to \(w\)
+is unique. Each \(o_j\) is a deterministic, total function on
+\(Q_{\mathrm{canon}}(R)\), and finite composition of deterministic functions
+is deterministic. Thus applying \(G_I(w)\) to \(q_0\) yields a unique \(q'\).
+Type safety of operators guarantees that each intermediate state is a canonical
+query, so \(q' \in Q_{\mathrm{canon}}(R)\). \(\square\)
+</p>
+
+<hr>
+
+<h3>6.4 Multi-Turn Idempotency</h3>
+
+<p>
+We now consider a multi-turn dialogue producing a sequence of utterances:
+</p>
+
+\[
+  w_1, w_2, \dots, w_n \in L_{\mathrm{front}}(R).
+\]
+
+<p>
+Let \(G_I(w_j) = o^{(j)}_1, \dots, o^{(j)}_{k_j}\). The overall operator
+sequence applied to an initial query \(q_0\) is:
+</p>
+
+\[
+  q_n := \bigl(o^{(n)}_{k_n} \circ \cdots \circ o^{(n)}_1\bigr)
+          \circ \cdots \circ
+          \bigl(o^{(1)}_{k_1} \circ \cdots \circ o^{(1)}_1\bigr)(q_0).
+\]
+
+<div class="theorem-box">
+<b>Theorem 6.2 (Multi-Turn Idempotency and Replay).</b><br>
+Let \(R\), \(Q_{\mathrm{canon}}(R)\), \(G_I\), and \(q_0\) be as above, and let
+\(w_1, \dots, w_n \in L_{\mathrm{front}}(R)\). Then:
+<ol>
+<li>The final query \(q_n\) is uniquely determined by the sequence of utterances
+    and the initial state \(q_0\).</li>
+<li>Replaying the same utterance sequence from \(q_0\) yields the same \(q_n\);
+    i.e., the interaction semantics is idempotent under replay.</li>
+<li>If some operators in the sequence are idempotent (e.g. repeatedly adding
+    the same dimension), then applying them multiple times does not change the
+    final state beyond the first effective application:
+    \[
+      o(o(q)) = o(q) \quad \forall q.
+    \]</li>
+<li>If inverse operators \(o^{-1}\) are present in \(I\), then corrections such
+    as &ldquo;undo the last filter&rdquo; or &ldquo;remove that dimension&rdquo; correspond
+    to explicit inverse applications, preserving a group-like structure on
+    subsets of \(I\).</li>
+</ol>
+Thus multi-turn interaction is a deterministic dynamical system on
+\(Q_{\mathrm{canon}}(R)\) that is stable under replay and supports structured
+undo/redo of semantic actions.
+</div>
+
+<p><b>Proof.</b></p>
+
+<p>
+The statement follows from repeated application of Theorem 6.1 and basic
+properties of function composition. Each utterance yields a unique operator
+sequence, and the composition of all such sequences is uniquely determined.
+Replaying the same utterances reconstructs the same composed function, hence
+the same \(q_n\). Idempotency and invertibility assumptions on individual
+operators yield the corresponding algebraic properties of the overall system.
+\(\square\)
+</p>
+
+<hr>
+
+<h3>6.5 Rendering, Re-Extraction, and Reflexive Closure</h3>
+
+<p>
+Suppose we equip \(Q_{\mathrm{canon}}(R)\) with a canonical <em>rendering</em>
+function:
+</p>
+
+\[
+  \mathrm{render}_R : Q_{\mathrm{canon}}(R) \to L_{\mathrm{valid}}(R),
+\]
+
+<p>
+which produces a canonical surface description (e.g. a normalized natural
+language template) for each canonical query. Together with the existing
+extraction function \(\mathrm{extract}_R\), we can form the composites:
+</p>
+
+\[
+  \mathrm{extract}_R \circ \mathrm{render}_R
+  : Q_{\mathrm{canon}}(R) \to Q_{\mathrm{canon}}(R),
+\]
+\[
+  \mathrm{render}_R \circ \mathrm{extract}_R
+  : L_{\mathrm{valid}}(R) \to L_{\mathrm{valid}}(R).
+\]
+
+<p>
+We require that rendering and extraction form a <em>round-trip fixed point</em>
+on canonical queries:
+</p>
+
+\[
+  \mathrm{extract}_R(\mathrm{render}_R(q)) = q
+  \quad\text{for all } q \in Q_{\mathrm{canon}}(R).
+\]
+
+<p>
+On the surface side, \(\mathrm{render}_R \circ \mathrm{extract}_R\) need not be
+the identity on all of \(L_{\mathrm{valid}}(R)\); rather, it canonically
+<em>normalizes</em> semantically equivalent utterances into a standard form.
+Thus rendering/extraction define a <em>reflection</em> on semantic content and a
+canonical representative on the surface.
+</p>
+
+<p>
+Combining this with the interaction layer, we obtain a reflexive loop:
+</p>
+
+<ul>
+<li>Front-end utterances \(w \in L_{\mathrm{front}}(R)\) are mapped by
+    \(G_I\) to operator sequences in \(I^*\).</li>
+<li>Operators act on \(Q_{\mathrm{canon}}(R)\) to produce updated queries.</li>
+<li>Updated queries are rendered into canonical surface forms via
+    \(\mathrm{render}_R\).</li>
+<li>Canonical surface forms can be re-extracted via \(\mathrm{extract}_R\),
+    yielding the same canonical queries.</li>
+</ul>
+
+<p>
+This realizes, at the level of SQS, the intuitive idea of a <em>fixed point of
+interpretation</em>: semantic content is stable under cycles of interaction,
+rendering, and re-interpretation.
+</p>
+
+<hr>
+
+<h3>6.6 Extension to Knowledge Graphs and Semi-Structured Data</h3>
+
+<p>
+The SQS machinery and the interaction layer extend naturally to semi-structured
+and graph-shaped data sources such as knowledge graphs. Let \(\mathrm{KG}\)
+denote a knowledge graph with nodes, edges, and properties. Under standard
+constructions (e.g. functorial data migration or graph-to-relational encodings),
+we can view \(\mathrm{KG}\) as inducing a relational schema \(R_{\mathrm{KG}}\)
+whose tables correspond to node and edge types, with foreign keys encoding
+adjacency.
+</p>
+
+<p>
+Applying the SQS framework to \(R_{\mathrm{KG}}\) yields a canonical query space
+\(Q_{\mathrm{canon}}(R_{\mathrm{KG}})\) and an induced question space over the
+knowledge graph. The interaction operators and grammar extend unchanged:
+</p>
+
+<ul>
+<li>dimensions correspond to properties and reachable node/edge attributes,</li>
+<li>measures correspond to numeric properties or counts over patterns,</li>
+<li>filters correspond to constraints on node/edge labels or property values.</li>
+</ul>
+
+<p>
+Thus the same deterministic, reversible interaction semantics that we have for
+relational schemas also applies to knowledge graphs. In particular, a system
+combining a relational backend, a Weave-style knowledge graph, and SQS provides
+a unified, canonical question space over heterogeneous data, with a single
+interaction calculus and grammar.
+</p>
+
+<hr>
+
+<h3>6.7 Summary of the Extended System</h3>
+
+<p>
+With the addition of the interaction operators \(I\), the interface grammar
+\(G_I\), and the rendering/re-extraction loop, the SQS framework supports:
+</p>
+
+<ul>
+<li><em>Single-turn determinism.</em>  
+    Mapping \(L_{\mathrm{valid}}(R)\) to \(Q_{\mathrm{canon}}(R)\) via
+    \(\mathrm{extract}_R\) is a function (Theorem 2.1).</li>
+
+<li><em>Multi-turn determinism and idempotency.</em>  
+    Mapping sequences of front-end utterances in \(L_{\mathrm{front}}(R)\) to
+    canonical query trajectories in \(Q_{\mathrm{canon}}(R)\) via \(G_I\) and
+    the operator algebra is deterministic and stable under replay (Theorem 6.2).</li>
+
+<li><em>Reflexive closure.</em>  
+    The combination of operators, extraction, and rendering yields a fixed
+    point of semantic content: repeatedly rendering and re-interpreting a
+    canonical query stabilizes its representation.</li>
+
+<li><em>Schema- and modality-independence.</em>  
+    The same formalism applies to classical relational schemas, synthesized
+    schemas from canonical queries, and relationalized knowledge graphs.</li>
+</ul>
+
+<p>
+In this extended form, SQS provides not only a deterministic semantics for
+queries, but also a deterministic, reversible semantics for interactive,
+multi-turn navigation of the question space.
+</p>
+
+<hr>
+
+<footer>
+<p class="small-note">
+Structural Query Semantics as a Deterministic Space — Formal Framework,
+Determinism Theorem, Schema Synthesis Theorem, and Interactive Interface
+&amp; Grammar Extensions (with robust disambiguation, realizability checks,
+algebraic simplification, a well-founded minimality measure, and a
+multi-turn, reflexive interaction calculus).
+</p>
+</footer>
+
+</body>
+</html>
+```

@@ -3,7 +3,7 @@
 **Document Type**: Setup Guide  
 **Target Audience**: New human collaborators/researchers  
 **Purpose**: Complete environment configuration for reproducible work on this project  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Status**: Active
 
 ---
@@ -78,6 +78,9 @@ The workspace automatically configures:
 llm-facing-documentation/           # LLM-optimized docs (machine-first)
 ├── README.md                       # Quick start for LLMs
 ├── project-timeline.md             # Cumulative history (append-only)
+├── contracts/                       # Theory ↔ experiment ↔ evidence bindings (explicit contracts)
+│   ├── README.md
+│   └── contract-registry.md
 ├── llm-project-management-instructions/
 │   ├── documentation-standards.md  # How to write docs
 │   └── project-management-practices.md  # How to maintain project
@@ -150,6 +153,11 @@ LLM will (if system prompts configured):
 - **Never load** files in `deprecated/` subdirectories
 - They're preserved for history but superseded by current versions
 - INDEX.md in each directory guides you to active documents
+
+**Contract layer (recommended)**:
+- When linking theory claims to experiments and evidence (especially empirical investigations), record the linkage in:
+   - `llm-facing-documentation/contracts/contract-registry.md`
+- This is designed to avoid “stealth edits” to theory documents by keeping status/linkage updates in an explicit, additive registry.
 
 ---
 

@@ -3,7 +3,7 @@
 **Document Type**: Crystallized Specification  
 **Target Audience**: LLMs + Developers  
 **Purpose**: Define the complete architecture of the documentation system  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Dependencies**: [documentation-standards.md](../llm-facing-documentation/llm-project-management-instructions/documentation-standards.md), [project-management-practices.md](../llm-facing-documentation/llm-project-management-instructions/project-management-practices.md)  
 **Status**: Stable
 
@@ -55,6 +55,24 @@ Tier 3: Granular (Tier 2 subdirectories)
 **Information Flow**:
 - **Documentation** (UP): Tier 3 debugging notes → Tier 2 summaries → Tier 1 timeline
 - **Reading** (DOWN): Tier 1 index → Tier 2 specs → Tier 3 details
+
+---
+
+## Cross-Cutting Contracts Layer (Theory ↔ Experiment ↔ Evidence)
+
+In addition to directory-based discovery, the project uses an explicit **contracts layer** to bind:
+- canonical theory documents (stable; avoid non-additive edits)
+- experiments (scripts, datasets, parameters)
+- evidence (investigation docs + outputs)
+
+**Location**:
+- `llm-facing-documentation/contracts/README.md`
+- `llm-facing-documentation/contracts/contract-registry.md`
+
+**Rationale**:
+- Prevent “stealth edits” to theory by putting linkage/status updates in a dedicated index.
+- Make attribution explicit when referencing external artifacts.
+- Provide a stable place to record lineage as the theory expands.
 
 ---
 
@@ -116,7 +134,7 @@ Commit: abc123f
 
 ## Directory-Based Discovery
 
-**No central registry.** Documentation is discovered via directory structure:
+**No central registry for directory-local docs.** Documentation is discovered via directory structure:
 
 1. Session starts → Load Tier 1 (`llm-facing-documentation/`)
 2. User says "work on Wikipedia extraction" → Load `data-pipeline/wikipedia-decomposition/*.md`
@@ -125,7 +143,9 @@ Commit: abc123f
 **Benefits**:
 - Self-organizing: Docs live with code
 - Scales infinitely: No bottleneck
-- Never stale: No central index to maintain
+ - Never stale: No central index to maintain for directory-local context
+
+**Exception**: The contracts registry is a cross-cutting index used specifically for theory–experiment–evidence bindings.
 
 ### Per-Directory INDEX Files
 

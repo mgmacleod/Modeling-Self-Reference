@@ -2,7 +2,7 @@
 
 **Tier**: 1  
 **Purpose**: Systematic procedure for closing work sessions and maintaining documentation consistency  
-**Last Updated**: 2025-12-15  
+**Last Updated**: 2025-12-30  
 **Status**: Active
 
 ---
@@ -38,6 +38,8 @@ User says any of:
 - `llm-facing-documentation/llm-project-management-instructions/project-management-practices.md`
 - `llm-facing-documentation/README.md`
 - `llm-facing-documentation/end-of-session-protocol.md` (this file)
+- `llm-facing-documentation/contracts/contract-registry.md`
+- `llm-facing-documentation/contracts/README.md`
 
 **If YES → Load meta-maintenance context**:
 
@@ -57,6 +59,26 @@ User says any of:
    - Update `meta-maintenance/future.md` (if TODOs completed or added)
 
 **If NO → Skip to Step 3**
+
+---
+
+## Step 2.5: Contracts Check (Conditional)
+
+**Did this session produce or change any empirical evidence, or create a new investigation stream?**
+
+Examples:
+- New/updated `n-link-analysis/empirical-investigations/*.md`
+- New analysis outputs under `data/**/analysis/` or `**/processed/analysis/`
+- A theory claim was evaluated, supported, refuted, or marked inconclusive
+- An external artifact (third-party) was cited as part of a theory/evidence chain
+
+**If YES**:
+- Update `llm-facing-documentation/contracts/contract-registry.md`:
+   - add a new `*-C-*` entry, or update status of an existing one
+   - ensure experiments + evidence links are recorded
+   - if applicable, ensure external artifact is tracked under an `EXT-*` entry with author attribution and permission/license status
+
+**If NO**: proceed to Step 3
 
 ---
 

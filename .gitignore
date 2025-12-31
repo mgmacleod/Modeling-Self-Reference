@@ -119,3 +119,6 @@ analysis-artifacts/**/*.feather
 **/processed/analysis/**/*.tsv
 **/processed/analysis/**/*.csv
 **/processed/analysis/**/*.feather
+
+# Generated HTML previews from basin geometry exports
+n-link-analysis/report/assets/basin_pointcloud_3d_*.html

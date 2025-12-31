@@ -29,10 +29,19 @@
 | [scripts/chase-dominant-upstream.py](scripts/chase-dominant-upstream.py) | Iteratively follow the dominant upstream branch (“source of the Nile” chase) | Active |
 | [scripts/compute-trunkiness-dashboard.py](scripts/compute-trunkiness-dashboard.py) | Aggregate multiple branch tables into a single “trunkiness dashboard” TSV | Active |
 | [scripts/batch-chase-collapse-metrics.py](scripts/batch-chase-collapse-metrics.py) | Batch-run chases to a dominance threshold and write a “collapse dashboard” TSV | Active |
-| [scripts/dash-tributary-viewer.py](scripts/dash-tributary-viewer.py) | Dash app to interactively render the 3D tributary skeleton (avoid many HTML exports) | Active |
+| [scripts/render-tributary-tree-3d.py](scripts/render-tributary-tree-3d.py) | Render an interactive 3D tributary skeleton (HTML export) | Active |
 | [scripts/compute-basin-stats.py](scripts/compute-basin-stats.py) | Compute basin/terminal statistics for fixed N set | Placeholder |
 | [scripts/compute-universal-attractors.py](scripts/compute-universal-attractors.py) | Aggregate terminals across N to find universal attractors | Placeholder |
 | [scripts/quick-queries.py](scripts/quick-queries.py) | DuckDB sanity queries for parquet outputs | Placeholder |
+
+---
+
+## Visualization (Human-Facing)
+
+| Tool | Purpose | Status |
+|------|---------|--------|
+| [viz/dash-basin-geometry-viewer.py](viz/dash-basin-geometry-viewer.py) | Dash workbench for rendering basin geometry from precomputed Parquet (3D violin, 2D interval, 2D fan+edges) | Active |
+| [viz/render-full-basin-geometry.py](viz/render-full-basin-geometry.py) | Map a basin exhaustively and export a 3D point-cloud “geometric object” (Parquet + optional HTML preview) | Active |
 
 ---
 

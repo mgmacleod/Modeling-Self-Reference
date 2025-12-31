@@ -26,6 +26,7 @@ $$
 The analysis goal is to compute:
 - terminal classification (HALT vs CYCLE),
 - basin partition statistics (terminal counts, basin size distribution),
+- within-basin structure metrics (depth-1 entry branch concentration; dominant-upstream “trunk” behavior),
 - cross-$N$ comparisons (terminal overlap, universal attractors),
 - conjecture checks (monotone $P_{HALT}(N)$, heavy-tail basin sizes, candidate $N^*$).
 

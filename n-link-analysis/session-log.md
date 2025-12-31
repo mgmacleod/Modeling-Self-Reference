@@ -33,3 +33,50 @@
 **Reproducibility Artifacts (generated outputs)**:
 - Output directory: `data/wikipedia/processed/analysis/` (gitignored)
 - Edge DB materialized for N=5 reverse expansions: `data/wikipedia/processed/analysis/edges_n=5.duckdb`
+
+---
+
+### 2025-12-30 - Empirical Session Bootstrap (Fixed N=5 sampling)
+
+**Executed**:
+- Ran a minimal sanity sampling run for fixed $N=5$ to confirm the analysis scripts work end-to-end and to create a fresh reproducibility artifact.
+
+**Command**:
+- `python n-link-analysis/scripts/sample-nlink-traces.py --n 5 --num 50 --seed0 0 --min-outdegree 50 --max-steps 5000 --top-cycles 10 --resolve-titles --out "data/wikipedia/processed/analysis/sample_traces_n=5_num=50_seed0=0_bootstrap_2025-12-30.tsv"`
+
+**Observed Summary (high level)**:
+- Terminal counts: `CYCLE = 49`, `HALT = 1` (with `min_outdegree=50`)
+- Most frequent cycle in this run: `Gulf_of_Maine ↔ Massachusetts` (11 / 50)
+
+**Primary Investigation Stream**:
+- Results are consistent with and recorded under: [Long-tail basin size (N=5)](empirical-investigations/long-tail-basin-size.md)
+
+---
+
+### 2025-12-30 - Branch / Trunk Structure + Dominance Collapse (N=5)
+
+**Executed**:
+- Implemented and ran “branch analysis” on multiple $f_5$ basins (partitioning each basin by depth-1 entry subtree size).
+- Implemented and ran “dominant-upstream chase” (“source of the Nile”) from multiple seeds.
+- Aggregated cross-basin summaries into a trunkiness dashboard and a dominance-collapse dashboard.
+
+**New Scripts**:
+- `n-link-analysis/scripts/branch-basin-analysis.py`
+- `n-link-analysis/scripts/chase-dominant-upstream.py`
+- `n-link-analysis/scripts/compute-trunkiness-dashboard.py`
+- `n-link-analysis/scripts/batch-chase-collapse-metrics.py`
+
+**Key Artifacts** (under `data/wikipedia/processed/analysis/`):
+- `branch_trunkiness_dashboard_n=5_bootstrap_2025-12-30.tsv`
+- `dominance_collapse_dashboard_n=5_bootstrap_2025-12-30_seed=dominant_enters_cycle_title_thr=0.5.tsv`
+- `dominant_upstream_chain_n=5_from=Animal_leasttrunk_bootstrap_2025-12-30.tsv`
+- `dominant_upstream_chain_n=5_from=American_Revolutionary_War_leasttrunk_bootstrap_2025-12-30.tsv`
+- `dominant_upstream_chain_n=5_from=Eastern_United_States_control_bootstrap_2025-12-30.tsv`
+
+**Findings (high-level)**:
+- Many tested $f_5$ basins exhibit extreme depth-1 entry concentration (“single-trunk” behavior), but not all.
+- Even for a comparatively “non-trunk-like” basin at hop 0 (e.g., `Animal`), the dominant-upstream chase can rapidly enter highly trunk-like regimes upstream.
+- The `Eastern_United_States` control chase immediately steps into `American_Revolutionary_War` with ~99% dominance, then matches the prior `American_Revolutionary_War` chain.
+
+**Primary Investigation Stream**:
+- Details (commands, outputs, and numeric summaries) are recorded under: [Long-tail basin size (N=5)](empirical-investigations/long-tail-basin-size.md)

@@ -3,8 +3,52 @@
 **Document Type**: Cumulative
 **Target Audience**: LLMs + Developers
 **Purpose**: Append-only record of analysis decisions, experiments, and outcomes
-**Last Updated**: 2025-12-31
+**Last Updated**: 2026-01-01
 **Status**: Active
+
+---
+
+### 2026-01-01 - Harness Infrastructure Creation
+
+**What was tried**:
+- Built automated harness scripts to orchestrate complete analysis pipeline
+- Created run-analysis-harness.py for batch multi-cycle analysis (15+ scripts, 4 tiers)
+- Created run-single-cycle-analysis.py for focused single-cycle deep-dive (5 scripts)
+- Tested harness in quick mode with N=5, 2 cycles (Massachusetts ↔ Gulf_of_Maine, Sea_salt ↔ Seawater)
+- Ran 10+ individual scripts manually to verify functionality before automation
+
+**What worked**:
+- Harness scripts executed successfully end-to-end (~30-60 min for quick mode)
+- All Tier 0-2 scripts ran without errors: validation, sampling, path characteristics, basin mapping, branch analysis, dashboards
+- Generated 40+ output files with harness_2026-01-01 tag in data/wikipedia/processed/analysis/
+- subprocess.run() approach enables clean script execution with proper output capture
+- Tag-based output organization allows tracking multiple analysis runs
+
+**What didn't work**:
+- Title resolution issue: "Gulf of Maine" needs underscore format "Gulf_of_Maine" (documented in HARNESS-README.md)
+- Some interactive scripts (depth explorers) failed due to missing mechanism-tagged depth distribution files (expected, not created by harness)
+
+**Key findings**:
+- **Infrastructure milestone**: Reduces 15+ manual commands to 1 command
+- **Quick mode practical**: 30-60 min runtime enables rapid iteration vs 2-4 hours full mode
+- **Ready for Multi-N**: Infrastructure validated, just change --n parameter for N=8,9,10 analysis
+- **Automation patterns established**: Tier 0-4 structure (validation → construction → aggregation → visualization) reusable for future work
+
+**Scripts created**:
+- `scripts/run-analysis-harness.py` (370 lines) - complete pipeline orchestration
+- `scripts/run-single-cycle-analysis.py` (280 lines) - single-cycle deep-dive
+- `scripts/HARNESS-README.md` - comprehensive usage documentation
+
+**Documentation created**:
+- `NEXT-STEPS.md` - strategic planning document with 4 prioritized tiers
+- Updated `scripts/HARNESS-README.md` with examples, parameters, troubleshooting
+
+**Next steps**:
+- Run Multi-N analysis (N=8,9,10) to map complete phase transition curve (PRIORITY 1)
+- Hub connectivity deep-dive (test degree amplification hypothesis)
+- Depth distribution mixture models (quantify bimodal patterns)
+
+Commits: f78142f, d282a65, b5c1858
 
 ---
 

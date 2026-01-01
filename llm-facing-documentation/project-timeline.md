@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history  
 **Target Audience**: LLMs  
 **Purpose**: Chronological record of project evolution, decisions, and discoveries  
-**Last Updated**: 2025-12-31
+**Last Updated**: 2026-01-01
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,58 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2026-01-01 - Harness Infrastructure Creation: Batch Analysis Pipeline Automation
+
+**Completed**:
+- Created `run-analysis-harness.py` (370 lines) - complete pipeline orchestration for multiple cycles
+- Created `run-single-cycle-analysis.py` (280 lines) - focused single-cycle deep-dive analysis
+- Created `scripts/HARNESS-README.md` - comprehensive usage documentation with examples
+- Created `n-link-analysis/NEXT-STEPS.md` - strategic planning document with prioritized tiers
+- Successfully tested harness in quick mode (N=5, 2 cycles) - validated 15+ scripts run correctly
+- Ran and validated 10+ individual scripts manually before harness creation
+- Generated harness_2026-01-01 tag outputs (40+ files in data/wikipedia/processed/analysis/)
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Create two separate harness scripts (batch vs single) | Different use cases: systematic reproduction vs targeted investigation; keeps scripts focused |
+| Use subprocess.run() instead of module imports | Cleaner execution model, matches user CLI workflow, easier debugging of individual scripts |
+| Default to quick mode (6 cycles) vs full mode (9 cycles) | Balances coverage vs runtime for testing; quick mode ~30-60 min enables rapid iteration |
+| Include validation tier (validate-data-dependencies.py first) | Catch data issues early before expensive basin computations |
+| Tag outputs with harness run date | Enables tracking multiple analysis runs, comparing different parameter sets |
+
+**Discoveries**:
+- Harness reduces manual workflow from 15+ sequential commands to 1 command
+- Quick mode completes in ~30-60 minutes (vs 2-4 hours full), making iteration practical
+- All 26 scripts now have sensible defaults (no longer require hunting for specific inputs)
+- Title resolution issue documented: "Gulf of Maine" needs underscore "Gulf_of_Maine"
+- Infrastructure is ready for Multi-N analysis (just change --n parameter)
+
+**Validation**:
+- Harness executed successfully for N=5 with 2 cycles
+- All Tier 0-2 scripts ran without errors (validation, sampling, basin mapping, aggregation)
+- Generated expected outputs: basins, branches, dashboards, visualizations
+- Trunkiness dashboard created successfully from branches outputs
+
+**Architecture Impact**:
+- New tier in script hierarchy: harness scripts orchestrate individual analysis scripts
+- Establishes reusable pattern for batch automation in future analysis work
+- Separates concerns: individual scripts remain focused, harness handles coordination
+- Enables systematic multi-N analysis (infrastructure ready for N=8,9,10 next session)
+
+**Next Steps**:
+- **PRIORITY 1**: Run Multi-N analysis (N=8,9,10) to map complete phase transition curve
+- **PRIORITY 2**: Hub connectivity deep-dive (test high-degree node amplification hypothesis)
+- **PRIORITY 3**: Depth distribution mixture models (quantify bimodal patterns)
+- See `n-link-analysis/NEXT-STEPS.md` for comprehensive planning document
+
+**Commits**:
+- f78142f: Add analysis harness scripts for N-link analysis pipeline
+- d282a65: Update binary assets for cycle dominance evolution analyses
+- b5c1858: Add planning document for N-Link Analysis next steps
+
+---
 
 ### Session: 2025-12-31 (Sixth) - Variance Explosion and Bimodal Distributions: Interactive Depth Distribution Analysis
 

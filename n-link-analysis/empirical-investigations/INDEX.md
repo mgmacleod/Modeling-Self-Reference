@@ -13,3 +13,4 @@
 | [PHASE-TRANSITION-REFINED.md](PHASE-TRANSITION-REFINED.md) | What causes the N=4 minimum and N=5 peak? (Finer-resolution phase transition analysis) | Complete | 2025-12-31 |
 | [MECHANISM-ANALYSIS.md](MECHANISM-ANALYSIS.md) | Why does N=4 produce smallest basins despite fast convergence? (Premature convergence mechanism) | Complete | 2025-12-31 |
 | [MASSACHUSETTS-CASE-STUDY.md](MASSACHUSETTS-CASE-STUDY.md) | Why does Massachusetts dominate at N=5 (94× larger than N=4)? (Cycle formation + hub connectivity) | Complete | 2025-12-31 |
+| [ENTRY-BREADTH-ANALYSIS.md](ENTRY-BREADTH-ANALYSIS.md) | Does entry breadth explain basin mass? (Statistical mechanics framework validation) | Ready | 2025-12-31 |

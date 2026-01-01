@@ -16,6 +16,7 @@ scipy>=1.11.0
 
 # Interactive app (human-facing)
 dash>=2.16.0
+dash-bootstrap-components>=1.5.0
 
 # XML parsing
 lxml>=4.9.0

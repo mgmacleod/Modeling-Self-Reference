@@ -6,6 +6,21 @@
 
 ---
 
+## Breadcrumb (Matt next session)
+
+There is a known narrative inconsistency in the investigation writeups:
+
+- [empirical-investigations/MECHANISM-ANALYSIS.md](empirical-investigations/MECHANISM-ANALYSIS.md) (around the N=4→5 “amplification” discussion) frames **entry breadth** as the dominant driver.
+- [empirical-investigations/ENTRY-BREADTH-RESULTS.md](empirical-investigations/ENTRY-BREADTH-RESULTS.md) refutes that: entry breadth decreases from N=4→5 while basin mass increases.
+- [empirical-investigations/DEPTH-SCALING-ANALYSIS.md](empirical-investigations/DEPTH-SCALING-ANALYSIS.md) and [empirical-investigations/DEPTH-DISTRIBUTION-ANALYSIS.md](empirical-investigations/DEPTH-DISTRIBUTION-ANALYSIS.md) support “depth / long-tail” as the dominant mechanism.
+
+Proposed next-session doc-only fix (no new analysis, no changing empirical numbers):
+
+- Update MECHANISM-ANALYSIS to reflect: basin mass amplification is explained primarily by **depth amplification + variance/tail**, and treat entry breadth as secondary / not the main term.
+- Add a short cross-link note pointing readers to ENTRY-BREADTH-RESULTS + DEPTH-SCALING.
+
+Also: keep an eye on tag consistency when comparing cross-N outputs (e.g., `test_*` vs `multi_n_jan_2026`).
+
 ## Current State
 
 ### Completed Infrastructure ✓

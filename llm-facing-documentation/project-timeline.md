@@ -18,40 +18,61 @@
 
 ## Timeline Entries
 
-### Session: 2026-01-01 - Documentation Consistency Fix + Session Planning
+### Session: 2026-01-01 - Phase 2 Tunneling Complete + Documentation Fix
 
 **Completed**:
-- Fixed narrative inconsistency in MECHANISM-ANALYSIS.md (breadcrumb item from NEXT-STEPS.md)
-  - Added update notice at top explaining entry breadth hypothesis was refuted
-  - Changed "entry breadth dominates" language to "depth dominates" throughout
-  - Updated formula references to `Basin_Mass = Entry_Breadth × Depth^2.5`
+- **Documentation fix** (quick win):
+  - Fixed narrative inconsistency in MECHANISM-ANALYSIS.md (breadcrumb item)
+  - Changed "entry breadth dominates" → "depth dominates" throughout
   - Added cross-references to ENTRY-BREADTH-RESULTS.md and DEPTH-SCALING-ANALYSIS.md
-  - Marked entry breadth investigation as completed/refuted in Next Steps section
-  - Updated analogies from "drainage basin" to "karst sinkhole" (depth-focused)
-- Updated NEXT-STEPS.md breadcrumb section to mark narrative fix as completed
+  - Updated NEXT-STEPS.md breadcrumb section to mark fix as completed
+
+- **Phase 2: Tunnel Node Identification** (main work):
+  - Created `find-tunnel-nodes.py` - Pivots multiplex table to identify multi-basin pages
+  - Created `classify-tunnel-types.py` - Categorizes tunnel behavior (progressive vs alternating)
+  - Created `compute-tunnel-frequency.py` - Ranks tunnel nodes by importance score
+  - Created `TUNNEL-NODE-ANALYSIS.md` - Full investigation documentation
+  - Added NLR-C-0004 to contract-registry.md
+
+**Discoveries**:
+- **9,018 tunnel nodes** identified (0.45% of 2M pages in hyperstructure)
+- **Progressive switching dominates** (98.7%) - basins change monotonically with N
+- **Alternating tunnels rare** (1.3%) - only 116 pages switch back and forth
+- **Gulf_of_Maine__Massachusetts is tunnel hub** - appears in 61% of basin pairs
+- **Tunnel nodes are shallow** (mean depth 11.1 vs typical 50+) - near cycle cores
+- **All tunnel nodes bridge exactly 2 basins** - no 3+ basin tunnels found
+- **98.3% of tunnels have only 2 N-value coverage** - sparse basin assignment data
 
 **Decisions Made**:
 | Decision | Rationale |
 |----------|-----------|
-| Preserve original document with inline corrections | Maintains historical record while correcting misattributions |
-| Use blockquote callouts for updates | Clear visual distinction between original content and corrections |
-| Cross-link to refuting/validating documents | Enables readers to trace the scientific progression |
-
-**Discoveries**:
-- None (documentation-only session)
+| Use canonical_cycle_id for basin identity | Ensures consistent identity across naming conventions |
+| Progressive vs alternating classification | Captures the dominant monotonic tunneling pattern |
+| Tunnel score = basins × log(1+trans) × (100/depth) | Balances breadth, dynamism, and structural centrality |
 
 **Validation**:
-- All edits preserve original empirical observations (mechanism patterns remain valid)
-- Only causal attributions corrected (entry breadth → depth as dominant factor)
-- Cross-references verified to correct target documents
+- All 3 Phase 2 scripts run successfully
+- Output files generated in `data/wikipedia/processed/multiplex/`
+- Statistics match expectations from Phase 1 intersection analysis
 
 **Architecture Impact**:
-- Documentation now internally consistent across investigation chain
-- MECHANISM-ANALYSIS.md → ENTRY-BREADTH-RESULTS.md → DEPTH-SCALING-ANALYSIS.md form coherent narrative
+- Phase 2 of TUNNELING-ROADMAP.md complete
+- 7 files now in multiplex directory (Phase 1 + Phase 2 outputs)
+- NLR-C-0004 contract established for tunneling analysis
+
+**Data Files Created**:
+| File | Size | Description |
+|------|------|-------------|
+| `tunnel_nodes.parquet` | 9.69 MB | All pages with basin_at_N{3-7} columns |
+| `tunnel_nodes_summary.tsv` | - | Tunnel nodes only (9,018 rows) |
+| `tunnel_classification.tsv` | - | Type and transition details |
+| `tunnel_frequency_ranking.tsv` | - | Ranked by tunnel_score |
+| `tunnel_top_100.tsv` | - | Top 100 highest-scoring tunnels |
 
 **Next Steps**:
-- Begin Phase 2 of TUNNELING-ROADMAP.md (tunnel node classification and frequency analysis)
-- Create `find-tunnel-nodes.py`, `classify-tunnel-types.py`, `compute-tunnel-frequency.py`
+- Phase 3: Multiplex Connectivity (`build-multiplex-graph.py`, `compute-multiplex-reachability.py`, `visualize-multiplex-slice.py`)
+- Page title lookup for tunnel nodes (semantic analysis)
+- Depth vs tunnel probability correlation
 
 ---
 

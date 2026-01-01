@@ -112,6 +112,40 @@ This is the *primary index* for contract objects, and should be treated as appen
 
 ---
 
+### NLR-C-0004 — Cross-N tunneling and multiplex connectivity (Wikipedia)
+
+- **Status**: in progress (Phase 2 complete, Phases 3-5 pending)
+- **Provenance**:
+  - Theory originator: WH (multiplex framing, tunneling concept)
+  - Implementation & empirical analysis: MM (2026-01-01 onwards)
+- **Theory**:
+  - [database-inference-graph-theory.md](../theories-proofs-conjectures/database-inference-graph-theory.md) (Definition 4.1, Corollary 3.2, Algorithm 5.2)
+  - Extends NLR-C-0003 to cross-N multiplex analysis
+- **Experiment**:
+  - Phase 1: `build-multiplex-table.py`, `normalize-cycle-identity.py`, `compute-intersection-matrix.py`
+  - Phase 2: `find-tunnel-nodes.py`, `classify-tunnel-types.py`, `compute-tunnel-frequency.py`
+  - Phase 3-5: (pending per TUNNELING-ROADMAP.md)
+- **Evidence**:
+  - [TUNNEL-NODE-ANALYSIS.md](../../n-link-analysis/empirical-investigations/TUNNEL-NODE-ANALYSIS.md) (Phase 2 results)
+  - [WH-FEEDBACK-ANSWERS.md](../../n-link-analysis/empirical-investigations/WH-FEEDBACK-ANSWERS.md) (initial tunnel discovery)
+  - Data outputs: `data/wikipedia/processed/multiplex/` (7 files)
+- **Key Findings (Phase 2)**:
+  - **9,018 tunnel nodes identified** (0.45% of pages in hyperstructure)
+  - **Progressive switching dominates** (98.7%) - basins change monotonically with N
+  - **Gulf_of_Maine__Massachusetts is tunnel hub** - appears in 61% of basin pairs
+  - **Tunnel nodes are shallow** (mean depth 11.1 vs typical 50+) - near cycle cores
+  - **All tunnel nodes bridge exactly 2 basins** - no multi-basin tunnels found
+- **Theory Claim Evaluated**:
+  - **Supported**: "Tunnel nodes exist at basin boundaries" → 9,018 pages switch basins across N
+  - **Supported**: "Fixed-N basins are 1D slices of multiplex" → Tunnel nodes connect the slices
+  - **Partial**: "Tunnel frequency indicates semantic centrality" → Shallow depth suggests structural centrality, semantic validation pending (Phase 5)
+- **Notes**:
+  - Follows [TUNNELING-ROADMAP.md](../../n-link-analysis/TUNNELING-ROADMAP.md) 5-phase plan
+  - Phase 3 (multiplex connectivity) is next
+  - Full validation requires Phases 3-5 completion
+
+---
+
 ### NLR-C-0002 — Citation & integration lineage for sqsd.html → N-Link theory
 
 - **Status**: proposed

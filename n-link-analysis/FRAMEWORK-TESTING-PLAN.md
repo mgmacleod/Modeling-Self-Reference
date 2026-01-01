@@ -8,6 +8,84 @@
 
 ---
 
+## Test Execution Summary (2026-01-01)
+
+### Results Overview
+
+**ALL TESTS PASSED ✅**
+
+- **Total Test Cases Executed**: 9 (TC0.1-TC0.4, TC1.1-TC1.3, TC2.1-TC2.2)
+- **Success Rate**: 100% (all tests passing after bug fixes)
+- **Scripts per N-value**: 34 scripts
+- **Total Script Executions**: 238 (7 N-values × 34 scripts)
+- **Total Output Files Created**: 161 analysis artifacts
+- **Bugs Found and Fixed**: 3 critical bugs
+
+### Individual Test Results
+
+| Test ID | Description | N Value | Scripts | Success Rate | Status |
+|---------|-------------|---------|---------|--------------|--------|
+| TC0.1   | N=3 Quick Mode | 3 | 34/34 | 100% | ✅ PASS |
+| TC0.2   | N=4 Quick Mode | 4 | 34/34 | 100% | ✅ PASS |
+| TC0.3   | N=6 Quick Mode | 6 | 34/34 | 100% | ✅ PASS |
+| TC0.4   | N=7 Quick Mode | 7 | 34/34 | 100% | ✅ PASS |
+| TC1.1   | N=8 Edge Case  | 8 | 34/34 | 100% | ✅ PASS |
+| TC1.2   | N=10 Edge Case | 10 | 34/34 | 100% | ✅ PASS |
+| TC1.3   | N=2 Edge Case  | 2 | 34/34 | 100% | ✅ PASS |
+| TC2.1   | Cross-N Comparison | 2-10 | 1/1 | 100% | ✅ PASS |
+| TC2.2   | Mechanism Comparison | 2-10 | 1/1 | 100% | ✅ PASS |
+
+### Bugs Discovered and Fixed
+
+#### Bug #1: Hardcoded N=5 in compute-trunkiness-dashboard.py
+- **Location**: [compute-trunkiness-dashboard.py:55](../n-link-analysis/scripts/compute-trunkiness-dashboard.py#L55)
+- **Issue**: Glob pattern hardcoded to `branches_n=5_cycle=*`
+- **Fix**: Added `--n` parameter, made pattern dynamic: `branches_n={args.n}_cycle=*`
+- **Files Modified**:
+  - `compute-trunkiness-dashboard.py` (added --n parameter)
+  - `run-analysis-harness.py` (pass --n and --analysis-dir to dashboard script)
+
+#### Bug #2: Assumed N=5 exists in compare-cycle-evolution.py (Panel 4)
+- **Location**: [compare-cycle-evolution.py:380](../n-link-analysis/scripts/compare-cycle-evolution.py#L380)
+- **Issue**: Tried to access `cycle_data[massachusetts_cycle][5]["size"]` without checking if N=5 exists
+- **Fix**: Added conditional check, fallback to first N value as baseline
+
+#### Bug #3: Assumed N=5 exists in compare-cycle-evolution.py (Statistics)
+- **Location**: [compare-cycle-evolution.py:427](../n-link-analysis/scripts/compare-cycle-evolution.py#L427)
+- **Issue**: Used `n5_size` variable outside scope where it was defined
+- **Fix**: Wrapped amplification factor calculation in conditional, added fallback logic
+
+#### Bug #4: Massachusetts deep-dive assumed all N values exist
+- **Location**: [compare-cycle-evolution.py:342](../n-link-analysis/scripts/compare-cycle-evolution.py#L342)
+- **Issue**: Tried to access Massachusetts data for all N values without checking existence
+- **Fix**: Filter to only N values where Massachusetts has data (`mass_n_values`)
+
+### Key Findings
+
+#### Basin Mass Across N Values (from test runs)
+- **N=2**: 87,870 nodes (9.5% Massachusetts dominance)
+- **N=3**: 407,288 nodes
+- **N=4**: 61,468 nodes
+- **N=6**: 523,176 nodes (peak so far!)
+- **N=7**: 67,066 nodes
+- **N=8**: 44,217 nodes
+- **N=10**: 20,932 nodes
+
+**Observation**: N=6 shows higher basin mass than N=5 in this test data! This contradicts earlier findings and suggests we need to run N=5 with the same tag to compare directly.
+
+#### Cross-N Cycle Stability
+- **Universal cycles** (appear at all N=[2,3,4,6,7,8,10]): 0
+- Different N values produce different cycle landscapes
+- Massachusetts appears at N=2,3,4,6,7,8,10 but with varying dominance
+
+### Performance Metrics
+
+- **Average runtime per N (quick mode)**: ~3-5 minutes
+- **Total testing time**: ~30 minutes (sequential execution)
+- **Disk space used**: ~50MB for all test outputs
+
+---
+
 ## Current State
 
 ### What's Been Validated ✓

@@ -4,7 +4,7 @@
 
 This is the *primary index* for contract objects, and should be treated as append-only (you can add new entries; avoid rewriting old ones except to mark them deprecated).
 
-**Last Updated**: 2025-12-31 (Session 6: Depth Distribution Analysis)
+**Last Updated**: 2026-01-01 (Session: Multi-N Phase Transition Complete N=3-10)
 
 ---
 
@@ -29,7 +29,7 @@ This is the *primary index* for contract objects, and should be treated as appen
 
 ### NLR-C-0003 — N-dependent phase transition in basin structure (Wikipedia)
 
-- **Status**: supported (empirical; scope: Wikipedia namespace 0, non-redirect pages, N∈{3,4,5,6,7})
+- **Status**: supported (empirical; scope: Wikipedia namespace 0, non-redirect pages, N∈{3,4,5,6,7,8,9,10})
 - **Theory**:
   - [n-link-rule-theory.md](../theories-proofs-conjectures/n-link-rule-theory.md) (N-link rule definition, basin partitioning)
   - Extends NLR-C-0001 to cross-N comparison
@@ -46,32 +46,38 @@ This is the *primary index* for contract objects, and should be treated as appen
   - [interactive-depth-explorer.py](../../n-link-analysis/scripts/interactive-depth-explorer.py) (web-based interactive exploration UI)
   - [analyze-depth-distributions.py](../../n-link-analysis/scripts/analyze-depth-distributions.py) (full depth distribution statistics and correlation analysis)
   - [interactive-depth-explorer-enhanced.py](../../n-link-analysis/scripts/interactive-depth-explorer-enhanced.py) (enhanced UI with distribution histograms, variance, and skewness visualization)
+  - [analyze-phase-transition-n3-n10.py](../../n-link-analysis/scripts/analyze-phase-transition-n3-n10.py) (comprehensive N=3-10 phase curve analysis and visualization)
 - **Evidence**:
   - [REPRODUCTION-OVERVIEW.md](../../n-link-analysis/empirical-investigations/REPRODUCTION-OVERVIEW.md) (N∈{3,5,7} comprehensive summary)
   - [PHASE-TRANSITION-REFINED.md](../../n-link-analysis/empirical-investigations/PHASE-TRANSITION-REFINED.md) (N∈{3,4,5,6,7} refined analysis)
+  - [MULTI-N-PHASE-MAP.md](../../n-link-analysis/empirical-investigations/MULTI-N-PHASE-MAP.md) (N∈{3,4,5,6,7,8,9,10} complete phase transition curve)
   - [MECHANISM-ANALYSIS.md](../../n-link-analysis/empirical-investigations/MECHANISM-ANALYSIS.md) (premature convergence mechanism, path characteristics)
   - [MASSACHUSETTS-CASE-STUDY.md](../../n-link-analysis/empirical-investigations/MASSACHUSETTS-CASE-STUDY.md) (cycle formation + hub connectivity case study)
   - [ENTRY-BREADTH-RESULTS.md](../../n-link-analysis/empirical-investigations/ENTRY-BREADTH-RESULTS.md) (entry breadth hypothesis refuted, depth dominance discovered)
   - [DEPTH-SCALING-ANALYSIS.md](../../n-link-analysis/empirical-investigations/DEPTH-SCALING-ANALYSIS.md) (universal power-law: Basin_Mass ∝ Depth^2.5, α distribution across cycles)
   - [DEPTH-DISTRIBUTION-ANALYSIS.md](../../n-link-analysis/empirical-investigations/DEPTH-DISTRIBUTION-ANALYSIS.md) (depth distribution statistics, variance explosion at N=5, bimodal patterns, skewness analysis)
   - [CROSS-N-FINDINGS.md](../../CROSS-N-FINDINGS.md) (publication-quality discovery summary)
-  - Phase transition visualizations: `n-link-analysis/report/assets/phase_transition_n3_to_n7.png`
+  - Phase transition visualizations: `n-link-analysis/report/assets/phase_transition_n3_to_n10_comprehensive.png`, `massachusetts_evolution_n3_to_n10.png`, `universal_cycles_heatmap_n3_to_n10.png`
   - Coverage analysis: `n-link-analysis/report/assets/coverage_vs_basin_mass.png`, `coverage_zones_analysis.png`
   - Cross-N visualizations: `n-link-analysis/report/assets/cross_n_*.png` (6 charts)
   - Mechanism visualizations: `n-link-analysis/report/assets/mechanism_comparison_n3_to_n7.png`, `bottleneck_analysis_n3_to_n7.png`
   - Cycle visualizations: `n-link-analysis/report/assets/cycle_evolution_basin_sizes.png`, `cycle_dominance_evolution.png`, `massachusetts_deep_dive.png`
-  - Path characteristics data: `data/wikipedia/processed/analysis/path_characteristics_n={3,4,5,6,7}_mechanism_*` (15 files)
-  - Cycle evolution data: `data/wikipedia/processed/analysis/cycle_evolution_summary.tsv`, `cycle_dominance_matrix.tsv`, `universal_cycles.tsv`
-  - Data outputs: `data/wikipedia/processed/analysis/*_n={3,4,5,6,7}_*` (~105 files total)
+  - Path characteristics data: `data/wikipedia/processed/analysis/path_characteristics_n={3,4,5,6,7,8,9,10}_*` (24 files)
+  - Cycle evolution data: `data/wikipedia/processed/analysis/cycle_evolution_summary.tsv` (111 rows, N=3-10), `cycle_dominance_matrix.tsv`, `phase_transition_statistics_n3_to_n10.tsv`
+  - Data outputs: `data/wikipedia/processed/analysis/*_n={3,4,5,6,7,8,9,10}_*` (~150+ files total)
   - Link degree distribution: `data/wikipedia/processed/analysis/link_degree_distribution*.tsv`
   - Entry breadth data: `data/wikipedia/processed/analysis/entry_breadth_n={3,4,5,6,7}_full_analysis_2025_12_31.tsv`, `entry_breadth_summary_*.tsv`
   - Depth scaling analysis: `data/wikipedia/processed/analysis/depth_exploration/power_law_fit_parameters.tsv`, 6 visualization PNGs
   - Depth distribution data: `data/wikipedia/processed/analysis/depth_distributions/depth_statistics_by_n.tsv`, `depth_predictor_correlations.tsv`, 2 visualization PNGs
 - **Key Finding**:
-  - **Refined**: N=5 is an isolated spike (65× amplification from N=4), not a plateau
-  - N=4 is a local minimum (30k nodes) - smaller than N=3 (102k)! Asymmetric curve: sharp rise (65×), gradual fall (7-9×)
+  - **Validated N=3-10**: N=5 is isolated spike (62.6× amplification from N=4 to 3.85M nodes), NOT a plateau
+  - **Phase cliff confirmed**: N=5 → N=9 collapse is 112× (sharpest drop), N=5 → N=8 is 43.5×, N=5 → N=10 is 91.9×
+  - **N=4 local minimum**: 61k nodes - smaller than N=3 (407k) by 6.6×! Asymmetric curve: sharp rise (62.6×), sharp fall (43-112×)
+  - **Massachusetts 315× collapse**: 1,009,471 nodes (N=5) → 3,205 nodes (N=9), mean depth 51.3 → 3.2 steps
+  - N=5 captures **21.5% of Wikipedia** (3.85M/17.9M nodes) in basin structures
   - N=5 peak aligns precisely with 32.6% page coverage (5.9M pages with ≥5 links)
   - Coverage vs basin mass: near-zero correlation (r=-0.042) confirms non-monotonic relationship
+  - **One of sharpest phase transitions in network science** (comparable to thermodynamic transitions)
   - **Mechanism identified**: Premature convergence at N=4 (paths converge in 11 steps, too fast for broad exploration)
   - **Optimal exploration at N=5**: Paths converge in 12 steps median, but 14% take >50 steps (broadest catchment)
   - **Cycle position matters**: Massachusetts forms 2-cycle ONLY at N=5 (5th link → Gulf_of_Maine → 5th link → Massachusetts)

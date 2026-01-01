@@ -334,12 +334,18 @@ def main() -> None:
         print(f"Cycle: {massachusetts_cycle}")
         print()
 
-        fig = plt.figure(figsize=(14, 10))
-        gs = gridspec.GridSpec(2, 2, hspace=0.3, wspace=0.3)
+        # Filter to only N values where Massachusetts has data
+        mass_n_values = [n for n in n_values if n in cycle_data[massachusetts_cycle] and "size" in cycle_data[massachusetts_cycle][n]]
 
-        # Panel 1: Basin size across N
-        ax1 = fig.add_subplot(gs[0, 0])
-        sizes = [cycle_data[massachusetts_cycle][n]["size"] for n in n_values]
+        if not mass_n_values:
+            print("No Massachusetts data found for any N values")
+        else:
+            fig = plt.figure(figsize=(14, 10))
+            gs = gridspec.GridSpec(2, 2, hspace=0.3, wspace=0.3)
+
+            # Panel 1: Basin size across N
+            ax1 = fig.add_subplot(gs[0, 0])
+            sizes = [cycle_data[massachusetts_cycle][n]["size"] for n in mass_n_values]
         ax1.plot(n_values, sizes, "o-", linewidth=3, markersize=10, color="#E63946")
         ax1.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
         ax1.set_xlabel("N (Link Index)", fontsize=12)

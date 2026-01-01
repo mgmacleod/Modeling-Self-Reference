@@ -16,7 +16,7 @@
         ## Trunkiness Dashboard
 
         Dashboard input:
-        - `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n=5_test_2026-01-01.tsv`
+        - `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n=5_bootstrap_2025-12-30.tsv`
 
         **Charts**:
         - ![Top-1 share](assets/trunkiness_top1_share.png)
@@ -60,11 +60,14 @@
         These are pulled from any available `dominant_upstream_chain_n=5_from=*.tsv` artifacts.
 
         - dominant_upstream_chain_n=5_from=Massachusetts.tsv
+- dominant_upstream_chain_n=5_from=Seawater.tsv
 
         **Charts** (share + basin size per chase):
 
         - ![chart](assets/chase_dominant_upstream_chain_n=5_from=Massachusetts_share.png)
 - ![chart](assets/chase_dominant_upstream_chain_n=5_from=Massachusetts_basin.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Seawater_share.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Seawater_basin.png)
 
         **Overlay comparison**:
 
@@ -73,7 +76,7 @@
         ## How to Regenerate
 
         From repo root:
-        - `python n-link-analysis/scripts/render-human-report.py --tag test_2026-01-01`
+        - `python n-link-analysis/scripts/render-human-report.py --tag bootstrap_2025-12-30`
 
         This rewrites:
         - `n-link-analysis/report/overview.md`

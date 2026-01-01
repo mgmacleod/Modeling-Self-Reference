@@ -158,6 +158,14 @@ Where each basin terminates in:
 
 **Proof**: Identical to N-Link Theorem 4.3 - deterministic function on finite graph. ∎
 
+**Corollary 3.2 (Exhaustive Basin Labeling is Search-Shrinking)**:
+For any fixed rule $I$ (i.e., a deterministic successor function on a finite node set, with HALT allowed), every node has a unique terminal fate (HALT or a cycle). Therefore basin membership can be exhaustively labeled by iterating forward from unassigned nodes until a terminal (or previously-labeled node) is reached, then backfilling labels along the discovered path (path compression).
+
+Operationally: once a basin label is assigned to a node, that node can be removed from the remaining search space for that same rule $I$; as labeling proceeds, the amount of “unknown” work monotonically decreases.
+
+**Interpretation (Rule-Slice of a Multiplex)**:
+If we consider the multiplex state space $(\text{node}, I)$ with (a) within-rule edges induced by $I$ and (b) tunneling edges that switch rules while staying on the same underlying node, then each disjoint basin under a fixed rule $I$ is a 1D “cross-section” (a slice at fixed $I$) of a higher-dimensional multiplex structure. Shared nodes act as natural junctions for tunnels across rules.
+
 ### 3.2 Different Rules → Different Partitions
 
 **Key observation**: The same database has different basin structures under different inference rules.
@@ -634,3 +642,5 @@ This theory extends [n-link-rule-theory.md](n-link-rule-theory.md):
 **Next Milestone**: Complete TODO #1 (enumerate logical inferences)  
 **Last Updated**: 2025-12-15  
 **Authors**: Human-AI collaborative wayfinding session
+
+

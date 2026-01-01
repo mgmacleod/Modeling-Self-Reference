@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history  
 **Target Audience**: LLMs  
 **Purpose**: Chronological record of project evolution, decisions, and discoveries  
-**Last Updated**: 2025-12-31  
+**Last Updated**: 2025-12-31
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,67 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2025-12-31 - Cross-N Basin Analysis: Phase Transition Discovery
+
+**Completed**:
+- Created comprehensive script documentation (`scripts-reference.md`, ~15k tokens) for all 14 analysis scripts
+- Created data validation script (`validate-data-dependencies.py`) with schema/integrity/consistency checks
+- Created reproduction orchestration script (`reproduce-main-findings.py`) with quick/full modes, parameterized by N
+- Executed complete N=5 reproduction (quick + full modes, 9 terminal cycles)
+- Expanded analysis to N∈{3,5,7} to test basin structure universality
+- Created cross-N comparison script (`compare-across-n.py`)
+- Generated 9 visualizations: 3 interactive 3D HTML trees, 6 cross-N comparison PNG charts
+- Created publication-quality discovery summary (`CROSS-N-FINDINGS.md`)
+- Created visualization guide (`VISUALIZATION-GUIDE.md`)
+- Created comprehensive reproduction overview (`n-link-analysis/empirical-investigations/REPRODUCTION-OVERVIEW.md`)
+- Updated contract registry with NLR-C-0003 (N-dependent phase transition contract)
+- Updated `n-link-analysis/INDEX.md` with new scripts
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Use quick mode for cross-N (6 cycles vs 9) | Full mode would take 6+ hours per N; quick mode sufficient for comparison |
+| Manual analysis for N∈{3,7} dashboards | `compute-trunkiness-dashboard.py` hardcoded to N=5; manual pandas analysis faster than refactoring |
+| Remove seaborn dependency from comparison script | Not installed; matplotlib boxplots provide equivalent functionality |
+| Focus on static visualizations over interactive dashboards | Dash basin viewer requires expensive basin geometry computation; 3D trees + PNG charts provide sufficient insight |
+| Document in REPRODUCTION-OVERVIEW.md vs session-log.md | This is a major milestone worthy of standalone comprehensive documentation |
+
+**Discoveries**:
+- **Major empirical finding**: N=5 exhibits unique "sweet spot" with 20-60× larger basins than N∈{3,7}
+- **Phase transition hypothesis**: N=5 sits at critical 33% page coverage threshold (fraction with ≥5 links)
+- **Universal cycles**: Same 6 cycles appear across all N but with radically different properties (up to 4289× size difference)
+- **Single-trunk phenomenon**: Only N=5 shows extreme concentration (67% of basins >95% trunk share vs 0% for N=3/N=7)
+- **Terminal type trends**: Higher N → more HALTs (N=7: 12% HALT rate vs N=3: 1.4%)
+- **Rule-graph coupling**: Basin properties emerge from interaction of deterministic rule with graph topology, not from graph structure alone
+
+**Validation**:
+- Data validation: 17.9M sequences validated (27.8% coverage), 103 missing page_ids (0.0006% - acceptable)
+- N=5 quick reproduction: 6 cycles identified in ~15 minutes
+- N=5 full reproduction: 9 cycles analyzed in ~2-3 hours
+- Cross-N analysis: All 3 N values (3,5,7) completed successfully
+- Visualizations: All 9 files generated and inspected
+- Theory claim evaluation: "Basin structure is universal" → **REFUTED** empirically
+
+**Architecture Impact**:
+- Established reproducibility infrastructure: validation → reproduction → comparison pipeline
+- Created parameterized-by-N architecture enabling systematic cross-N studies
+- Introduced comprehensive script documentation standard (scripts-reference.md pattern)
+- Added cross-N comparison capability to analysis toolkit
+
+**Next Steps**:
+- Finer N resolution (N∈{4,6,8,9,10}) to map transition curve precisely
+- Link degree distribution analysis to correlate with basin mass peaks
+- Apply to other graphs (different language Wikipedias, citation networks) to test universality
+- Theoretical modeling to predict basin peaks from graph degree distribution + rule index
+
+**Contract Updates**:
+- Added NLR-C-0003 (N-dependent phase transition) to contract registry
+- Status: supported (empirical)
+- Theory claim refuted: "Basin structure is universal across N"
+- Theory claim supported: "Finite self-referential graphs partition into basins under deterministic rules"
+
+---
 
 ### Session: 2025-12-31 - Basin Geometry Visualization Pipeline (Parquet-First)
 

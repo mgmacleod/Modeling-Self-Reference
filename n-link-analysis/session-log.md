@@ -3,8 +3,53 @@
 **Document Type**: Cumulative  
 **Target Audience**: LLMs + Developers  
 **Purpose**: Append-only record of analysis decisions, experiments, and outcomes  
-**Last Updated**: 2025-12-31  
+**Last Updated**: 2025-12-31
 **Status**: Active
+
+---
+
+### 2025-12-31 - Cross-N Reproduction and Phase Transition Discovery
+
+**Completed**:
+- Created comprehensive reproduction infrastructure:
+  - `scripts/validate-data-dependencies.py` - Schema/integrity validation
+  - `scripts/reproduce-main-findings.py` - Complete pipeline orchestration (parameterized by N)
+  - `scripts/compare-across-n.py` - Cross-N comparison analysis
+  - `scripts-reference.md` - Complete documentation for all 14 analysis scripts (~15k tokens)
+- Executed full reproduction for N=5 (9 terminal cycles, 1.99M total basin mass)
+- Expanded to N∈{3,5,7} to test universality hypothesis
+- Generated 9 visualizations (3 interactive 3D HTML trees, 6 cross-N PNG comparison charts)
+- Created publication-quality documentation:
+  - `empirical-investigations/REPRODUCTION-OVERVIEW.md` - Comprehensive session summary
+  - `CROSS-N-FINDINGS.md` (root) - Discovery summary
+  - `VISUALIZATION-GUIDE.md` (root) - Visualization index
+
+**Major Discovery**:
+- **N=5 exhibits unique phase transition**: 20-60× larger basins than N∈{3,7}
+- Same 6 cycles persist across all N but with radically different properties (up to 4289× size variation)
+- Only N=5 shows extreme single-trunk structure (67% of basins >95% concentration)
+- Hypothesis: N=5 sits at critical 33% page coverage threshold (percolation-like phenomenon)
+
+**Theory Claim Evaluated**:
+- **REFUTED**: "Basin structure is universal across N" → Structure is rule-dependent, emerges from rule-graph coupling
+- **SUPPORTED**: "Finite self-referential graphs partition into basins" → Holds for all N∈{3,5,7}
+
+**Data Generated** (~60 files in `data/wikipedia/processed/analysis/`):
+- Sample traces: N∈{3,5,7}, 500 random starts each
+- Basin layers: depth-stratified basin sizes for all cycles
+- Branch analysis: tributary structure for all basins
+- Dashboards: trunkiness metrics, dominance collapse (N=5 only)
+- Dominant chains: upstream trunk paths (N=5 only)
+
+**Contract Update**:
+- Added NLR-C-0003 to contract registry (N-dependent phase transition, status: supported)
+
+**Next Steps**:
+- Finer N resolution (N∈{4,6,8,9,10}) to map transition curve
+- Link degree distribution correlation analysis
+- Test on other graphs (different language Wikipedias, citation networks)
+
+Commit: (pending)
 
 ---
 

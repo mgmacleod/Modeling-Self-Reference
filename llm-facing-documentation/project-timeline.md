@@ -18,6 +18,34 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Late Night) - Tunneling Scripts Reorganization
+
+**Completed**:
+- Created `n-link-analysis/scripts/tunneling/` subdirectory
+- Moved 15 tunneling scripts from flat `scripts/` directory
+- Fixed `REPO_ROOT` path in all scripts (`parents[2]` → `parents[3]`)
+- Created `run-tunneling-pipeline.py` - orchestrates all 5 phases
+- Created `README.md` for tunneling subdirectory
+- Updated `TUNNELING-ROADMAP.md` with new paths and usage examples
+
+**Files Created**:
+| File | Description |
+|------|-------------|
+| `scripts/tunneling/run-tunneling-pipeline.py` | Pipeline runner with `--phase`, `--from-phase`, `--dry-run` options |
+| `scripts/tunneling/README.md` | Quick reference for subdirectory |
+
+**Runner Features**:
+- `--phase 1 2 3` - run specific phases
+- `--from-phase 3` - run phase 3 onwards
+- `--dry-run` - show what would execute
+- `--n-min` / `--n-max` - customize N range
+
+**Architecture Impact**:
+- Tunneling scripts now isolated in dedicated subdirectory
+- Single entry point for complete pipeline execution
+
+---
+
 ### Session: 2026-01-01 (Night) - TUNNELING-ROADMAP Complete: All 5 Phases Validated
 
 **Completed**:

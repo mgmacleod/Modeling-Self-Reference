@@ -12,6 +12,7 @@
 | [implementation.md](implementation.md) | 2 | Analysis architecture: inputs/outputs, core algorithms, run flow | ~4k |
 | [scripts-reference.md](scripts-reference.md) | 2 | Complete reference for all analysis scripts (parameters, I/O, theory connections) | ~15k |
 | [NEXT-STEPS.md](NEXT-STEPS.md) | 2 | Prioritized next steps: Multi-N analysis, hub connectivity, theory validation | ~6k |
+| [TUNNELING-ROADMAP.md](TUNNELING-ROADMAP.md) | 2 | **Implementation roadmap for tunneling/multiplex analysis** (5 phases, 15 scripts) | ~12k |
 | [future.md](future.md) | 2 | Next steps (Phase 1 experiments, validation, scaling work) | ~1k |
 | [session-log.md](session-log.md) | 2 | Cumulative work log + decisions for analysis work | ~2k |
 | [empirical-investigations/INDEX.md](empirical-investigations/INDEX.md) | 2 | Question-scoped empirical investigation streams | ~1k |

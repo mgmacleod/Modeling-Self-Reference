@@ -163,34 +163,27 @@ python scripts/fit-power-law-across-n.py \
 
 ---
 
-#### 2.2 Tunneling Hypothesis Test
-**Goal**: Test multi-rule tunneling (do some pages act as attractors across multiple N?)
+#### 2.2 Tunneling/Multiplex Analysis (ROADMAP AVAILABLE)
 
-**Why**: Theory predicts switching between N-link rules reveals semantic relationships:
-- Universal attractors (cycles that appear at many N)
-- Tunneling paths (changing N creates shortcuts)
-- Need empirical validation
+**Status**: Full implementation roadmap created - see [TUNNELING-ROADMAP.md](TUNNELING-ROADMAP.md)
 
-**Approach**:
-```python
-# Identify universal cycles
-python scripts/compute-universal-attractors.py \
-  --n-range 3 10 \
-  --min-n-count 5 \
-  --output universal_attractors.tsv
+**Goal**: Implement cross-N tunneling and multiplex analysis per Definition 4.1
 
-# Analyze tunneling paths
-python scripts/analyze-tunneling-paths.py \
-  --start-title "Massachusetts" \
-  --n-sequence "3,4,5,6,7" \
-  --output tunneling_paths_massachusetts.tsv
-```
+**Summary**: 5-phase roadmap with 15 new scripts (~3,750 lines):
+1. **Phase 1**: Multiplex Data Layer (unified cross-N tables)
+2. **Phase 2**: Tunnel Node Identification (core theory validation)
+3. **Phase 3**: Multiplex Connectivity (graph + reachability analysis)
+4. **Phase 4**: Mechanism Classification (understand WHY structure changes)
+5. **Phase 5**: Applications & Validation (semantic model, validation, report)
 
-**New scripts needed**:
-- `compute-universal-attractors.py` (currently placeholder)
-- `analyze-tunneling-paths.py` (new, ~350 lines)
+**Key Decisions Made**:
+- Tunneling rule: Reverse identification (Definition 4.1)
+- Connectivity: Directed reachability
+- Scale: Full N=3-10 coverage
 
-**Investigation doc**: Create `empirical-investigations/MULTI-RULE-TUNNELING.md`
+**Effort**: 7-11 sessions total
+
+**To start**: Begin with Phase 1 scripts in [TUNNELING-ROADMAP.md](TUNNELING-ROADMAP.md)
 
 ---
 

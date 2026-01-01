@@ -18,7 +18,43 @@
 
 ## Timeline Entries
 
-### Session: 2026-01-01 - Multiplex “Basins as Slices” Framing + Breadcrumbs
+### Session: 2026-01-01 - Tunneling/Multiplex Implementation Roadmap
+
+**Completed**:
+- Assessed overall repository state (42 Python files, 70 Markdown files, 146 GB data)
+- Created comprehensive tunneling implementation roadmap: [TUNNELING-ROADMAP.md](../n-link-analysis/TUNNELING-ROADMAP.md)
+- 5-phase plan with 15 new scripts (~3,750 lines estimated)
+- Updated NEXT-STEPS.md to reference new roadmap
+- Updated n-link-analysis/INDEX.md with new documentation
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Tunneling rule: Reverse identification (Def 4.1) | Nodes reachable from different basins under different N - matches theory |
+| Connectivity: Directed reachability | Respects flow direction; most restrictive and theoretically grounded |
+| Scale: Full N=3-10 | Complete coverage of existing empirical data |
+| Phased implementation | Each phase delivers usable outputs, not just scaffolding |
+
+**Architecture Impact**:
+- Establishes 5-phase implementation path from raw per-N data to semantic model extraction
+- Introduces multiplex data layer as foundation for all tunneling analysis
+- Plans 4 new empirical investigation documents + 1 new contract (NLR-C-0004)
+
+**Roadmap Summary**:
+| Phase | Goal | Scripts | Effort |
+|-------|------|---------|--------|
+| 1 | Multiplex Data Layer | 3 | 1-2 sessions |
+| 2 | Tunnel Node Identification | 3 | 1-2 sessions |
+| 3 | Multiplex Connectivity | 3 | 2-3 sessions |
+| 4 | Mechanism Classification | 3 | 1-2 sessions |
+| 5 | Applications & Validation | 3 | 1-2 sessions |
+
+**Next Steps**:
+- Begin Phase 1: `build-multiplex-table.py`, `normalize-cycle-identity.py`, `compute-intersection-matrix.py`
+
+---
+
+### Session: 2026-01-01 - Multiplex "Basins as Slices" Framing + Breadcrumbs
 
 **Completed**:
 - Added a tunneling/multiplex breadcrumb to n-link-analysis docs for Matt’s next session

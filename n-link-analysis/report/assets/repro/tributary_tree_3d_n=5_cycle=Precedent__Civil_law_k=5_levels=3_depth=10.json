@@ -1,0 +1,1316 @@
+{
+  "nodes": [
+    {
+      "page_id": 23004,
+      "title": "Precedent",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level0": 41831,
+      "basin_total_level2": 41830
+    },
+    {
+      "page_id": 5255,
+      "title": "Civil_law",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 41831
+    },
+    {
+      "page_id": 5253,
+      "title": "Constitution",
+      "kind": "entry",
+      "level": 3,
+      "basin_total_level1": 41847
+    },
+    {
+      "page_id": 5254,
+      "title": "Common_law",
+      "kind": "entry",
+      "level": 3,
+      "basin_total_level1": 4747
+    },
+    {
+      "page_id": 1048798,
+      "title": "Civil_law_(legal_system)",
+      "kind": "entry",
+      "level": 3,
+      "basin_total_level1": 36014
+    },
+    {
+      "page_id": 3028805,
+      "title": "Standard_of_review",
+      "kind": "entry",
+      "level": 3,
+      "basin_total_level1": 48
+    },
+    {
+      "page_id": 6463575,
+      "title": "Roman-Dutch_law",
+      "kind": "entry",
+      "level": 3,
+      "basin_total_level1": 12
+    },
+    {
+      "page_id": 10263,
+      "title": "Executive_(government)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 26317
+    },
+    {
+      "page_id": 76972,
+      "title": "Denmark",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 17344
+    },
+    {
+      "page_id": 105323,
+      "title": "Freedom_of_the_press",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 201
+    },
+    {
+      "page_id": 215403,
+      "title": "Case_law",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 138
+    },
+    {
+      "page_id": 1235730,
+      "title": "Constitution_of_Maryland",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 135
+    },
+    {
+      "page_id": 11727749,
+      "title": "Private_foundation",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 2183
+    },
+    {
+      "page_id": 1835106,
+      "title": "Feoffment",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 665
+    },
+    {
+      "page_id": 54024,
+      "title": "Equity_(law)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 635
+    },
+    {
+      "page_id": 464522,
+      "title": "Master_of_Laws",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 259
+    },
+    {
+      "page_id": 14091,
+      "title": "Habeas_corpus",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 210
+    },
+    {
+      "page_id": 219872,
+      "title": "Community_property",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 616
+    },
+    {
+      "page_id": 7378,
+      "title": "Comparative_law",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 106
+    },
+    {
+      "page_id": 535796,
+      "title": "B\u00fcrgerliches_Gesetzbuch",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 92
+    },
+    {
+      "page_id": 2457297,
+      "title": "Code_of_law",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 60
+    },
+    {
+      "page_id": 6084429,
+      "title": "Circuit_Court_(Ireland)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 39
+    },
+    {
+      "page_id": 53570697,
+      "title": "Supreme_Court_of_Latvia",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 2
+    },
+    {
+      "page_id": 5551551,
+      "title": "Pushpanathan_v_Canada_(Minister_of_Citizenship_and_Immigration)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 8505349,
+      "title": "Markman_hearing",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 42024044,
+      "title": "Jurisdictional_fact",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 32291849,
+      "title": "Marriage_Act,_1961_(South_Africa)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 4
+    },
+    {
+      "page_id": 40783388,
+      "title": "Jan_Arend_Godert_de_Vos_van_Steenwijk_II",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 2
+    },
+    {
+      "page_id": 35755406,
+      "title": "Criminal_procedure_in_South_Africa",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 2
+    },
+    {
+      "page_id": 37245515,
+      "title": "Administrateur,_Natal_v_Trust_Bank_van_Africa_Bpk",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 38649796,
+      "title": "Hoge_Raad_van_Holland_en_Zeeland",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 229379,
+      "title": "Federative_units_of_Brazil",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 26329,
+      "title": "Responsible_government",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 170653,
+      "title": "Authority",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 43650443,
+      "title": "Parliamentary_sovereignty",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 30876385,
+      "title": "Royal_prerogative",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 429743,
+      "title": "Folketing",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 32610,
+      "title": "Vikings",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 419786,
+      "title": "Danes",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 23677,
+      "title": "Poul_Anderson",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 145493,
+      "title": "Copenhagen_County",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 5499178,
+      "title": "World_Association_of_Newspapers_and_News_Publishers",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 2542065,
+      "title": "Constitution_of_New_Hampshire",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 39094590,
+      "title": "French_occupation_of_Malta",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 22809332,
+      "title": "Justice_Manual",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1197501,
+      "title": "Gag_order",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1660748,
+      "title": "Law_clerk",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 483210,
+      "title": "Westlaw",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 15518924,
+      "title": "Law_of_New_Zealand",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 47409452,
+      "title": "Housing_Act_1996",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 2168588,
+      "title": "Illegal_per_se",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 101141,
+      "title": "Governor_of_Maryland",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 34025801,
+      "title": "Gun_laws_in_Maryland",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1961766,
+      "title": "Maryland_Constitution_of_1864",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 693306,
+      "title": "Foundation_(nonprofit)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1554430,
+      "title": "Guggenheim_Fellowship",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 57060219,
+      "title": "Daniel_Levin_(author)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 40833093,
+      "title": "Russian_Medical_Fund",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 18399177,
+      "title": "Groupement_d'int\u00e9r\u00eat_\u00e9conomique",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 17851524,
+      "title": "Ecclesiastical_fief",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 248957,
+      "title": "Duchy_of_Brunswick-L\u00fcneburg",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1722531,
+      "title": "Use_(law)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 366912,
+      "title": "Tokugawa_Yorifusa",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 52267550,
+      "title": "Wolfsberg_Castle_(Harz)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 163555,
+      "title": "Court_of_Chancery",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 402027,
+      "title": "United_Kingdom_labour_law",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 221254,
+      "title": "Estoppel",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 61539534,
+      "title": "E._Spencer_Miller",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 18404992,
+      "title": "Arizona_Superior_Court",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 382431,
+      "title": "Stanford_Law_School",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25714291,
+      "title": "UC_Berkeley_School_of_Law",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 63183,
+      "title": "Jan_Peter_Balkenende",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7946653,
+      "title": "Faculty_of_Law,_University_of_Delhi",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 9564938,
+      "title": "Wayne_State_University_Law_School",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 158886,
+      "title": "Prerogative_writ",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25318572,
+      "title": "Military_Commissions_Act_of_2009",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 642925,
+      "title": "Rasul_v._Bush",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 23577581,
+      "title": "Defence_of_Canada_Regulations",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 20096288,
+      "title": "Institutional_Act_Number_Five",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 215971,
+      "title": "Division_of_property",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 81289553,
+      "title": "Hisquierdo_v._Hisquierdo",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 20573745,
+      "title": "Arizona_Bar_Exam",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 38329894,
+      "title": "Marital_power",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 3368285,
+      "title": "Legal_system",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 23659133,
+      "title": "Master_of_Jurisprudence",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 47826745,
+      "title": "Ernst_Rabel",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 11035168,
+      "title": "Journal_of_Transnational_Law_&_Policy",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 80977893,
+      "title": "Sacher_Institute",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 3504554,
+      "title": "Law_of_Brazil",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1224671,
+      "title": "Swiss_Civil_Code",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 19263892,
+      "title": "Chilean_Civil_Code",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 48664591,
+      "title": "Handelsgesetzbuch",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 21369841,
+      "title": "German_company_law",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 43046212,
+      "title": "Consolidated_Laws_of_New_York",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1768606,
+      "title": "Statutes_of_Lithuania",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 44035472,
+      "title": "Exit_sign",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1686049,
+      "title": "Jus_gentium",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1738924,
+      "title": "V\u00e4stg\u00f6talagen",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25187772,
+      "title": "Criminal_Courts_of_Justice,_Dublin",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 75924537,
+      "title": "Nowak_v_Data_Protection_Commissioner",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 62170457,
+      "title": "Cork_Courthouse,_Washington_Street",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 59891761,
+      "title": "Mary_Faherty",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 64454007,
+      "title": "Robert_Eagar",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 29949218,
+      "title": "Raihman_v._Latvia",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 40267637,
+      "title": "Recognition_of_Customary_Marriages_Act,_1998",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 46476667,
+      "title": "De_Vos_van_Steenwijk",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 39628262,
+      "title": "Minister_of_Safety_&_Security_v_Xaba",
+      "kind": "entry",
+      "level": 3
+    }
+  ],
+  "edges": [
+    {
+      "src": 23004,
+      "dst": 1048798,
+      "weight": 34991,
+      "share": 0.9716213589537112
+    },
+    {
+      "src": 5253,
+      "dst": 23004,
+      "weight": 36308,
+      "share": 0.8680102321355997
+    },
+    {
+      "src": 5254,
+      "dst": 23004,
+      "weight": 4421,
+      "share": 0.10569222309880705
+    },
+    {
+      "src": 1048798,
+      "dst": 23004,
+      "weight": 998,
+      "share": 0.023859045160056422
+    },
+    {
+      "src": 3028805,
+      "dst": 23004,
+      "weight": 48,
+      "share": 0.0011475292261349781
+    },
+    {
+      "src": 6463575,
+      "dst": 23004,
+      "weight": 12,
+      "share": 0.00028688230653374454
+    },
+    {
+      "src": 10263,
+      "dst": 5253,
+      "weight": 25078,
+      "share": 0.5992926444582517
+    },
+    {
+      "src": 76972,
+      "dst": 5253,
+      "weight": 15617,
+      "share": 0.3732017397122784
+    },
+    {
+      "src": 105323,
+      "dst": 5253,
+      "weight": 201,
+      "share": 0.0048033264828179515
+    },
+    {
+      "src": 215403,
+      "dst": 5253,
+      "weight": 138,
+      "share": 0.003297806241934713
+    },
+    {
+      "src": 1235730,
+      "dst": 5253,
+      "weight": 135,
+      "share": 0.003226114801892654
+    },
+    {
+      "src": 11727749,
+      "dst": 5254,
+      "weight": 2090,
+      "share": 0.4403708386009271
+    },
+    {
+      "src": 1835106,
+      "dst": 5254,
+      "weight": 665,
+      "share": 0.140117994100295
+    },
+    {
+      "src": 54024,
+      "dst": 5254,
+      "weight": 615,
+      "share": 0.12958280657395702
+    },
+    {
+      "src": 464522,
+      "dst": 5254,
+      "weight": 259,
+      "share": 0.05457227138643068
+    },
+    {
+      "src": 14091,
+      "dst": 5254,
+      "weight": 210,
+      "share": 0.04424778761061947
+    },
+    {
+      "src": 219872,
+      "dst": 1048798,
+      "weight": 609,
+      "share": 0.016910560075528283
+    },
+    {
+      "src": 7378,
+      "dst": 1048798,
+      "weight": 106,
+      "share": 0.002943381556660095
+    },
+    {
+      "src": 535796,
+      "dst": 1048798,
+      "weight": 92,
+      "share": 0.0025546330491766863
+    },
+    {
+      "src": 2457297,
+      "dst": 1048798,
+      "weight": 60,
+      "share": 0.001666065032071752
+    },
+    {
+      "src": 6084429,
+      "dst": 3028805,
+      "weight": 39,
+      "share": 0.8297872340425532
+    },
+    {
+      "src": 53570697,
+      "dst": 3028805,
+      "weight": 2,
+      "share": 0.0425531914893617
+    },
+    {
+      "src": 5551551,
+      "dst": 3028805,
+      "weight": 1,
+      "share": 0.02127659574468085
+    },
+    {
+      "src": 8505349,
+      "dst": 3028805,
+      "weight": 1,
+      "share": 0.02127659574468085
+    },
+    {
+      "src": 42024044,
+      "dst": 3028805,
+      "weight": 1,
+      "share": 0.02127659574468085
+    },
+    {
+      "src": 32291849,
+      "dst": 6463575,
+      "weight": 4,
+      "share": 0.36363636363636365
+    },
+    {
+      "src": 40783388,
+      "dst": 6463575,
+      "weight": 2,
+      "share": 0.18181818181818182
+    },
+    {
+      "src": 35755406,
+      "dst": 6463575,
+      "weight": 2,
+      "share": 0.18181818181818182
+    },
+    {
+      "src": 37245515,
+      "dst": 6463575,
+      "weight": 1,
+      "share": 0.09090909090909091
+    },
+    {
+      "src": 38649796,
+      "dst": 6463575,
+      "weight": 1,
+      "share": 0.09090909090909091
+    },
+    {
+      "src": 229379,
+      "dst": 10263,
+      "weight": 13189,
+      "share": 0.5011779905760754
+    },
+    {
+      "src": 26329,
+      "dst": 10263,
+      "weight": 5297,
+      "share": 0.2012843897248822
+    },
+    {
+      "src": 170653,
+      "dst": 10263,
+      "weight": 3503,
+      "share": 0.13311293509651922
+    },
+    {
+      "src": 43650443,
+      "dst": 10263,
+      "weight": 1792,
+      "share": 0.06809545523635811
+    },
+    {
+      "src": 30876385,
+      "dst": 10263,
+      "weight": 674,
+      "share": 0.025611795105639153
+    },
+    {
+      "src": 429743,
+      "dst": 76972,
+      "weight": 10021,
+      "share": 0.5778123738684195
+    },
+    {
+      "src": 32610,
+      "dst": 76972,
+      "weight": 3438,
+      "share": 0.19823559937727037
+    },
+    {
+      "src": 419786,
+      "dst": 76972,
+      "weight": 186,
+      "share": 0.01072478809894482
+    },
+    {
+      "src": 23677,
+      "dst": 76972,
+      "weight": 145,
+      "share": 0.00836072190509139
+    },
+    {
+      "src": 145493,
+      "dst": 76972,
+      "weight": 124,
+      "share": 0.00714985873262988
+    },
+    {
+      "src": 5499178,
+      "dst": 105323,
+      "weight": 87,
+      "share": 0.435
+    },
+    {
+      "src": 2542065,
+      "dst": 105323,
+      "weight": 34,
+      "share": 0.17
+    },
+    {
+      "src": 39094590,
+      "dst": 105323,
+      "weight": 8,
+      "share": 0.04
+    },
+    {
+      "src": 22809332,
+      "dst": 105323,
+      "weight": 7,
+      "share": 0.035
+    },
+    {
+      "src": 1197501,
+      "dst": 105323,
+      "weight": 3,
+      "share": 0.015
+    },
+    {
+      "src": 1660748,
+      "dst": 215403,
+      "weight": 49,
+      "share": 0.35766423357664234
+    },
+    {
+      "src": 483210,
+      "dst": 215403,
+      "weight": 16,
+      "share": 0.11678832116788321
+    },
+    {
+      "src": 15518924,
+      "dst": 215403,
+      "weight": 14,
+      "share": 0.10218978102189781
+    },
+    {
+      "src": 47409452,
+      "dst": 215403,
+      "weight": 9,
+      "share": 0.06569343065693431
+    },
+    {
+      "src": 2168588,
+      "dst": 215403,
+      "weight": 7,
+      "share": 0.051094890510948905
+    },
+    {
+      "src": 101141,
+      "dst": 1235730,
+      "weight": 132,
+      "share": 0.9850746268656716
+    },
+    {
+      "src": 34025801,
+      "dst": 1235730,
+      "weight": 1,
+      "share": 0.007462686567164179
+    },
+    {
+      "src": 1961766,
+      "dst": 1235730,
+      "weight": 1,
+      "share": 0.007462686567164179
+    },
+    {
+      "src": 693306,
+      "dst": 11727749,
+      "weight": 1922,
+      "share": 0.8808432630614116
+    },
+    {
+      "src": 1554430,
+      "dst": 11727749,
+      "weight": 257,
+      "share": 0.11778185151237397
+    },
+    {
+      "src": 57060219,
+      "dst": 11727749,
+      "weight": 1,
+      "share": 0.00045829514207149406
+    },
+    {
+      "src": 40833093,
+      "dst": 11727749,
+      "weight": 1,
+      "share": 0.00045829514207149406
+    },
+    {
+      "src": 18399177,
+      "dst": 11727749,
+      "weight": 1,
+      "share": 0.00045829514207149406
+    },
+    {
+      "src": 17851524,
+      "dst": 1835106,
+      "weight": 541,
+      "share": 0.8147590361445783
+    },
+    {
+      "src": 248957,
+      "dst": 1835106,
+      "weight": 116,
+      "share": 0.1746987951807229
+    },
+    {
+      "src": 1722531,
+      "dst": 1835106,
+      "weight": 2,
+      "share": 0.0030120481927710845
+    },
+    {
+      "src": 366912,
+      "dst": 1835106,
+      "weight": 2,
+      "share": 0.0030120481927710845
+    },
+    {
+      "src": 52267550,
+      "dst": 1835106,
+      "weight": 1,
+      "share": 0.0015060240963855422
+    },
+    {
+      "src": 163555,
+      "dst": 54024,
+      "weight": 577,
+      "share": 0.9100946372239748
+    },
+    {
+      "src": 402027,
+      "dst": 54024,
+      "weight": 39,
+      "share": 0.061514195583596214
+    },
+    {
+      "src": 221254,
+      "dst": 54024,
+      "weight": 5,
+      "share": 0.007886435331230283
+    },
+    {
+      "src": 61539534,
+      "dst": 54024,
+      "weight": 3,
+      "share": 0.00473186119873817
+    },
+    {
+      "src": 18404992,
+      "dst": 54024,
+      "weight": 2,
+      "share": 0.0031545741324921135
+    },
+    {
+      "src": 382431,
+      "dst": 464522,
+      "weight": 33,
+      "share": 0.12790697674418605
+    },
+    {
+      "src": 25714291,
+      "dst": 464522,
+      "weight": 28,
+      "share": 0.10852713178294573
+    },
+    {
+      "src": 63183,
+      "dst": 464522,
+      "weight": 9,
+      "share": 0.03488372093023256
+    },
+    {
+      "src": 7946653,
+      "dst": 464522,
+      "weight": 6,
+      "share": 0.023255813953488372
+    },
+    {
+      "src": 9564938,
+      "dst": 464522,
+      "weight": 5,
+      "share": 0.01937984496124031
+    },
+    {
+      "src": 158886,
+      "dst": 14091,
+      "weight": 148,
+      "share": 0.7081339712918661
+    },
+    {
+      "src": 25318572,
+      "dst": 14091,
+      "weight": 14,
+      "share": 0.06698564593301436
+    },
+    {
+      "src": 642925,
+      "dst": 14091,
+      "weight": 7,
+      "share": 0.03349282296650718
+    },
+    {
+      "src": 23577581,
+      "dst": 14091,
+      "weight": 3,
+      "share": 0.014354066985645933
+    },
+    {
+      "src": 20096288,
+      "dst": 14091,
+      "weight": 3,
+      "share": 0.014354066985645933
+    },
+    {
+      "src": 215971,
+      "dst": 219872,
+      "weight": 612,
+      "share": 0.9951219512195122
+    },
+    {
+      "src": 81289553,
+      "dst": 219872,
+      "weight": 1,
+      "share": 0.0016260162601626016
+    },
+    {
+      "src": 20573745,
+      "dst": 219872,
+      "weight": 1,
+      "share": 0.0016260162601626016
+    },
+    {
+      "src": 38329894,
+      "dst": 219872,
+      "weight": 1,
+      "share": 0.0016260162601626016
+    },
+    {
+      "src": 3368285,
+      "dst": 7378,
+      "weight": 85,
+      "share": 0.8095238095238095
+    },
+    {
+      "src": 23659133,
+      "dst": 7378,
+      "weight": 5,
+      "share": 0.047619047619047616
+    },
+    {
+      "src": 47826745,
+      "dst": 7378,
+      "weight": 2,
+      "share": 0.01904761904761905
+    },
+    {
+      "src": 11035168,
+      "dst": 7378,
+      "weight": 1,
+      "share": 0.009523809523809525
+    },
+    {
+      "src": 80977893,
+      "dst": 7378,
+      "weight": 1,
+      "share": 0.009523809523809525
+    },
+    {
+      "src": 3504554,
+      "dst": 535796,
+      "weight": 76,
+      "share": 0.8351648351648352
+    },
+    {
+      "src": 1224671,
+      "dst": 535796,
+      "weight": 7,
+      "share": 0.07692307692307693
+    },
+    {
+      "src": 19263892,
+      "dst": 535796,
+      "weight": 3,
+      "share": 0.03296703296703297
+    },
+    {
+      "src": 48664591,
+      "dst": 535796,
+      "weight": 2,
+      "share": 0.02197802197802198
+    },
+    {
+      "src": 21369841,
+      "dst": 535796,
+      "weight": 2,
+      "share": 0.02197802197802198
+    },
+    {
+      "src": 43046212,
+      "dst": 2457297,
+      "weight": 29,
+      "share": 0.4915254237288136
+    },
+    {
+      "src": 1768606,
+      "dst": 2457297,
+      "weight": 13,
+      "share": 0.22033898305084745
+    },
+    {
+      "src": 44035472,
+      "dst": 2457297,
+      "weight": 9,
+      "share": 0.15254237288135594
+    },
+    {
+      "src": 1686049,
+      "dst": 2457297,
+      "weight": 3,
+      "share": 0.05084745762711865
+    },
+    {
+      "src": 1738924,
+      "dst": 2457297,
+      "weight": 2,
+      "share": 0.03389830508474576
+    },
+    {
+      "src": 25187772,
+      "dst": 6084429,
+      "weight": 29,
+      "share": 0.7631578947368421
+    },
+    {
+      "src": 75924537,
+      "dst": 6084429,
+      "weight": 1,
+      "share": 0.02631578947368421
+    },
+    {
+      "src": 62170457,
+      "dst": 6084429,
+      "weight": 1,
+      "share": 0.02631578947368421
+    },
+    {
+      "src": 59891761,
+      "dst": 6084429,
+      "weight": 1,
+      "share": 0.02631578947368421
+    },
+    {
+      "src": 64454007,
+      "dst": 6084429,
+      "weight": 1,
+      "share": 0.02631578947368421
+    },
+    {
+      "src": 29949218,
+      "dst": 53570697,
+      "weight": 1,
+      "share": 1.0
+    },
+    {
+      "src": 40267637,
+      "dst": 32291849,
+      "weight": 3,
+      "share": 1.0
+    },
+    {
+      "src": 46476667,
+      "dst": 40783388,
+      "weight": 1,
+      "share": 1.0
+    },
+    {
+      "src": 39628262,
+      "dst": 35755406,
+      "weight": 1,
+      "share": 1.0
+    }
+  ]
+}

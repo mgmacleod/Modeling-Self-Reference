@@ -25,7 +25,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
 MULTIPLEX_DIR = PROCESSED_DIR / "multiplex"
 REPORT_DIR = REPO_ROOT / "n-link-analysis" / "report" / "assets"

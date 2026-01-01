@@ -537,22 +537,54 @@ Add to `llm-facing-documentation/contracts/contract-registry.md`:
 - Virtual environment with dependencies: `source .venv/bin/activate`
 - ~2GB free disk space for multiplex outputs
 
-### Phase 1 Quick Start
+### Quick Start
+
+All tunneling scripts are in `n-link-analysis/scripts/tunneling/`.
+
 ```bash
-# Step 1: Build unified multiplex table
-python n-link-analysis/scripts/build-multiplex-table.py \
-  --input-dir data/wikipedia/processed/analysis \
-  --output data/wikipedia/processed/analysis/multiplex/multiplex_basin_assignments.parquet
+# Run the complete pipeline (all 5 phases)
+python n-link-analysis/scripts/tunneling/run-tunneling-pipeline.py
 
-# Step 2: Normalize cycle identities
-python n-link-analysis/scripts/normalize-cycle-identity.py \
-  --input data/wikipedia/processed/analysis/multiplex/multiplex_basin_assignments.parquet \
-  --output data/wikipedia/processed/analysis/multiplex/cycle_identity_map.tsv
+# Run specific phases
+python n-link-analysis/scripts/tunneling/run-tunneling-pipeline.py --phase 1 2
 
-# Step 3: Compute intersection matrices
-python n-link-analysis/scripts/compute-intersection-matrix.py \
-  --input data/wikipedia/processed/analysis/multiplex/multiplex_basin_assignments.parquet \
-  --output-dir data/wikipedia/processed/analysis/multiplex/
+# Run from phase 3 onwards
+python n-link-analysis/scripts/tunneling/run-tunneling-pipeline.py --from-phase 3
+
+# Dry run (show what would execute)
+python n-link-analysis/scripts/tunneling/run-tunneling-pipeline.py --dry-run
+
+# Custom N range
+python n-link-analysis/scripts/tunneling/run-tunneling-pipeline.py --n-min 3 --n-max 10
+```
+
+### Running Individual Scripts
+
+```bash
+# Phase 1: Multiplex Data Layer
+python n-link-analysis/scripts/tunneling/build-multiplex-table.py
+python n-link-analysis/scripts/tunneling/normalize-cycle-identity.py
+python n-link-analysis/scripts/tunneling/compute-intersection-matrix.py
+
+# Phase 2: Tunnel Node Identification
+python n-link-analysis/scripts/tunneling/find-tunnel-nodes.py
+python n-link-analysis/scripts/tunneling/classify-tunnel-types.py
+python n-link-analysis/scripts/tunneling/compute-tunnel-frequency.py
+
+# Phase 3: Multiplex Connectivity
+python n-link-analysis/scripts/tunneling/build-multiplex-graph.py
+python n-link-analysis/scripts/tunneling/compute-multiplex-reachability.py
+python n-link-analysis/scripts/tunneling/visualize-multiplex-slice.py
+
+# Phase 4: Mechanism Classification
+python n-link-analysis/scripts/tunneling/analyze-tunnel-mechanisms.py
+python n-link-analysis/scripts/tunneling/trace-tunneling-paths.py
+python n-link-analysis/scripts/tunneling/quantify-basin-stability.py
+
+# Phase 5: Applications & Validation
+python n-link-analysis/scripts/tunneling/compute-semantic-model.py
+python n-link-analysis/scripts/tunneling/validate-tunneling-predictions.py
+python n-link-analysis/scripts/tunneling/generate-tunneling-report.py
 ```
 
 ---

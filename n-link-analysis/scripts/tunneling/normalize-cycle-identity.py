@@ -25,7 +25,7 @@ import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
 MULTIPLEX_DIR = PROCESSED_DIR / "multiplex"
 

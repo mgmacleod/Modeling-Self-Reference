@@ -24,7 +24,7 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
 ANALYSIS_DIR = PROCESSED_DIR / "analysis"
 MULTIPLEX_DIR = PROCESSED_DIR / "multiplex"

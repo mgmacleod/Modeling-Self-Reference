@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
 MULTIPLEX_DIR = PROCESSED_DIR / "multiplex"
 

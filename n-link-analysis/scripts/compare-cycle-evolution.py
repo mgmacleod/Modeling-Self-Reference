@@ -346,105 +346,105 @@ def main() -> None:
             # Panel 1: Basin size across N
             ax1 = fig.add_subplot(gs[0, 0])
             sizes = [cycle_data[massachusetts_cycle][n]["size"] for n in mass_n_values]
-        ax1.plot(n_values, sizes, "o-", linewidth=3, markersize=10, color="#E63946")
-        ax1.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
-        ax1.set_xlabel("N (Link Index)", fontsize=12)
-        ax1.set_ylabel("Basin Size (nodes)", fontsize=12)
-        ax1.set_title("(A) Massachusetts Basin Size Evolution", fontsize=13, fontweight="bold")
-        ax1.set_yscale("log")
-        ax1.legend(fontsize=10)
-        ax1.grid(True, alpha=0.3)
-        ax1.set_xticks(n_values)
+            ax1.plot(mass_n_values, sizes, "o-", linewidth=3, markersize=10, color="#E63946")
+            ax1.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
+            ax1.set_xlabel("N (Link Index)", fontsize=12)
+            ax1.set_ylabel("Basin Size (nodes)", fontsize=12)
+            ax1.set_title("(A) Massachusetts Basin Size Evolution", fontsize=13, fontweight="bold")
+            ax1.set_yscale("log")
+            ax1.legend(fontsize=10)
+            ax1.grid(True, alpha=0.3)
+            ax1.set_xticks(mass_n_values)
 
-        # Panel 2: Dominance percentage
-        ax2 = fig.add_subplot(gs[0, 1])
-        doms = [dominance[massachusetts_cycle][n] for n in n_values]
-        ax2.plot(n_values, doms, "o-", linewidth=3, markersize=10, color="#457B9D")
-        ax2.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
-        ax2.axhline(50, color="gray", linestyle="--", alpha=0.3, label="50% majority")
-        ax2.set_xlabel("N (Link Index)", fontsize=12)
-        ax2.set_ylabel("Dominance (%)", fontsize=12)
-        ax2.set_title("(B) Massachusetts Dominance Percentage", fontsize=13, fontweight="bold")
-        ax2.legend(fontsize=10)
-        ax2.grid(True, alpha=0.3)
-        ax2.set_xticks(n_values)
+            # Panel 2: Dominance percentage
+            ax2 = fig.add_subplot(gs[0, 1])
+            doms = [dominance[massachusetts_cycle][n] for n in mass_n_values]
+            ax2.plot(mass_n_values, doms, "o-", linewidth=3, markersize=10, color="#457B9D")
+            ax2.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
+            ax2.axhline(50, color="gray", linestyle="--", alpha=0.3, label="50% majority")
+            ax2.set_xlabel("N (Link Index)", fontsize=12)
+            ax2.set_ylabel("Dominance (%)", fontsize=12)
+            ax2.set_title("(B) Massachusetts Dominance Percentage", fontsize=13, fontweight="bold")
+            ax2.legend(fontsize=10)
+            ax2.grid(True, alpha=0.3)
+            ax2.set_xticks(mass_n_values)
 
-        # Panel 3: Mean depth evolution
-        ax3 = fig.add_subplot(gs[1, 0])
-        mean_depths = [cycle_data[massachusetts_cycle][n].get("mean_depth", 0) for n in n_values]
-        ax3.plot(n_values, mean_depths, "o-", linewidth=3, markersize=10, color="#06A77D")
-        ax3.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
-        ax3.set_xlabel("N (Link Index)", fontsize=12)
-        ax3.set_ylabel("Mean Depth (steps)", fontsize=12)
-        ax3.set_title("(C) Massachusetts Mean Basin Depth", fontsize=13, fontweight="bold")
-        ax3.legend(fontsize=10)
-        ax3.grid(True, alpha=0.3)
-        ax3.set_xticks(n_values)
+            # Panel 3: Mean depth evolution
+            ax3 = fig.add_subplot(gs[1, 0])
+            mean_depths = [cycle_data[massachusetts_cycle][n].get("mean_depth", 0) for n in mass_n_values]
+            ax3.plot(mass_n_values, mean_depths, "o-", linewidth=3, markersize=10, color="#06A77D")
+            ax3.axvline(5, color="red", linestyle=":", alpha=0.3, label="N=5 peak")
+            ax3.set_xlabel("N (Link Index)", fontsize=12)
+            ax3.set_ylabel("Mean Depth (steps)", fontsize=12)
+            ax3.set_title("(C) Massachusetts Mean Basin Depth", fontsize=13, fontweight="bold")
+            ax3.legend(fontsize=10)
+            ax3.grid(True, alpha=0.3)
+            ax3.set_xticks(mass_n_values)
 
-        # Panel 4: Amplification factors (only if N=5 exists in data)
-        ax4 = fig.add_subplot(gs[1, 1])
-        if 5 in cycle_data[massachusetts_cycle] and "size" in cycle_data[massachusetts_cycle][5]:
-            n5_size = cycle_data[massachusetts_cycle][5]["size"]
-            amplifications = [n5_size / cycle_data[massachusetts_cycle][n]["size"] if cycle_data[massachusetts_cycle][n]["size"] > 0 else 0 for n in n_values]
-            ax4.bar(n_values, amplifications, color="#F18F01", alpha=0.7, edgecolor="black")
-            ax4.axhline(1, color="red", linestyle="--", alpha=0.5, label="N=5 baseline")
-            ax4.set_xlabel("N (Link Index)", fontsize=12)
-            ax4.set_ylabel("Amplification vs N=5", fontsize=12)
-            ax4.set_title("(D) Massachusetts Size Amplification (N=5 as baseline)", fontsize=13, fontweight="bold")
-            ax4.set_yscale("log")
-            ax4.legend(fontsize=10)
-            ax4.grid(True, alpha=0.3, axis="y")
-            ax4.set_xticks(n_values)
-        else:
-            # If N=5 doesn't exist, show relative sizes normalized to first N value
-            baseline_n = n_values[0]
-            baseline_size = cycle_data[massachusetts_cycle][baseline_n]["size"]
-            relative_sizes = [cycle_data[massachusetts_cycle][n]["size"] / baseline_size if baseline_size > 0 else 0 for n in n_values]
-            ax4.bar(n_values, relative_sizes, color="#F18F01", alpha=0.7, edgecolor="black")
-            ax4.axhline(1, color="red", linestyle="--", alpha=0.5, label=f"N={baseline_n} baseline")
-            ax4.set_xlabel("N (Link Index)", fontsize=12)
-            ax4.set_ylabel(f"Size relative to N={baseline_n}", fontsize=12)
-            ax4.set_title(f"(D) Massachusetts Size Relative to N={baseline_n}", fontsize=13, fontweight="bold")
-            ax4.set_yscale("log")
-            ax4.legend(fontsize=10)
-            ax4.grid(True, alpha=0.3, axis="y")
-            ax4.set_xticks(n_values)
+            # Panel 4: Amplification factors (only if N=5 exists in data)
+            ax4 = fig.add_subplot(gs[1, 1])
+            if 5 in mass_n_values:
+                n5_size = cycle_data[massachusetts_cycle][5]["size"]
+                amplifications = [n5_size / cycle_data[massachusetts_cycle][n]["size"] if cycle_data[massachusetts_cycle][n]["size"] > 0 else 0 for n in mass_n_values]
+                ax4.bar(mass_n_values, amplifications, color="#F18F01", alpha=0.7, edgecolor="black")
+                ax4.axhline(1, color="red", linestyle="--", alpha=0.5, label="N=5 baseline")
+                ax4.set_xlabel("N (Link Index)", fontsize=12)
+                ax4.set_ylabel("Amplification vs N=5", fontsize=12)
+                ax4.set_title("(D) Massachusetts Size Amplification (N=5 as baseline)", fontsize=13, fontweight="bold")
+                ax4.set_yscale("log")
+                ax4.legend(fontsize=10)
+                ax4.grid(True, alpha=0.3, axis="y")
+                ax4.set_xticks(mass_n_values)
+            else:
+                # If N=5 doesn't exist, show relative sizes normalized to first N value
+                baseline_n = mass_n_values[0]
+                baseline_size = cycle_data[massachusetts_cycle][baseline_n]["size"]
+                relative_sizes = [cycle_data[massachusetts_cycle][n]["size"] / baseline_size if baseline_size > 0 else 0 for n in mass_n_values]
+                ax4.bar(mass_n_values, relative_sizes, color="#F18F01", alpha=0.7, edgecolor="black")
+                ax4.axhline(1, color="red", linestyle="--", alpha=0.5, label=f"N={baseline_n} baseline")
+                ax4.set_xlabel("N (Link Index)", fontsize=12)
+                ax4.set_ylabel(f"Size relative to N={baseline_n}", fontsize=12)
+                ax4.set_title(f"(D) Massachusetts Size Relative to N={baseline_n}", fontsize=13, fontweight="bold")
+                ax4.set_yscale("log")
+                ax4.legend(fontsize=10)
+                ax4.grid(True, alpha=0.3, axis="y")
+                ax4.set_xticks(mass_n_values)
 
-        fig.suptitle(f"Massachusetts ↔ Gulf of Maine: The N=5 Dominance Mystery", fontsize=15, fontweight="bold", y=0.995)
+            fig.suptitle(f"Massachusetts ↔ Gulf of Maine: The N=5 Dominance Mystery", fontsize=15, fontweight="bold", y=0.995)
 
-        out_path = REPORT_DIR / "massachusetts_deep_dive.png"
-        fig.savefig(out_path, dpi=300, bbox_inches="tight")
-        print(f"Saved Massachusetts deep-dive: {out_path}")
-        plt.close(fig)
+            out_path = REPORT_DIR / "massachusetts_deep_dive.png"
+            fig.savefig(out_path, dpi=300, bbox_inches="tight")
+            print(f"Saved Massachusetts deep-dive: {out_path}")
+            plt.close(fig)
 
-        # Print Massachusetts statistics
-        print("Basin Size Evolution:")
-        for n in n_values:
-            size = cycle_data[massachusetts_cycle][n]["size"]
-            dom = dominance[massachusetts_cycle][n]
-            mean_d = cycle_data[massachusetts_cycle][n].get("mean_depth", 0)
-            max_d = cycle_data[massachusetts_cycle][n].get("max_depth", 0)
-            print(f"  N={n}: {size:>9,} nodes ({dom:5.1f}% dominance), mean_depth={mean_d:5.1f}, max_depth={max_d:3d}")
+            # Print Massachusetts statistics
+            print("Basin Size Evolution:")
+            for n in mass_n_values:
+                size = cycle_data[massachusetts_cycle][n]["size"]
+                dom = dominance[massachusetts_cycle][n]
+                mean_d = cycle_data[massachusetts_cycle][n].get("mean_depth", 0)
+                max_d = cycle_data[massachusetts_cycle][n].get("max_depth", 0)
+                print(f"  N={n}: {size:>9,} nodes ({dom:5.1f}% dominance), mean_depth={mean_d:5.1f}, max_depth={max_d:3d}")
 
-        # Only print amplification factors if N=5 data exists
-        if 5 in cycle_data[massachusetts_cycle] and "size" in cycle_data[massachusetts_cycle][5]:
-            n5_size = cycle_data[massachusetts_cycle][5]["size"]
-            print()
-            print("Amplification Factors (relative to N=5):")
-            for n in n_values:
-                if cycle_data[massachusetts_cycle][n]["size"] > 0:
-                    amp = n5_size / cycle_data[massachusetts_cycle][n]["size"]
-                    print(f"  N=5 / N={n}: {amp:6.1f}×")
-        else:
-            # Use first N as baseline
-            baseline_n = n_values[0]
-            baseline_size = cycle_data[massachusetts_cycle][baseline_n]["size"]
-            print()
-            print(f"Relative Size Factors (relative to N={baseline_n}):")
-            for n in n_values:
-                if cycle_data[massachusetts_cycle][n]["size"] > 0 and baseline_size > 0:
-                    rel = cycle_data[massachusetts_cycle][n]["size"] / baseline_size
-                    print(f"  N={n} / N={baseline_n}: {rel:6.2f}×")
+            # Only print amplification factors if N=5 data exists
+            if 5 in mass_n_values:
+                n5_size = cycle_data[massachusetts_cycle][5]["size"]
+                print()
+                print("Amplification Factors (relative to N=5):")
+                for n in mass_n_values:
+                    if cycle_data[massachusetts_cycle][n]["size"] > 0:
+                        amp = n5_size / cycle_data[massachusetts_cycle][n]["size"]
+                        print(f"  N=5 / N={n}: {amp:6.1f}×")
+            else:
+                # Use first N as baseline
+                baseline_n = mass_n_values[0]
+                baseline_size = cycle_data[massachusetts_cycle][baseline_n]["size"]
+                print()
+                print(f"Relative Size Factors (relative to N={baseline_n}):")
+                for n in mass_n_values:
+                    if cycle_data[massachusetts_cycle][n]["size"] > 0 and baseline_size > 0:
+                        rel = cycle_data[massachusetts_cycle][n]["size"] / baseline_size
+                        print(f"  N={n} / N={baseline_n}: {rel:6.2f}×")
 
 
 if __name__ == "__main__":

@@ -11,12 +11,31 @@
 |------|------|---------|--------|
 | [implementation.md](implementation.md) | 2 | Analysis architecture: inputs/outputs, core algorithms, run flow | ~4k |
 | [scripts-reference.md](scripts-reference.md) | 2 | Complete reference for all analysis scripts (parameters, I/O, theory connections) | ~15k |
-| [FRAMEWORK-TESTING-PLAN.md](FRAMEWORK-TESTING-PLAN.md) | 2 | Systematic framework validation plan and test results (N=2-10 coverage) | ~8k |
 | [NEXT-STEPS.md](NEXT-STEPS.md) | 2 | Prioritized next steps: Multi-N analysis, hub connectivity, theory validation | ~6k |
 | [future.md](future.md) | 2 | Next steps (Phase 1 experiments, validation, scaling work) | ~1k |
 | [session-log.md](session-log.md) | 2 | Cumulative work log + decisions for analysis work | ~2k |
 | [empirical-investigations/INDEX.md](empirical-investigations/INDEX.md) | 2 | Question-scoped empirical investigation streams | ~1k |
 | [report/overview.md](report/overview.md) | 2 | Human-facing summary report with charts | ~2k |
+
+---
+
+## Deep Dives (Tier 3)
+
+These are substantial, question-scoped writeups and validation artifacts. Most of the new Markdown your friend added lives here.
+
+| File | Tier | Topic | Tokens |
+|------|------|-------|--------|
+| [FRAMEWORK-TESTING-PLAN.md](FRAMEWORK-TESTING-PLAN.md) | 3 | Systematic framework validation plan + test results (N=2–10 coverage) | ~8k |
+| [ENTRY-BREADTH-README.md](ENTRY-BREADTH-README.md) | 3 | Entry-breadth hypothesis: definition, methods, interpretation | ~4k |
+| [SANITY-CHECK-ENTRY-BREADTH.md](SANITY-CHECK-ENTRY-BREADTH.md) | 3 | Sanity-check notebook-style writeup for entry-breadth pipeline | ~5k |
+| [empirical-investigations/REPRODUCTION-OVERVIEW.md](empirical-investigations/REPRODUCTION-OVERVIEW.md) | 3 | Cross-N reproduction: universality vs N-dependence | ~6k |
+| [empirical-investigations/PHASE-TRANSITION-REFINED.md](empirical-investigations/PHASE-TRANSITION-REFINED.md) | 3 | Refined phase transition analysis (why N=4 minimum / N=5 peak) | ~5k |
+| [empirical-investigations/MECHANISM-ANALYSIS.md](empirical-investigations/MECHANISM-ANALYSIS.md) | 3 | Mechanism: premature convergence and depth dynamics | ~5k |
+| [empirical-investigations/MASSACHUSETTS-CASE-STUDY.md](empirical-investigations/MASSACHUSETTS-CASE-STUDY.md) | 3 | Massachusetts case study (hub connectivity + cycle formation) | ~5k |
+| [empirical-investigations/ENTRY-BREADTH-ANALYSIS.md](empirical-investigations/ENTRY-BREADTH-ANALYSIS.md) | 3 | Entry breadth vs basin mass (analysis + model comparison) | ~4k |
+| [empirical-investigations/ENTRY-BREADTH-RESULTS.md](empirical-investigations/ENTRY-BREADTH-RESULTS.md) | 3 | Entry breadth results summary (hypothesis outcome) | ~4k |
+| [empirical-investigations/DEPTH-SCALING-ANALYSIS.md](empirical-investigations/DEPTH-SCALING-ANALYSIS.md) | 3 | Depth–mass power-law scaling (α estimation) | ~6k |
+| [empirical-investigations/DEPTH-DISTRIBUTION-ANALYSIS.md](empirical-investigations/DEPTH-DISTRIBUTION-ANALYSIS.md) | 3 | Depth distribution shapes + predictive metrics | ~6k |
 
 ---
 

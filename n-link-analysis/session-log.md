@@ -8,6 +8,36 @@
 
 ---
 
+### 2026-01-01 (Night) - TUNNELING-ROADMAP Complete: All 5 Phases
+
+**What was tried**:
+- Phase 4: Tunnel mechanism analysis (WHY tunneling occurs)
+- Phase 5: Semantic model extraction and theory validation
+
+**What worked**:
+- `analyze-tunnel-mechanisms.py`: degree_shift (99.3%) vs path_divergence (0.7%)
+- `quantify-basin-stability.py`: Gulf_of_Maine is "fragile" sink basin
+- `compute-semantic-model.py`: Algorithm 5.2 implementation (100 entities, 9 subsystems)
+- `validate-tunneling-predictions.py`: 3/4 hypotheses validated
+- `generate-tunneling-report.py`: Publication-ready TUNNELING-FINDINGS.md
+
+**Key discoveries**:
+- **Hub hypothesis REFUTED**: Tunnel nodes have LOWER degree (31.8 vs 34.0, p=0.04)
+- Tunneling is NOT about having more link options
+- Depth strongly predicts tunneling (r=-0.83)
+- 100% of tunnel transitions involve N=5
+
+**Artifacts produced**:
+- 6 new scripts (Phase 4: 3, Phase 5: 3)
+- `semantic_model_wikipedia.json` (43 KB)
+- `tunneling_validation_metrics.tsv`
+- `TUNNELING-FINDINGS.md` (publication-ready)
+- NLR-C-0004 contract marked complete
+
+**Next**: Extend to N=8-10, cross-domain validation
+
+---
+
 ### 2026-01-01 - Data Inventory and Consolidation
 
 **What was tried**:

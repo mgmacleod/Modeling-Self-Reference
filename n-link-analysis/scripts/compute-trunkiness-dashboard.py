@@ -49,10 +49,16 @@ def main() -> int:
         default="bootstrap_2025-12-30",
         help="Tag used in the output filename.",
     )
+    parser.add_argument(
+        "--n",
+        type=int,
+        default=5,
+        help="N value for N-link rule (default: 5)",
+    )
     args = parser.parse_args()
 
     analysis_dir = Path(args.analysis_dir)
-    branch_all_paths = sorted(analysis_dir.glob("branches_n=5_cycle=*branches_all.tsv"))
+    branch_all_paths = sorted(analysis_dir.glob(f"branches_n={args.n}_cycle=*branches_all.tsv"))
 
     if not branch_all_paths:
         raise SystemExit(f"No branches_all TSVs found in: {analysis_dir}")
@@ -60,7 +66,7 @@ def main() -> int:
     rows: list[dict[str, object]] = []
 
     for all_path in branch_all_paths:
-        m = re.match(r"^branches_n=5_cycle=(.*)_branches_all\.tsv$", all_path.name)
+        m = re.match(rf"^branches_n={args.n}_cycle=(.*)_branches_all\.tsv$", all_path.name)
         cycle_key = m.group(1) if m else all_path.stem
         cycle_len = len(cycle_key.split("__"))
 
@@ -125,7 +131,7 @@ def main() -> int:
         ["top1_share_total", "total_basin_nodes"], ascending=[False, False]
     )
 
-    out_path = analysis_dir / f"branch_trunkiness_dashboard_n=5_{args.tag}.tsv"
+    out_path = analysis_dir / f"branch_trunkiness_dashboard_n={args.n}_{args.tag}.tsv"
     out_df.to_csv(out_path, sep="\t", index=False)
 
     # Print a small preview.

@@ -16,7 +16,7 @@
         ## Trunkiness Dashboard
 
         Dashboard input:
-        - `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n=5_bootstrap_2025-12-30.tsv`
+        - `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n=5_harness_2026-01-01.tsv`
 
         **Charts**:
         - ![Top-1 share](assets/trunkiness_top1_share.png)
@@ -24,66 +24,84 @@
 
         **Preview table**:
 
-        | cycle_key                                 | total_basin_nodes | top1_share_total | effective_branches | dominant_entry_title | dominant_enters_cycle_title |
-| ------------------------------------------------- | ----------------- | ---------------- | ------------------ | -------------------- | --------------------------- |
-| Thermosetting_polymer__Curing_(chemistry)         | 61353             | 0.9997           | 1.001              | Concrete             | Curing_(chemistry)          |
-| Autumn__Summer                                    | 162689            | 0.9948           | 1.010              | Mediterranean_basin  | Summer                      |
-| Massachusetts__Gulf_of_Maine                      | 1009471           | 0.9894           | 1.022              | Connecticut          | Massachusetts               |
-| Mountain__Hill                                    | 189269            | 0.9786           | 1.044              | Mountain_range       | Hill                        |
-| Sea_salt__Seawater                                | 265940            | 0.9770           | 1.047              | Fast_ice             | Seawater                    |
-| Latvia__Lithuania                                 | 83403             | 0.9692           | 1.064              | Poland               | Lithuania                   |
-| Precedent__Civil_law                              | 56314             | 0.8888           | 1.252              | Constitution         | Precedent                   |
-| American_Revolutionary_War__Eastern_United_States | 46437             | 0.7379           | 1.800              | George_Washington    | American_Revolutionary_War  |
-| Kingdom_(biology)__Animal                         | 116998            | 0.3658           | 5.051              | Brain                | Animal                      |
+        | cycle_key                                                         | total_basin_nodes | top1_share_total | effective_branches | dominant_entry_title | dominant_enters_cycle_title |
+| ----------------------------------------------------------------- | ----------------- | ---------------- | ------------------ | -------------------- | --------------------------- |
+| Thermosetting_polymer__Curing_(chemistry)_harness_2026-01-01      | 61353             | 0.9997           | 1.001              | Concrete             | Curing_(chemistry)          |
+| Thermosetting_polymer__Curing_(chemistry)_reproduction_2025-12-31 | 61353             | 0.9997           | 1.001              | Concrete             | Curing_(chemistry)          |
+| Thermosetting_polymer__Curing_(chemistry)_reproduction_2026-01-01 | 61353             | 0.9997           | 1.001              | Concrete             | Curing_(chemistry)          |
+| Autumn__Summer_harness_2026-01-01                                 | 162689            | 0.9948           | 1.010              | Mediterranean_basin  | Summer                      |
+| Autumn__Summer_reproduction_2025-12-31                            | 162689            | 0.9948           | 1.010              | Mediterranean_basin  | Summer                      |
+| Autumn__Summer_reproduction_2026-01-01                            | 162689            | 0.9948           | 1.010              | Mediterranean_basin  | Summer                      |
+| Massachusetts__Gulf_of_Maine_harness_2026-01-01                   | 1009471           | 0.9894           | 1.022              | Connecticut          | Massachusetts               |
+| Massachusetts__Gulf_of_Maine_reproduction_2025-12-31              | 1009471           | 0.9894           | 1.022              | Connecticut          | Massachusetts               |
+| Massachusetts__Gulf_of_Maine_reproduction_2026-01-01              | 1009471           | 0.9894           | 1.022              | Connecticut          | Massachusetts               |
+| Massachusetts__Gulf_of_Maine_test_n5_validated                    | 1009471           | 0.9894           | 1.022              | Connecticut          | Massachusetts               |
+| Mountain__Hill_harness_2026-01-01                                 | 189269            | 0.9786           | 1.044              | Mountain_range       | Hill                        |
+| Mountain__Hill_reproduction_2025-12-31                            | 189269            | 0.9786           | 1.044              | Mountain_range       | Hill                        |
+| Mountain__Hill_reproduction_2026-01-01                            | 189269            | 0.9786           | 1.044              | Mountain_range       | Hill                        |
+| Sea_salt__Seawater_harness_2026-01-01                             | 265940            | 0.9770           | 1.047              | Fast_ice             | Seawater                    |
+| Sea_salt__Seawater_reproduction_2025-12-31                        | 265940            | 0.9770           | 1.047              | Fast_ice             | Seawater                    |
+| Sea_salt__Seawater_reproduction_2026-01-01                        | 265940            | 0.9770           | 1.047              | Fast_ice             | Seawater                    |
+| Sea_salt__Seawater_test_n5_validated                              | 265940            | 0.9770           | 1.047              | Fast_ice             | Seawater                    |
+| Latvia__Lithuania_harness_2026-01-01                              | 83403             | 0.9692           | 1.064              | Poland               | Lithuania                   |
+| Latvia__Lithuania_reproduction_2025-12-31                         | 83403             | 0.9692           | 1.064              | Poland               | Lithuania                   |
+| Latvia__Lithuania_reproduction_2026-01-01                         | 83403             | 0.9692           | 1.064              | Poland               | Lithuania                   |
 
         ## Dominance Collapse (Threshold Run)
 
             Collapse dashboard input:
-            - `data/wikipedia/processed/analysis/dominance_collapse_dashboard_n=5_bootstrap_2025-12-30_seed=dominant_enters_cycle_title_thr=0.5.tsv`
+            - `data/wikipedia/processed/analysis/dominance_collapse_dashboard_n=5_harness_2026-01-01.tsv`
 
             Preview (sorted by min share):
 
-| seed_title                 | first_below_threshold_hop | min_share | stop_reason     | stop_at_title          |
-| -------------------------- | ------------------------- | --------- | --------------- | ---------------------- |
-| American_Revolutionary_War | 5.0                       | 0.280     | share_below_0.5 | California             |
-| Hill                       | 19.0                      | 0.282     | share_below_0.5 | Iran                   |
-| Curing_(chemistry)         | 21.0                      | 0.299     | share_below_0.5 | Christianity           |
-| Lithuania                  | 16.0                      | 0.355     | share_below_0.5 | Construction           |
-| Animal                     | 0.0                       | 0.366     | share_below_0.5 | Animal                 |
-| Seawater                   | 12.0                      | 0.371     | share_below_0.5 | Canada                 |
-| Summer                     | 14.0                      | 0.470     | share_below_0.5 | Adelaide               |
-| Precedent                  | 2.0                       | 0.479     | share_below_0.5 | Executive_(government) |
-| Massachusetts              |                           | 0.763     | max_hops        | Salary                 |
+            | seed_title                 | first_below_threshold_hop | min_share | stop_reason     | stop_at_title |
+| -------------------------- | ------------------------- | --------- | --------------- | ------------- |
+| American_Revolutionary_War | 5.0                       | 0.280     | share_below_0.5 | California    |
+| American_Revolutionary_War | 5.0                       | 0.280     | share_below_0.5 | California    |
+| American_Revolutionary_War | 5.0                       | 0.280     | share_below_0.5 | California    |
+| Hill                       | 19.0                      | 0.282     | share_below_0.5 | Iran          |
+| Hill                       | 19.0                      | 0.282     | share_below_0.5 | Iran          |
+| Hill                       | 19.0                      | 0.282     | share_below_0.5 | Iran          |
+| Curing_(chemistry)         | 21.0                      | 0.299     | share_below_0.5 | Christianity  |
+| Curing_(chemistry)         | 21.0                      | 0.299     | share_below_0.5 | Christianity  |
+| Curing_(chemistry)         | 21.0                      | 0.299     | share_below_0.5 | Christianity  |
+| Lithuania                  | 16.0                      | 0.355     | share_below_0.5 | Construction  |
+| Lithuania                  | 16.0                      | 0.355     | share_below_0.5 | Construction  |
+| Lithuania                  | 16.0                      | 0.355     | share_below_0.5 | Construction  |
+| Animal                     | 0.0                       | 0.366     | share_below_0.5 | Animal        |
+| Animal                     | 0.0                       | 0.366     | share_below_0.5 | Animal        |
+| Animal                     | 0.0                       | 0.366     | share_below_0.5 | Animal        |
+| Seawater                   | 12.0                      | 0.371     | share_below_0.5 | Canada        |
+| Seawater                   | 12.0                      | 0.371     | share_below_0.5 | Canada        |
+| Seawater                   | 12.0                      | 0.371     | share_below_0.5 | Canada        |
+| Seawater                   | 12.0                      | 0.371     | share_below_0.5 | Canada        |
+| Summer                     | 14.0                      | 0.470     | share_below_0.5 | Adelaide      |
 
         ## Example Chases (Dominant Share vs Hop)
 
         These are pulled from any available `dominant_upstream_chain_n=5_from=*.tsv` artifacts.
 
-        - dominant_upstream_chain_n=5_from=Animal_leasttrunk_bootstrap_2025-12-30.tsv
-- dominant_upstream_chain_n=5_from=Eastern_United_States_control_bootstrap_2025-12-30.tsv
+        - dominant_upstream_chain_n=5_from=American_Revolutionary_War.tsv
+- dominant_upstream_chain_n=5_from=Autumn.tsv
+- dominant_upstream_chain_n=5_from=Kingdom_(biology).tsv
 
         **Charts** (share + basin size per chase):
 
-        - ![chart](assets/chase_dominant_upstream_chain_n=5_from=Animal_leasttrunk_bootstrap_2025-12-30_share.png)
-- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Animal_leasttrunk_bootstrap_2025-12-30_basin.png)
-- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Eastern_United_States_control_bootstrap_2025-12-30_share.png)
-- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Eastern_United_States_control_bootstrap_2025-12-30_basin.png)
+        - ![chart](assets/chase_dominant_upstream_chain_n=5_from=American_Revolutionary_War_share.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=American_Revolutionary_War_basin.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Autumn_share.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Autumn_basin.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Kingdom_(biology)_share.png)
+- ![chart](assets/chase_dominant_upstream_chain_n=5_from=Kingdom_(biology)_basin.png)
 
         **Overlay comparison**:
 
         - ![overlay](assets/chase_overlay_dominant_share.png)
 
-## 3D Basin Visualization (Tributary Tree)
-
-Interactive HTML (open in your browser):
-- [report/assets/tributary_tree_3d_n=5_cycle=Massachusetts__Gulf_of_Maine_k=5_levels=5_depth=8.html](assets/tributary_tree_3d_n=5_cycle=Massachusetts__Gulf_of_Maine_k=5_levels=5_depth=8.html)
-
-Notes:
-- This is a **top-5 branches per level** tributary skeleton to depth-cap 8 (not the full ~1M-node basin).
         ## How to Regenerate
 
         From repo root:
-        - `python n-link-analysis/scripts/render-human-report.py --tag bootstrap_2025-12-30`
+        - `python n-link-analysis/scripts/render-human-report.py --tag harness_2026-01-01`
 
         This rewrites:
         - `n-link-analysis/report/overview.md`

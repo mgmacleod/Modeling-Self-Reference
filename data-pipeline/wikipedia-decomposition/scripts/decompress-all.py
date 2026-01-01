@@ -1,16 +1,26 @@
 """
 Decompress all Wikipedia dump files (.gz and .bz2)
-Run from project root: python data-pipeline/wikipedia-decomposition/scripts/decompress-all.py
+Run from anywhere - auto-detects repository root
 """
 
 import bz2
 import gzip
 import shutil
+import sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
-RAW_DIR = Path("data/wikipedia/raw")
+# Find repository root by looking for the data directory
+SCRIPT_DIR = Path(__file__).parent.resolve()
+# Go up 3 levels: scripts -> wikipedia-decomposition -> data-pipeline -> repo root
+REPO_ROOT = SCRIPT_DIR.parent.parent.parent
+RAW_DIR = REPO_ROOT / "data" / "wikipedia" / "raw"
+
+if not RAW_DIR.exists():
+    print(f"Error: Data directory not found at {RAW_DIR}")
+    print(f"Expected structure: <repo>/data/wikipedia/raw/")
+    sys.exit(1)
 
 def decompress_gz(gz_path: Path) -> tuple[str, float]:
     """Decompress a .gz file, return (filename, size_gb)"""

@@ -1,0 +1,58 @@
+{
+	"name": "Self Reference Modeling",
+	"image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.terminal.activateEnvironment": true,
+				"files.exclude": {
+					"**/__pycache__": true,
+					"**/*.pyc": true,
+					"**/.git": false
+				},
+				"files.watcherExclude": {
+					"**/wikipedia_decomposition*/**": true,
+					"**/*.xml.bz2": true,
+					"**/*.tsv": true
+				},
+				"search.exclude": {
+					"**/wikipedia_decomposition*/**": true,
+					"**/*.xml.bz2": true
+				},
+				"editor.formatOnSave": true,
+				"python.linting.enabled": true,
+				"python.linting.pylintEnabled": false,
+				"python.linting.flake8Enabled": true,
+				"python.formatting.provider": "black",
+				"[python]": {
+					"editor.rulers": [88],
+					"editor.tabSize": 4
+				},
+				"[markdown]": {
+					"editor.wordWrap": "on",
+					"editor.quickSuggestions": {
+						"comments": "off",
+						"strings": "off",
+						"other": "off"
+					}
+				}
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter",
+				"yzhang.markdown-all-in-one"
+			]
+		}
+	},
+
+	"postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+
+	"remoteUser": "vscode"
+}

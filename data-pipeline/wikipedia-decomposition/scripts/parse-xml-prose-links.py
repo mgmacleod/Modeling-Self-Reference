@@ -203,53 +203,58 @@ def extract_links_ordered(text: str) -> list[str]:
 def parse_xml_file(xml_path: Path) -> tuple[list[int], list[int], list[str]]:
     """
     Parse a single XML file and extract prose-only links with positions.
-    
+
     Returns (from_ids, positions, to_titles) lists.
     Position is 1-indexed (1st link, 2nd link, etc.)
     """
     from_ids = []
     positions = []
     to_titles = []
-    
-    # Use iterparse for memory-efficient streaming
-    context = ET.iterparse(str(xml_path), events=('end',))
-    
-    page_id = None
-    page_ns = None
-    page_text = None
-    
-    for event, elem in context:
-        tag = elem.tag.replace(NS, '')
-        
-        if tag == 'id' and page_id is None:
-            page_id = int(elem.text) if elem.text else None
-        elif tag == 'ns':
-            page_ns = int(elem.text) if elem.text else 0
-        elif tag == 'text':
-            page_text = elem.text
-        elif tag == 'page':
-            # Process completed page
-            if page_id is not None and page_ns == 0 and page_text:
-                # Clean wikitext (strip templates, tables, refs, etc.)
-                clean_text = clean_wikitext(page_text)
-                
-                # Extract links in order
-                links = extract_links_ordered(clean_text)
-                
-                # Add with positions (1-indexed)
-                for pos, target in enumerate(links, start=1):
-                    from_ids.append(page_id)
-                    positions.append(pos)
-                    to_titles.append(target)
-            
-            # Reset for next page
-            page_id = None
-            page_ns = None
-            page_text = None
-            
-            # Clear element to free memory
-            elem.clear()
-    
+
+    try:
+        # Use iterparse for memory-efficient streaming
+        context = ET.iterparse(str(xml_path), events=('end',))
+
+        page_id = None
+        page_ns = None
+        page_text = None
+
+        for event, elem in context:
+            tag = elem.tag.replace(NS, '')
+
+            if tag == 'id' and page_id is None:
+                page_id = int(elem.text) if elem.text else None
+            elif tag == 'ns':
+                page_ns = int(elem.text) if elem.text else 0
+            elif tag == 'text':
+                page_text = elem.text
+            elif tag == 'page':
+                # Process completed page
+                if page_id is not None and page_ns == 0 and page_text:
+                    # Clean wikitext (strip templates, tables, refs, etc.)
+                    clean_text = clean_wikitext(page_text)
+
+                    # Extract links in order
+                    links = extract_links_ordered(clean_text)
+
+                    # Add with positions (1-indexed)
+                    for pos, target in enumerate(links, start=1):
+                        from_ids.append(page_id)
+                        positions.append(pos)
+                        to_titles.append(target)
+
+                # Reset for next page
+                page_id = None
+                page_ns = None
+                page_text = None
+
+                # Clear element to free memory
+                elem.clear()
+
+    except ET.ParseError as e:
+        print(f"  WARNING: XML parse error in {xml_path.name}: {e}")
+        print(f"  Skipping corrupted file. {len(from_ids)} links extracted before error.")
+
     return from_ids, positions, to_titles
 
 

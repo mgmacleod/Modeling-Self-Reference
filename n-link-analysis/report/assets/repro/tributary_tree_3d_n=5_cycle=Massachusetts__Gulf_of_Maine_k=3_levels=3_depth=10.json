@@ -1,0 +1,428 @@
+{
+  "nodes": [
+    {
+      "page_id": 1645518,
+      "title": "Massachusetts",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 173317
+    },
+    {
+      "page_id": 714653,
+      "title": "Gulf_of_Maine",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 173317
+    },
+    {
+      "page_id": 6466,
+      "title": "Connecticut",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 179487
+    },
+    {
+      "page_id": 641036,
+      "title": "Empress_Masako",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 3881
+    },
+    {
+      "page_id": 876997,
+      "title": "Greater_Boston",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 1025
+    },
+    {
+      "page_id": 89126,
+      "title": "East_Coast_of_the_United_States",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 194602
+    },
+    {
+      "page_id": 25410,
+      "title": "Rhode_Island",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1951
+    },
+    {
+      "page_id": 268425,
+      "title": "Thomas_Hooker",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1232
+    },
+    {
+      "page_id": 210254,
+      "title": "Dynasty",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 3996
+    },
+    {
+      "page_id": 3966697,
+      "title": "Orio_(Kitaky\u016bsh\u016b)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 38362930,
+      "title": "Order_of_precedence_in_Japan_(Imperial_family)",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 116879,
+      "title": "Quincy,_Massachusetts",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 491
+    },
+    {
+      "page_id": 116749,
+      "title": "Lynn,_Massachusetts",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 128
+    },
+    {
+      "page_id": 76190,
+      "title": "Essex_County,_Massachusetts",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 113
+    },
+    {
+      "page_id": 32432,
+      "title": "Virginia",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 231223,
+      "title": "Susquehanna_River",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 344,
+      "title": "Allan_Dwan",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 116713,
+      "title": "Fall_River,_Massachusetts",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 3339311,
+      "title": "Showcase_Cinemas",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 390881,
+      "title": "Wampanoag",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 478841,
+      "title": "Connecticut_Colony",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 48306309,
+      "title": "John_Bellamy_(publisher)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25885900,
+      "title": "Second_Church_of_Christ",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25310,
+      "title": "Qing_dynasty",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 6279,
+      "title": "Capetian_dynasty",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1769438,
+      "title": "Cadet_branch",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 71555825,
+      "title": "Thomas_Payzant",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1853521,
+      "title": "Joseph_Henry_Thayer",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1265935,
+      "title": "Bethlehem_Shipbuilding_Corporation",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25706596,
+      "title": "Butch_Cowell",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 257170,
+      "title": "Lynnfield,_Massachusetts",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 8877463,
+      "title": "Saugus_River",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 22757677,
+      "title": "National_Register_of_Historic_Places_listings_in_Lawrence,_Massachusetts",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 21752898,
+      "title": "National_Register_of_Historic_Places_listings_in_Andover,_Massachusetts",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 16220356,
+      "title": "Henry_Harriman_(Mormon)",
+      "kind": "entry",
+      "level": 3
+    }
+  ],
+  "edges": [
+    {
+      "src": 6466,
+      "dst": 1645518,
+      "weight": 163108,
+      "share": 0.9411072324957448
+    },
+    {
+      "src": 641036,
+      "dst": 1645518,
+      "weight": 3627,
+      "share": 0.02092721345526931
+    },
+    {
+      "src": 876997,
+      "dst": 1645518,
+      "weight": 999,
+      "share": 0.005764071199838444
+    },
+    {
+      "src": 89126,
+      "dst": 6466,
+      "weight": 174953,
+      "share": 0.9747445483213175
+    },
+    {
+      "src": 25410,
+      "dst": 6466,
+      "weight": 1899,
+      "share": 0.01058021238425281
+    },
+    {
+      "src": 268425,
+      "dst": 6466,
+      "weight": 1223,
+      "share": 0.006813901919926903
+    },
+    {
+      "src": 210254,
+      "dst": 641036,
+      "weight": 3878,
+      "share": 0.9994845360824742
+    },
+    {
+      "src": 3966697,
+      "dst": 641036,
+      "weight": 1,
+      "share": 0.0002577319587628866
+    },
+    {
+      "src": 38362930,
+      "dst": 641036,
+      "weight": 1,
+      "share": 0.0002577319587628866
+    },
+    {
+      "src": 116879,
+      "dst": 876997,
+      "weight": 487,
+      "share": 0.4755859375
+    },
+    {
+      "src": 116749,
+      "dst": 876997,
+      "weight": 128,
+      "share": 0.125
+    },
+    {
+      "src": 76190,
+      "dst": 876997,
+      "weight": 113,
+      "share": 0.1103515625
+    },
+    {
+      "src": 32432,
+      "dst": 89126,
+      "weight": 193856,
+      "share": 0.9961716537941737
+    },
+    {
+      "src": 231223,
+      "dst": 89126,
+      "weight": 275,
+      "share": 0.001413147928325137
+    },
+    {
+      "src": 344,
+      "dst": 89126,
+      "weight": 62,
+      "share": 0.00031860062384057636
+    },
+    {
+      "src": 116713,
+      "dst": 25410,
+      "weight": 687,
+      "share": 0.3523076923076923
+    },
+    {
+      "src": 3339311,
+      "dst": 25410,
+      "weight": 387,
+      "share": 0.19846153846153847
+    },
+    {
+      "src": 390881,
+      "dst": 25410,
+      "weight": 321,
+      "share": 0.1646153846153846
+    },
+    {
+      "src": 478841,
+      "dst": 268425,
+      "weight": 1229,
+      "share": 0.9983753046303818
+    },
+    {
+      "src": 48306309,
+      "dst": 268425,
+      "weight": 1,
+      "share": 0.0008123476848090983
+    },
+    {
+      "src": 25885900,
+      "dst": 268425,
+      "weight": 1,
+      "share": 0.0008123476848090983
+    },
+    {
+      "src": 25310,
+      "dst": 210254,
+      "weight": 1976,
+      "share": 0.4946182728410513
+    },
+    {
+      "src": 6279,
+      "dst": 210254,
+      "weight": 1574,
+      "share": 0.3939924906132666
+    },
+    {
+      "src": 1769438,
+      "dst": 210254,
+      "weight": 171,
+      "share": 0.042803504380475595
+    },
+    {
+      "src": 71555825,
+      "dst": 116879,
+      "weight": 197,
+      "share": 0.4020408163265306
+    },
+    {
+      "src": 1853521,
+      "dst": 116879,
+      "weight": 107,
+      "share": 0.21836734693877552
+    },
+    {
+      "src": 1265935,
+      "dst": 116879,
+      "weight": 39,
+      "share": 0.07959183673469387
+    },
+    {
+      "src": 25706596,
+      "dst": 116749,
+      "weight": 19,
+      "share": 0.14960629921259844
+    },
+    {
+      "src": 257170,
+      "dst": 116749,
+      "weight": 18,
+      "share": 0.14173228346456693
+    },
+    {
+      "src": 8877463,
+      "dst": 116749,
+      "weight": 8,
+      "share": 0.06299212598425197
+    },
+    {
+      "src": 22757677,
+      "dst": 76190,
+      "weight": 17,
+      "share": 0.15178571428571427
+    },
+    {
+      "src": 21752898,
+      "dst": 76190,
+      "weight": 12,
+      "share": 0.10714285714285714
+    },
+    {
+      "src": 16220356,
+      "dst": 76190,
+      "weight": 11,
+      "share": 0.09821428571428571
+    }
+  ]
+}

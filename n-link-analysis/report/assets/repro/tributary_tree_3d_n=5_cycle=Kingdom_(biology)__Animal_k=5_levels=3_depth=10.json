@@ -1,0 +1,1622 @@
+{
+  "nodes": [
+    {
+      "page_id": 53664,
+      "title": "Kingdom_(biology)",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 65306
+    },
+    {
+      "page_id": 11039790,
+      "title": "Animal",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 65306
+    },
+    {
+      "page_id": 4210,
+      "title": "Bipedalism",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 13039
+    },
+    {
+      "page_id": 61762,
+      "title": "Class_(biology)",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 11719
+    },
+    {
+      "page_id": 24536543,
+      "title": "Eukaryote",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 11368
+    },
+    {
+      "page_id": 3717,
+      "title": "Brain",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 9828
+    },
+    {
+      "page_id": 19178965,
+      "title": "Fungus",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 7056
+    },
+    {
+      "page_id": 682482,
+      "title": "Human",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 13795
+    },
+    {
+      "page_id": 5392303,
+      "title": "Fossil_track",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 11
+    },
+    {
+      "page_id": 500894,
+      "title": "ASIMO",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 2
+    },
+    {
+      "page_id": 23204243,
+      "title": "Mogollon_Monster",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 755344,
+      "title": "Taweret",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 23366462,
+      "title": "Insect",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 11038
+    },
+    {
+      "page_id": 718710,
+      "title": "Oegopsida",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 474
+    },
+    {
+      "page_id": 949620,
+      "title": "Placoderm",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 50
+    },
+    {
+      "page_id": 228613,
+      "title": "Starfish",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 41
+    },
+    {
+      "page_id": 2155531,
+      "title": "Handbook_of_the_Birds_of_the_World",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 22
+    },
+    {
+      "page_id": 285948,
+      "title": "Unicellular_organism",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 5815
+    },
+    {
+      "page_id": 4817,
+      "title": "Biological_membrane",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 4008
+    },
+    {
+      "page_id": 19179592,
+      "title": "Archaea",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1554
+    },
+    {
+      "page_id": 4630209,
+      "title": "Small_nuclear_RNA",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 227
+    },
+    {
+      "page_id": 15343,
+      "title": "Intron",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 120
+    },
+    {
+      "page_id": 36856,
+      "title": "Vertebrate",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 4230
+    },
+    {
+      "page_id": 74941,
+      "title": "Body_cavity",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 4166
+    },
+    {
+      "page_id": 485766,
+      "title": "Forebrain",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 771
+    },
+    {
+      "page_id": 21245,
+      "title": "Neuroscience",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 317
+    },
+    {
+      "page_id": 469397,
+      "title": "Central_sulcus",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 154
+    },
+    {
+      "page_id": 19178886,
+      "title": "Protist",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 6366
+    },
+    {
+      "page_id": 43093,
+      "title": "Flagellum",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 676
+    },
+    {
+      "page_id": 20874,
+      "title": "Mycology",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 145
+    },
+    {
+      "page_id": 14587477,
+      "title": "Locule",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 92
+    },
+    {
+      "page_id": 33044498,
+      "title": "Shikimate_pathway",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 76
+    },
+    {
+      "page_id": 128608,
+      "title": "Population_density",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 18183,
+      "title": "Body_relative_direction",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 54176,
+      "title": "Human_body",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 674207,
+      "title": "Torso",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 167184,
+      "title": "Rapid_eye_movement_sleep",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 15678199,
+      "title": "1978_in_paleontology",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 44779465,
+      "title": "Eldon_George",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7515092,
+      "title": "Ciampate_del_Diavolo",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 24099205,
+      "title": "Stegopodus",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 15037551,
+      "title": "Diplichnites",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7501487,
+      "title": "Personal_robot",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 179252,
+      "title": "Gastropoda",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 874626,
+      "title": "Glitter",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 635484,
+      "title": "Stinger",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 149463,
+      "title": "Insecticide",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 262601,
+      "title": "Thorax",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 38011,
+      "title": "Squid",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 54460527,
+      "title": "Antarctaspis",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 60601624,
+      "title": "Charles_R._Eastman",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 10499006,
+      "title": "Weejasperaspididae",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 39716600,
+      "title": "Rhenonema",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 35394814,
+      "title": "Selenosteidae",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 15553867,
+      "title": "Ambulacral",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1804340,
+      "title": "Madreporite",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 77962465,
+      "title": "Touch_pool",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 39478635,
+      "title": "Tornaria",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 9062449,
+      "title": "Dipleurula",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 62856556,
+      "title": "Avibase",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 63501855,
+      "title": "Choco_brushfinch",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 12191869,
+      "title": "Abroscopus",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 44821081,
+      "title": "Guatemalan_flicker",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 40276810,
+      "title": "Campina_jay",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 20377,
+      "title": "Microorganism",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 21393077,
+      "title": "Microbiology",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7403,
+      "title": "Chemotaxis",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 299472,
+      "title": "Multicellular_organism",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 9247603,
+      "title": "Protistology",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 33051527,
+      "title": "Cell_membrane",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 156968,
+      "title": "Integral_membrane_protein",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 9497665,
+      "title": "Vesicular_transport_protein",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 25031335,
+      "title": "Nucleoside_transporter",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 2729712,
+      "title": "Digitonin",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 156970,
+      "title": "Cytoskeleton",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1642943,
+      "title": "Appendage",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 14204,
+      "title": "Halophile",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 3135637,
+      "title": "Gut_microbiota",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 45515504,
+      "title": "Microbiome",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 4765512,
+      "title": "Small_nucleolar_RNA",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1885649,
+      "title": "RNA_polymerase_II",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 232937,
+      "title": "Spliceosome",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 33665183,
+      "title": "Urna_(disambiguation)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 58990339,
+      "title": "Small_RNA_sequencing",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 10238,
+      "title": "Exon",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 27708701,
+      "title": "Reference_genome",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 14340833,
+      "title": "Nucleolin",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 78237247,
+      "title": "Poison_exon",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 11422377,
+      "title": "U2_spliceosomal_RNA",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 13483,
+      "title": "Hemoglobin",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 4394717,
+      "title": "Body_plan",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 5022955,
+      "title": "Unipolar_neuron",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 46521228,
+      "title": "Vertebra",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 54445,
+      "title": "Bird_of_prey",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 315175,
+      "title": "Mesothelium",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 9293603,
+      "title": "Mouth",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7124850,
+      "title": "Simple_squamous_epithelium",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 39369195,
+      "title": "Dorsal_body_cavity",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 683431,
+      "title": "Urogenital_opening",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 99026,
+      "title": "Basal_ganglia",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 78227,
+      "title": "Thalamus",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 200405,
+      "title": "Limbic_system",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 52828391,
+      "title": "Feline_cognitive_dysfunction",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 43780179,
+      "title": "FEZF1",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 28481,
+      "title": "Statistical_mechanics",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 33912,
+      "title": "Working_memory",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 12637991,
+      "title": "Sloan_Research_Fellowship",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 372266,
+      "title": "Long-term_potentiation",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 4318932,
+      "title": "Biology_of_romantic_love",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 465886,
+      "title": "Parietal_lobe",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 66575,
+      "title": "Nutrient",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 32347,
+      "title": "Vacuole",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 2899964,
+      "title": "Stentor_(ciliate)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1387753,
+      "title": "Microsporidia",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 236164,
+      "title": "Dictyostelium",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 22210655,
+      "title": "Aquatic_locomotion",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 43118,
+      "title": "Cilium",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 220443,
+      "title": "Choanoflagellate",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1355052,
+      "title": "Comamonadaceae",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 912113,
+      "title": "Basal_body",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 8306344,
+      "title": "Pier_Andrea_Saccardo",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 19825325,
+      "title": "Camille_Montagne",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 41430613,
+      "title": "Raffaele_Ciferri",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 14031756,
+      "title": "Giacomo_Bresadola",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 26298880,
+      "title": "John_Axel_Nannfeldt",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 310441,
+      "title": "Capsule_(fruit)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 57422855,
+      "title": "Hypericeae",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 22852944,
+      "title": "Cyathodes",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 51144729,
+      "title": "Cyclanthera",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 64464824,
+      "title": "Atroxima",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 26286626,
+      "title": "Syringic_acid",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 4392867,
+      "title": "Phenylpropanoid",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 36099594,
+      "title": "Rubicordifolin",
+      "kind": "entry",
+      "level": 3
+    }
+  ],
+  "edges": [
+    {
+      "src": 4210,
+      "dst": 11039790,
+      "weight": 11826,
+      "share": 0.18109151047409042
+    },
+    {
+      "src": 61762,
+      "dst": 53664,
+      "weight": 11694,
+      "share": 0.1790701947813304
+    },
+    {
+      "src": 24536543,
+      "dst": 11039790,
+      "weight": 10393,
+      "share": 0.15914798480950632
+    },
+    {
+      "src": 3717,
+      "dst": 11039790,
+      "weight": 8831,
+      "share": 0.13522908244517948
+    },
+    {
+      "src": 19178965,
+      "dst": 53664,
+      "weight": 5959,
+      "share": 0.09125015312997672
+    },
+    {
+      "src": 682482,
+      "dst": 4210,
+      "weight": 13020,
+      "share": 0.9986194201564658
+    },
+    {
+      "src": 5392303,
+      "dst": 4210,
+      "weight": 11,
+      "share": 0.0008436876821598404
+    },
+    {
+      "src": 500894,
+      "dst": 4210,
+      "weight": 2,
+      "share": 0.00015339776039269826
+    },
+    {
+      "src": 23204243,
+      "dst": 4210,
+      "weight": 1,
+      "share": 7.669888019634913e-05
+    },
+    {
+      "src": 755344,
+      "dst": 4210,
+      "weight": 1,
+      "share": 7.669888019634913e-05
+    },
+    {
+      "src": 23366462,
+      "dst": 61762,
+      "weight": 11025,
+      "share": 0.9408602150537635
+    },
+    {
+      "src": 718710,
+      "dst": 61762,
+      "weight": 474,
+      "share": 0.04045058883768561
+    },
+    {
+      "src": 949620,
+      "dst": 61762,
+      "weight": 50,
+      "share": 0.004266939750810718
+    },
+    {
+      "src": 228613,
+      "dst": 61762,
+      "weight": 41,
+      "share": 0.0034988905956647894
+    },
+    {
+      "src": 2155531,
+      "dst": 61762,
+      "weight": 22,
+      "share": 0.0018774534903567162
+    },
+    {
+      "src": 285948,
+      "dst": 24536543,
+      "weight": 5370,
+      "share": 0.4724201636315651
+    },
+    {
+      "src": 4817,
+      "dst": 24536543,
+      "weight": 3896,
+      "share": 0.34274654702208146
+    },
+    {
+      "src": 19179592,
+      "dst": 24536543,
+      "weight": 1151,
+      "share": 0.10125802762382335
+    },
+    {
+      "src": 4630209,
+      "dst": 24536543,
+      "weight": 227,
+      "share": 0.019970088853699306
+    },
+    {
+      "src": 15343,
+      "dst": 24536543,
+      "weight": 120,
+      "share": 0.010556875164951175
+    },
+    {
+      "src": 36856,
+      "dst": 3717,
+      "weight": 4106,
+      "share": 0.4178284318713748
+    },
+    {
+      "src": 74941,
+      "dst": 3717,
+      "weight": 3824,
+      "share": 0.38913198331128523
+    },
+    {
+      "src": 485766,
+      "dst": 3717,
+      "weight": 671,
+      "share": 0.06828126590007123
+    },
+    {
+      "src": 21245,
+      "dst": 3717,
+      "weight": 317,
+      "share": 0.03225806451612903
+    },
+    {
+      "src": 469397,
+      "dst": 3717,
+      "weight": 154,
+      "share": 0.015671110206573725
+    },
+    {
+      "src": 19178886,
+      "dst": 19178965,
+      "weight": 5543,
+      "share": 0.7856839121190645
+    },
+    {
+      "src": 43093,
+      "dst": 19178965,
+      "weight": 674,
+      "share": 0.09553508150248051
+    },
+    {
+      "src": 20874,
+      "dst": 19178965,
+      "weight": 145,
+      "share": 0.020552799433026223
+    },
+    {
+      "src": 14587477,
+      "dst": 19178965,
+      "weight": 92,
+      "share": 0.013040396881644224
+    },
+    {
+      "src": 33044498,
+      "dst": 19178965,
+      "weight": 71,
+      "share": 0.010063784549964564
+    },
+    {
+      "src": 128608,
+      "dst": 682482,
+      "weight": 7296,
+      "share": 0.5289256198347108
+    },
+    {
+      "src": 18183,
+      "dst": 682482,
+      "weight": 1642,
+      "share": 0.11903726257793243
+    },
+    {
+      "src": 54176,
+      "dst": 682482,
+      "weight": 1608,
+      "share": 0.11657242279251849
+    },
+    {
+      "src": 674207,
+      "dst": 682482,
+      "weight": 468,
+      "share": 0.033927794693344934
+    },
+    {
+      "src": 167184,
+      "dst": 682482,
+      "weight": 451,
+      "share": 0.03269537480063796
+    },
+    {
+      "src": 15678199,
+      "dst": 5392303,
+      "weight": 2,
+      "share": 0.2
+    },
+    {
+      "src": 44779465,
+      "dst": 5392303,
+      "weight": 1,
+      "share": 0.1
+    },
+    {
+      "src": 7515092,
+      "dst": 5392303,
+      "weight": 1,
+      "share": 0.1
+    },
+    {
+      "src": 24099205,
+      "dst": 5392303,
+      "weight": 1,
+      "share": 0.1
+    },
+    {
+      "src": 15037551,
+      "dst": 5392303,
+      "weight": 1,
+      "share": 0.1
+    },
+    {
+      "src": 7501487,
+      "dst": 500894,
+      "weight": 1,
+      "share": 1.0
+    },
+    {
+      "src": 179252,
+      "dst": 23366462,
+      "weight": 8706,
+      "share": 0.7888013047023648
+    },
+    {
+      "src": 874626,
+      "dst": 23366462,
+      "weight": 621,
+      "share": 0.056265289480837186
+    },
+    {
+      "src": 635484,
+      "dst": 23366462,
+      "weight": 482,
+      "share": 0.043671287487541906
+    },
+    {
+      "src": 149463,
+      "dst": 23366462,
+      "weight": 292,
+      "share": 0.026456464619008788
+    },
+    {
+      "src": 262601,
+      "dst": 23366462,
+      "weight": 182,
+      "share": 0.016489988221436984
+    },
+    {
+      "src": 38011,
+      "dst": 718710,
+      "weight": 473,
+      "share": 1.0
+    },
+    {
+      "src": 54460527,
+      "dst": 949620,
+      "weight": 2,
+      "share": 0.04081632653061224
+    },
+    {
+      "src": 60601624,
+      "dst": 949620,
+      "weight": 2,
+      "share": 0.04081632653061224
+    },
+    {
+      "src": 10499006,
+      "dst": 949620,
+      "weight": 1,
+      "share": 0.02040816326530612
+    },
+    {
+      "src": 39716600,
+      "dst": 949620,
+      "weight": 1,
+      "share": 0.02040816326530612
+    },
+    {
+      "src": 35394814,
+      "dst": 949620,
+      "weight": 1,
+      "share": 0.02040816326530612
+    },
+    {
+      "src": 15553867,
+      "dst": 228613,
+      "weight": 11,
+      "share": 0.275
+    },
+    {
+      "src": 1804340,
+      "dst": 228613,
+      "weight": 5,
+      "share": 0.125
+    },
+    {
+      "src": 77962465,
+      "dst": 228613,
+      "weight": 4,
+      "share": 0.1
+    },
+    {
+      "src": 39478635,
+      "dst": 228613,
+      "weight": 1,
+      "share": 0.025
+    },
+    {
+      "src": 9062449,
+      "dst": 228613,
+      "weight": 1,
+      "share": 0.025
+    },
+    {
+      "src": 62856556,
+      "dst": 2155531,
+      "weight": 4,
+      "share": 0.19047619047619047
+    },
+    {
+      "src": 63501855,
+      "dst": 2155531,
+      "weight": 1,
+      "share": 0.047619047619047616
+    },
+    {
+      "src": 12191869,
+      "dst": 2155531,
+      "weight": 1,
+      "share": 0.047619047619047616
+    },
+    {
+      "src": 44821081,
+      "dst": 2155531,
+      "weight": 1,
+      "share": 0.047619047619047616
+    },
+    {
+      "src": 40276810,
+      "dst": 2155531,
+      "weight": 1,
+      "share": 0.047619047619047616
+    },
+    {
+      "src": 20377,
+      "dst": 285948,
+      "weight": 5511,
+      "share": 0.9478844169246646
+    },
+    {
+      "src": 21393077,
+      "dst": 285948,
+      "weight": 154,
+      "share": 0.026487788097695218
+    },
+    {
+      "src": 7403,
+      "dst": 285948,
+      "weight": 56,
+      "share": 0.009631922944616443
+    },
+    {
+      "src": 299472,
+      "dst": 285948,
+      "weight": 40,
+      "share": 0.0068799449604403165
+    },
+    {
+      "src": 9247603,
+      "dst": 285948,
+      "weight": 9,
+      "share": 0.0015479876160990713
+    },
+    {
+      "src": 33051527,
+      "dst": 4817,
+      "weight": 3974,
+      "share": 0.9917644122785126
+    },
+    {
+      "src": 156968,
+      "dst": 4817,
+      "weight": 15,
+      "share": 0.003743448964312453
+    },
+    {
+      "src": 9497665,
+      "dst": 4817,
+      "weight": 5,
+      "share": 0.0012478163214374844
+    },
+    {
+      "src": 25031335,
+      "dst": 4817,
+      "weight": 2,
+      "share": 0.0004991265285749938
+    },
+    {
+      "src": 2729712,
+      "dst": 4817,
+      "weight": 2,
+      "share": 0.0004991265285749938
+    },
+    {
+      "src": 156970,
+      "dst": 19179592,
+      "weight": 1141,
+      "share": 0.734707018673535
+    },
+    {
+      "src": 1642943,
+      "dst": 19179592,
+      "weight": 241,
+      "share": 0.15518351577591757
+    },
+    {
+      "src": 14204,
+      "dst": 19179592,
+      "weight": 35,
+      "share": 0.022537025112685124
+    },
+    {
+      "src": 3135637,
+      "dst": 19179592,
+      "weight": 31,
+      "share": 0.019961365099806824
+    },
+    {
+      "src": 45515504,
+      "dst": 19179592,
+      "weight": 13,
+      "share": 0.008370895041854474
+    },
+    {
+      "src": 4765512,
+      "dst": 4630209,
+      "weight": 184,
+      "share": 0.8141592920353983
+    },
+    {
+      "src": 1885649,
+      "dst": 4630209,
+      "weight": 25,
+      "share": 0.11061946902654868
+    },
+    {
+      "src": 232937,
+      "dst": 4630209,
+      "weight": 14,
+      "share": 0.061946902654867256
+    },
+    {
+      "src": 33665183,
+      "dst": 4630209,
+      "weight": 1,
+      "share": 0.004424778761061947
+    },
+    {
+      "src": 58990339,
+      "dst": 4630209,
+      "weight": 1,
+      "share": 0.004424778761061947
+    },
+    {
+      "src": 10238,
+      "dst": 15343,
+      "weight": 69,
+      "share": 0.5798319327731093
+    },
+    {
+      "src": 27708701,
+      "dst": 15343,
+      "weight": 6,
+      "share": 0.05042016806722689
+    },
+    {
+      "src": 14340833,
+      "dst": 15343,
+      "weight": 5,
+      "share": 0.04201680672268908
+    },
+    {
+      "src": 78237247,
+      "dst": 15343,
+      "weight": 5,
+      "share": 0.04201680672268908
+    },
+    {
+      "src": 11422377,
+      "dst": 15343,
+      "weight": 4,
+      "share": 0.03361344537815126
+    },
+    {
+      "src": 13483,
+      "dst": 36856,
+      "weight": 2281,
+      "share": 0.5393710096949633
+    },
+    {
+      "src": 4394717,
+      "dst": 36856,
+      "weight": 534,
+      "share": 0.1262709860487113
+    },
+    {
+      "src": 5022955,
+      "dst": 36856,
+      "weight": 262,
+      "share": 0.06195318042090329
+    },
+    {
+      "src": 46521228,
+      "dst": 36856,
+      "weight": 194,
+      "share": 0.04587372901395129
+    },
+    {
+      "src": 54445,
+      "dst": 36856,
+      "weight": 167,
+      "share": 0.039489240955308584
+    },
+    {
+      "src": 315175,
+      "dst": 74941,
+      "weight": 4057,
+      "share": 0.9740696278511405
+    },
+    {
+      "src": 9293603,
+      "dst": 74941,
+      "weight": 103,
+      "share": 0.024729891956782712
+    },
+    {
+      "src": 7124850,
+      "dst": 74941,
+      "weight": 1,
+      "share": 0.00024009603841536616
+    },
+    {
+      "src": 39369195,
+      "dst": 74941,
+      "weight": 1,
+      "share": 0.00024009603841536616
+    },
+    {
+      "src": 683431,
+      "dst": 74941,
+      "weight": 1,
+      "share": 0.00024009603841536616
+    },
+    {
+      "src": 99026,
+      "dst": 485766,
+      "weight": 709,
+      "share": 0.9207792207792208
+    },
+    {
+      "src": 78227,
+      "dst": 485766,
+      "weight": 44,
+      "share": 0.05714285714285714
+    },
+    {
+      "src": 200405,
+      "dst": 485766,
+      "weight": 12,
+      "share": 0.015584415584415584
+    },
+    {
+      "src": 52828391,
+      "dst": 485766,
+      "weight": 1,
+      "share": 0.0012987012987012987
+    },
+    {
+      "src": 43780179,
+      "dst": 485766,
+      "weight": 1,
+      "share": 0.0012987012987012987
+    },
+    {
+      "src": 28481,
+      "dst": 21245,
+      "weight": 71,
+      "share": 0.22468354430379747
+    },
+    {
+      "src": 33912,
+      "dst": 21245,
+      "weight": 54,
+      "share": 0.17088607594936708
+    },
+    {
+      "src": 12637991,
+      "dst": 21245,
+      "weight": 17,
+      "share": 0.05379746835443038
+    },
+    {
+      "src": 372266,
+      "dst": 21245,
+      "weight": 12,
+      "share": 0.0379746835443038
+    },
+    {
+      "src": 4318932,
+      "dst": 21245,
+      "weight": 8,
+      "share": 0.02531645569620253
+    },
+    {
+      "src": 465886,
+      "dst": 469397,
+      "weight": 153,
+      "share": 1.0
+    },
+    {
+      "src": 66575,
+      "dst": 19178886,
+      "weight": 6297,
+      "share": 0.9893165750196387
+    },
+    {
+      "src": 32347,
+      "dst": 19178886,
+      "weight": 30,
+      "share": 0.004713275726630008
+    },
+    {
+      "src": 2899964,
+      "dst": 19178886,
+      "weight": 4,
+      "share": 0.0006284367635506677
+    },
+    {
+      "src": 1387753,
+      "dst": 19178886,
+      "weight": 4,
+      "share": 0.0006284367635506677
+    },
+    {
+      "src": 236164,
+      "dst": 19178886,
+      "weight": 4,
+      "share": 0.0006284367635506677
+    },
+    {
+      "src": 22210655,
+      "dst": 43093,
+      "weight": 425,
+      "share": 0.6296296296296297
+    },
+    {
+      "src": 43118,
+      "dst": 43093,
+      "weight": 77,
+      "share": 0.11407407407407408
+    },
+    {
+      "src": 220443,
+      "dst": 43093,
+      "weight": 17,
+      "share": 0.025185185185185185
+    },
+    {
+      "src": 1355052,
+      "dst": 43093,
+      "weight": 12,
+      "share": 0.017777777777777778
+    },
+    {
+      "src": 912113,
+      "dst": 43093,
+      "weight": 8,
+      "share": 0.011851851851851851
+    },
+    {
+      "src": 8306344,
+      "dst": 20874,
+      "weight": 23,
+      "share": 0.1597222222222222
+    },
+    {
+      "src": 19825325,
+      "dst": 20874,
+      "weight": 11,
+      "share": 0.0763888888888889
+    },
+    {
+      "src": 41430613,
+      "dst": 20874,
+      "weight": 8,
+      "share": 0.05555555555555555
+    },
+    {
+      "src": 14031756,
+      "dst": 20874,
+      "weight": 6,
+      "share": 0.041666666666666664
+    },
+    {
+      "src": 26298880,
+      "dst": 20874,
+      "weight": 5,
+      "share": 0.034722222222222224
+    },
+    {
+      "src": 310441,
+      "dst": 14587477,
+      "weight": 80,
+      "share": 0.8791208791208791
+    },
+    {
+      "src": 57422855,
+      "dst": 14587477,
+      "weight": 2,
+      "share": 0.02197802197802198
+    },
+    {
+      "src": 22852944,
+      "dst": 14587477,
+      "weight": 2,
+      "share": 0.02197802197802198
+    },
+    {
+      "src": 51144729,
+      "dst": 14587477,
+      "weight": 1,
+      "share": 0.01098901098901099
+    },
+    {
+      "src": 64464824,
+      "dst": 14587477,
+      "weight": 1,
+      "share": 0.01098901098901099
+    },
+    {
+      "src": 26286626,
+      "dst": 33044498,
+      "weight": 60,
+      "share": 0.8
+    },
+    {
+      "src": 4392867,
+      "dst": 33044498,
+      "weight": 14,
+      "share": 0.18666666666666668
+    },
+    {
+      "src": 36099594,
+      "dst": 33044498,
+      "weight": 1,
+      "share": 0.013333333333333334
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "nodes": [
+    {
+      "page_id": 321827,
+      "title": "Thermosetting_polymer",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 3692
+    },
+    {
+      "page_id": 6494433,
+      "title": "Curing_(chemistry)",
+      "kind": "cycle",
+      "level": 0,
+      "basin_total_level0": 3692
+    },
+    {
+      "page_id": 5371,
+      "title": "Concrete",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 4691
+    },
+    {
+      "page_id": 4085687,
+      "title": "Thermoplastic_elastomer",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 3
+    },
+    {
+      "page_id": 15311568,
+      "title": "Potting_(electronics)",
+      "kind": "entry",
+      "level": 1,
+      "basin_total_level1": 2
+    },
+    {
+      "page_id": 13590,
+      "title": "House",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 5583
+    },
+    {
+      "page_id": 679837,
+      "title": "Basketball_court",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 336
+    },
+    {
+      "page_id": 4609966,
+      "title": "List_of_airports_in_Poland_with_paved_runways",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 19
+    },
+    {
+      "page_id": 3962331,
+      "title": "TPV",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 38491434,
+      "title": "Car_boot_liner",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 10301,
+      "title": "Encapsulation",
+      "kind": "entry",
+      "level": 2,
+      "basin_total_level2": 1
+    },
+    {
+      "page_id": 45995,
+      "title": "Building",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 1534984,
+      "title": "Subdivision_(land)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 543770,
+      "title": "Residential_area",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 652569,
+      "title": "Center_(basketball)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 7001560,
+      "title": "Coach_(basketball)",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 2387102,
+      "title": "Wanless_Park",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 5847256,
+      "title": "Kamie\u0144sk",
+      "kind": "entry",
+      "level": 3
+    },
+    {
+      "page_id": 4630856,
+      "title": "List_of_airports_in_Poland_with_unpaved_runways",
+      "kind": "entry",
+      "level": 3
+    }
+  ],
+  "edges": [
+    {
+      "src": 5371,
+      "dst": 6494433,
+      "weight": 3674,
+      "share": 0.9956639566395664
+    },
+    {
+      "src": 4085687,
+      "dst": 321827,
+      "weight": 3,
+      "share": 0.0008130081300813008
+    },
+    {
+      "src": 15311568,
+      "dst": 321827,
+      "weight": 2,
+      "share": 0.0005420054200542005
+    },
+    {
+      "src": 13590,
+      "dst": 5371,
+      "weight": 4091,
+      "share": 0.8722814498933902
+    },
+    {
+      "src": 679837,
+      "dst": 5371,
+      "weight": 336,
+      "share": 0.07164179104477612
+    },
+    {
+      "src": 4609966,
+      "dst": 5371,
+      "weight": 19,
+      "share": 0.004051172707889125
+    },
+    {
+      "src": 3962331,
+      "dst": 4085687,
+      "weight": 1,
+      "share": 0.5
+    },
+    {
+      "src": 38491434,
+      "dst": 4085687,
+      "weight": 1,
+      "share": 0.5
+    },
+    {
+      "src": 10301,
+      "dst": 15311568,
+      "weight": 1,
+      "share": 1.0
+    },
+    {
+      "src": 45995,
+      "dst": 13590,
+      "weight": 5065,
+      "share": 0.9073808670727338
+    },
+    {
+      "src": 1534984,
+      "dst": 13590,
+      "weight": 222,
+      "share": 0.03977069150841992
+    },
+    {
+      "src": 543770,
+      "dst": 13590,
+      "weight": 219,
+      "share": 0.03923324973127911
+    },
+    {
+      "src": 652569,
+      "dst": 679837,
+      "weight": 276,
+      "share": 0.8238805970149253
+    },
+    {
+      "src": 7001560,
+      "dst": 679837,
+      "weight": 43,
+      "share": 0.12835820895522387
+    },
+    {
+      "src": 2387102,
+      "dst": 679837,
+      "weight": 2,
+      "share": 0.005970149253731343
+    },
+    {
+      "src": 5847256,
+      "dst": 4609966,
+      "weight": 17,
+      "share": 0.9444444444444444
+    },
+    {
+      "src": 4630856,
+      "dst": 4609966,
+      "weight": 1,
+      "share": 0.05555555555555555
+    }
+  ]
+}

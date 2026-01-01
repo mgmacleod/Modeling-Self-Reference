@@ -1,7 +1,7 @@
 # N-Link Analysis Index
 
-**Purpose**: Analysis code and documentation for basin-partition experiments on Wikipedia N-Link sequences  
-**Last Updated**: 2025-12-31
+**Purpose**: Analysis code and documentation for basin-partition experiments on Wikipedia N-Link sequences
+**Last Updated**: 2026-01-01
 
 ---
 
@@ -11,6 +11,8 @@
 |------|------|---------|--------|
 | [implementation.md](implementation.md) | 2 | Analysis architecture: inputs/outputs, core algorithms, run flow | ~4k |
 | [scripts-reference.md](scripts-reference.md) | 2 | Complete reference for all analysis scripts (parameters, I/O, theory connections) | ~15k |
+| [FRAMEWORK-TESTING-PLAN.md](FRAMEWORK-TESTING-PLAN.md) | 2 | Systematic framework validation plan and test results (N=2-10 coverage) | ~8k |
+| [NEXT-STEPS.md](NEXT-STEPS.md) | 2 | Prioritized next steps: Multi-N analysis, hub connectivity, theory validation | ~6k |
 | [future.md](future.md) | 2 | Next steps (Phase 1 experiments, validation, scaling work) | ~1k |
 | [session-log.md](session-log.md) | 2 | Cumulative work log + decisions for analysis work | ~2k |
 | [empirical-investigations/INDEX.md](empirical-investigations/INDEX.md) | 2 | Question-scoped empirical investigation streams | ~1k |

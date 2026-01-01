@@ -3,7 +3,7 @@
 **Document Type**: Reference
 **Target Audience**: LLMs + Developers
 **Purpose**: Comprehensive documentation of all analysis scripts - functionality, inputs, outputs, parameters, and theory connections
-**Last Updated**: 2025-12-31
+**Last Updated**: 2026-01-01
 **Dependencies**: [implementation.md](implementation.md), [../llm-facing-documentation/theories-proofs-conjectures/n-link-rule-theory.md](../llm-facing-documentation/theories-proofs-conjectures/n-link-rule-theory.md)
 **Status**: Active
 
@@ -577,7 +577,7 @@ hop  seed_title       basin_total  dominant_entry_title  dominant_share
 **Theory Connection**: Quantifies basin geometry predictions - are basins "single-trunk" (high top1_share, low effective_branches) or diffuse (low Gini, high entropy)?
 
 **Algorithm**:
-1. Read all `branches_n=5_cycle=*_branches_all.tsv` files
+1. Read all `branches_n={N}_cycle=*_branches_all.tsv` files (filtered by --n parameter)
 2. For each cycle, compute:
    - **Gini coefficient**: Inequality measure (0 = perfect equality, 1 = one branch has all mass)
    - **Herfindahl-Hirschman index (HH)**: Sum of squared shares → effective branches = 1/HH
@@ -589,6 +589,7 @@ hop  seed_title       basin_total  dominant_entry_title  dominant_share
 **Usage**:
 ```bash
 python n-link-analysis/scripts/compute-trunkiness-dashboard.py \
+  [--n 5] \
   [--analysis-dir data/wikipedia/processed/analysis] \
   [--tag bootstrap_2025-12-30]
 ```
@@ -596,15 +597,16 @@ python n-link-analysis/scripts/compute-trunkiness-dashboard.py \
 **Parameters**:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
+| `--n` | int | 5 | N value for N-link rule (filters which branch files to process) |
 | `--analysis-dir` | path | data/wikipedia/processed/analysis | Directory with branch outputs |
 | `--tag` | str | bootstrap_2025-12-30 | Tag for output filename |
 
 **Inputs**:
-- `data/wikipedia/processed/analysis/branches_n=5_cycle=*_branches_all.tsv`
-- `data/wikipedia/processed/analysis/branches_n=5_cycle=*_branches_topk.tsv`
+- `data/wikipedia/processed/analysis/branches_n={N}_cycle=*_branches_all.tsv` (filtered by --n)
+- `data/wikipedia/processed/analysis/branches_n={N}_cycle=*_branches_topk.tsv` (filtered by --n)
 
 **Outputs**:
-- **File**: `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n=5_{tag}.tsv`
+- **File**: `data/wikipedia/processed/analysis/branch_trunkiness_dashboard_n={N}_{tag}.tsv`
 - **Columns**:
   - `cycle_key` (str): Canonical cycle identifier
   - `cycle_len` (int): Cycle length
@@ -1005,7 +1007,7 @@ Tier 4 (Reporting):
 | map-basin-from-cycle.py | ✓ | nlink_sequences | edges_*.duckdb, basin_*_layers.tsv | --n, --cycle-page-id, --max-depth |
 | branch-basin-analysis.py | ✓ | edges DB | branches_*.tsv | --n, --cycle-page-id, --top-k |
 | chase-dominant-upstream.py | ✓ | edges DB | dominant_upstream_chain_*.tsv | --n, --seed-title, --max-hops |
-| compute-trunkiness-dashboard.py | ✓ | branches_*.tsv | trunkiness_dashboard.tsv | --tag |
+| compute-trunkiness-dashboard.py | ✓ | branches_*.tsv | trunkiness_dashboard.tsv | --n, --tag, --analysis-dir |
 | batch-chase-collapse-metrics.py | ✓ | trunkiness dashboard | collapse_dashboard.tsv | --n, --dashboard, --dominance-threshold |
 | render-tributary-tree-3d.py | ✓ | edges DB | HTML 3D tree | --n, --cycle-title, --top-k, --max-levels |
 | render-human-report.py | ✓ | dashboards | overview.md + PNG | --tag |
@@ -1029,6 +1031,11 @@ Tier 4 (Reporting):
 ---
 
 ## Changelog
+
+### 2026-01-01
+- Updated `compute-trunkiness-dashboard.py` documentation: Added `--n` parameter for Multi-N support
+- Script now filters branch files by N value (enables systematic Multi-N comparison)
+- Updated quick reference table with new parameters
 
 ### 2025-12-31
 - Initial creation: Comprehensive documentation of all 14 scripts

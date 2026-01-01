@@ -18,6 +18,65 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Evening) - Phase 4 Tunnel Mechanism Analysis Complete
+
+**Completed**:
+- Created 3 Phase 4 scripts per [TUNNELING-ROADMAP.md](../n-link-analysis/TUNNELING-ROADMAP.md):
+  - `analyze-tunnel-mechanisms.py` - Classifies WHY tunneling occurs (degree_shift vs path_divergence)
+  - `trace-tunneling-paths.py` - Traces paths through N-sequences with N-switching
+  - `quantify-basin-stability.py` - Measures basin stability and cross-basin flows
+- Created `TUNNEL-MECHANISM-DEEP-DIVE.md` documentation
+- Updated TUNNELING-ROADMAP.md to mark Phases 1-4 complete
+
+**Discoveries**:
+| Finding | Value |
+|---------|-------|
+| Degree shift dominates | 99.3% of tunnel transitions |
+| Path divergence rare | 0.7% (60 of 9,134 transitions) |
+| N5→N6 is main transition | 53% of all transitions |
+| Gulf_of_Maine is sink | Absorbs pages from all other basins at N=6 |
+| Mean out-degree | ~32 links for tunnel nodes |
+| Basin stability | 8 moderate, 1 fragile (Gulf_of_Maine) |
+
+**Mechanism Classification**:
+| Mechanism | Description | Frequency |
+|-----------|-------------|-----------|
+| degree_shift | Nth link differs from (N-1)th link | 99.3% |
+| path_divergence | Same first step, paths diverge downstream | 0.7% |
+
+**Cross-Basin Flow Pattern**:
+- At N=5→N=6: All basins flow INTO Gulf_of_Maine__Massachusetts
+- Sea_salt→Gulf_of_Maine: 1,659 pages
+- Autumn→Gulf_of_Maine: 1,276 pages
+- This explains the phase transition at N=5
+
+**Files Created**:
+| File | Lines | Description |
+|------|-------|-------------|
+| `analyze-tunnel-mechanisms.py` | ~280 | Mechanism classification |
+| `trace-tunneling-paths.py` | ~350 | Path tracing with N-switching |
+| `quantify-basin-stability.py` | ~280 | Stability metrics and flows |
+| `TUNNEL-MECHANISM-DEEP-DIVE.md` | ~200 | Phase 4 documentation |
+
+**Data Outputs**:
+| File | Rows | Description |
+|------|------|-------------|
+| `tunnel_mechanisms.tsv` | 9,134 | Per-transition mechanism |
+| `tunnel_mechanism_summary.tsv` | 2 | Aggregated stats |
+| `tunneling_traces.tsv` | varies | Example path traces |
+| `basin_stability_scores.tsv` | 9 | Per-basin stability |
+| `basin_flows.tsv` | 16 | Cross-basin page flows |
+
+**Architecture Impact**:
+- Phase 4 of 5-phase roadmap complete
+- Only Phase 5 (Applications & Validation) remains
+- All tunnel mechanism questions now have quantitative answers
+
+**Next Steps**:
+- Phase 5: `compute-semantic-model.py`, `validate-tunneling-predictions.py`, `generate-tunneling-report.py`
+
+---
+
 ### Session: 2026-01-01 - Data Inventory and Consolidation
 
 **Completed**:

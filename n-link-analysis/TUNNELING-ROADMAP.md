@@ -4,7 +4,7 @@
 **Target Audience**: LLMs and developers
 **Purpose**: Phased plan for implementing cross-N tunneling and multiplex analysis
 **Created**: 2026-01-01
-**Status**: Active (planned, not yet started)
+**Status**: Active (Phases 1-4 complete, Phase 5 pending)
 
 ---
 
@@ -33,13 +33,13 @@ From [database-inference-graph-theory.md](../llm-facing-documentation/theories-p
 
 ## Phase Summary
 
-| Phase | Goal | Scripts | Effort | Dependencies |
+| Phase | Goal | Scripts | Status | Dependencies |
 |-------|------|---------|--------|--------------|
-| **1** | Multiplex Data Layer | 3 | 1-2 sessions | None |
-| **2** | Tunnel Node Identification | 3 | 1-2 sessions | Phase 1 |
-| **3** | Multiplex Connectivity | 3 | 2-3 sessions | Phases 1-2 |
-| **4** | Mechanism Classification | 3 | 1-2 sessions | Phases 1-3 |
-| **5** | Applications & Validation | 3 | 1-2 sessions | Phases 1-4 |
+| **1** | Multiplex Data Layer | 3 | ✓ Complete | None |
+| **2** | Tunnel Node Identification | 3 | ✓ Complete | Phase 1 |
+| **3** | Multiplex Connectivity | 3 | ✓ Complete | Phases 1-2 |
+| **4** | Mechanism Classification | 3 | ✓ Complete | Phases 1-3 |
+| **5** | Applications & Validation | 3 | Pending | Phases 1-4 |
 
 **Total**: 15 new scripts (~3,750 lines), 7-11 sessions
 

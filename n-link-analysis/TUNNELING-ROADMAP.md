@@ -39,7 +39,7 @@ From [database-inference-graph-theory.md](../llm-facing-documentation/theories-p
 | **2** | Tunnel Node Identification | 3 | ✓ Complete | Phase 1 |
 | **3** | Multiplex Connectivity | 3 | ✓ Complete | Phases 1-2 |
 | **4** | Mechanism Classification | 3 | ✓ Complete | Phases 1-3 |
-| **5** | Applications & Validation | 3 | Pending | Phases 1-4 |
+| **5** | Applications & Validation | 3 | ✓ Complete | Phases 1-4 |
 
 **Total**: 15 new scripts (~3,750 lines), 7-11 sessions
 
@@ -567,4 +567,4 @@ python n-link-analysis/scripts/compute-intersection-matrix.py \
 ---
 
 **Last Updated**: 2026-01-01
-**Status**: Active (planned, not yet started)
+**Status**: Complete (all 5 phases implemented and validated)

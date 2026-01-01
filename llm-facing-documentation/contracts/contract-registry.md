@@ -114,35 +114,45 @@ This is the *primary index* for contract objects, and should be treated as appen
 
 ### NLR-C-0004 — Cross-N tunneling and multiplex connectivity (Wikipedia)
 
-- **Status**: in progress (Phase 2 complete, Phases 3-5 pending)
+- **Status**: complete (all 5 phases validated)
 - **Provenance**:
   - Theory originator: WH (multiplex framing, tunneling concept)
-  - Implementation & empirical analysis: MM (2026-01-01 onwards)
+  - Implementation & empirical analysis: MM (2026-01-01)
 - **Theory**:
   - [database-inference-graph-theory.md](../theories-proofs-conjectures/database-inference-graph-theory.md) (Definition 4.1, Corollary 3.2, Algorithm 5.2)
   - Extends NLR-C-0003 to cross-N multiplex analysis
 - **Experiment**:
   - Phase 1: `build-multiplex-table.py`, `normalize-cycle-identity.py`, `compute-intersection-matrix.py`
   - Phase 2: `find-tunnel-nodes.py`, `classify-tunnel-types.py`, `compute-tunnel-frequency.py`
-  - Phase 3-5: (pending per TUNNELING-ROADMAP.md)
+  - Phase 3: `build-multiplex-graph.py`, `compute-multiplex-reachability.py`, `visualize-multiplex-slice.py`
+  - Phase 4: `analyze-tunnel-mechanisms.py`, `trace-tunneling-paths.py`, `quantify-basin-stability.py`
+  - Phase 5: `compute-semantic-model.py`, `validate-tunneling-predictions.py`, `generate-tunneling-report.py`
 - **Evidence**:
   - [TUNNEL-NODE-ANALYSIS.md](../../n-link-analysis/empirical-investigations/TUNNEL-NODE-ANALYSIS.md) (Phase 2 results)
-  - [WH-FEEDBACK-ANSWERS.md](../../n-link-analysis/empirical-investigations/WH-FEEDBACK-ANSWERS.md) (initial tunnel discovery)
-  - Data outputs: `data/wikipedia/processed/multiplex/` (7 files)
-- **Key Findings (Phase 2)**:
+  - [MULTIPLEX-CONNECTIVITY.md](../../n-link-analysis/empirical-investigations/MULTIPLEX-CONNECTIVITY.md) (Phase 3 results)
+  - [TUNNEL-MECHANISM-DEEP-DIVE.md](../../n-link-analysis/empirical-investigations/TUNNEL-MECHANISM-DEEP-DIVE.md) (Phase 4 results)
+  - [TUNNELING-FINDINGS.md](../../n-link-analysis/report/TUNNELING-FINDINGS.md) (Phase 5 publication-ready summary)
+  - Data outputs: `data/wikipedia/processed/multiplex/` (15+ files)
+- **Key Findings**:
   - **9,018 tunnel nodes identified** (0.45% of pages in hyperstructure)
   - **Progressive switching dominates** (98.7%) - basins change monotonically with N
-  - **Gulf_of_Maine__Massachusetts is tunnel hub** - appears in 61% of basin pairs
-  - **Tunnel nodes are shallow** (mean depth 11.1 vs typical 50+) - near cycle cores
-  - **All tunnel nodes bridge exactly 2 basins** - no multi-basin tunnels found
-- **Theory Claim Evaluated**:
-  - **Supported**: "Tunnel nodes exist at basin boundaries" → 9,018 pages switch basins across N
-  - **Supported**: "Fixed-N basins are 1D slices of multiplex" → Tunnel nodes connect the slices
-  - **Partial**: "Tunnel frequency indicates semantic centrality" → Shallow depth suggests structural centrality, semantic validation pending (Phase 5)
+  - **degree_shift is primary mechanism** (99.3%) - different Nth link causes tunneling
+  - **N=5 is critical**: 100% of tunnel transitions involve N=5
+  - **Depth predicts tunneling**: Strong negative correlation (r=-0.83, p<0.001)
+  - **Gulf_of_Maine is sink basin**: Absorbs pages from all other basins at N=6
+  - **Semantic model extracted**: 100 central entities, 9 subsystems, 36 hidden relationships
+- **Theory Claims Evaluated**:
+  - **Validated**: "Tunnel nodes exist at basin boundaries" → 9,018 pages switch basins across N
+  - **Validated**: "Fixed-N basins are 1D slices of multiplex" → Multiplex graph structure confirmed (9.7M edges)
+  - **Validated**: "Shallow nodes tunnel more" → Mean depth 11.1 vs typical 50+ (r=-0.83)
+  - **Validated**: "degree_shift dominates" → 99.3% of transitions (direct N-link rule consequence)
+  - **Validated**: "N=5 is phase transition" → 100% of tunneling involves N=5
+  - **Refuted**: "High-degree hubs tunnel more" → Tunnel nodes have LOWER degree (31.8 vs 34.0, p=0.04)
 - **Notes**:
-  - Follows [TUNNELING-ROADMAP.md](../../n-link-analysis/TUNNELING-ROADMAP.md) 5-phase plan
-  - Phase 3 (multiplex connectivity) is next
-  - Full validation requires Phases 3-5 completion
+  - All 5 phases of [TUNNELING-ROADMAP.md](../../n-link-analysis/TUNNELING-ROADMAP.md) complete
+  - 15 new scripts implemented (~4,000 lines)
+  - Semantic model available in `semantic_model_wikipedia.json`
+  - Hub hypothesis refutation is significant: tunneling is NOT about having more options
 
 ---
 

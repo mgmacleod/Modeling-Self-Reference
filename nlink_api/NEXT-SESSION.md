@@ -260,6 +260,34 @@ def search_pages(query):
 
 ---
 
+## Known Issues
+
+### Test Suite Schema Mismatch (2026-01-02)
+
+**Problem**: 25 of 90 API tests fail due to schema mismatch between test expectations and actual data format.
+
+**Error**:
+```
+Binder Error: Referenced column "link_sequence" not found in FROM clause!
+Candidate bindings: "link_n1", "link_n2", "link_n3", "link_n4", "link_n5"
+```
+
+**Affected Tests**:
+- `test_traces.py` - All trace operations (8 tests)
+- `test_basins.py` - Basin mapping and branch analysis (10 tests)
+- `test_data.py` - Data validation (2 tests)
+- `test_tasks.py` - Task submission tests (5 tests)
+
+**Root Cause**: The trace/basin services reference a `link_sequence` list column, but the parquet data now uses individual `link_n1`, `link_n2`, ..., `link_n5` columns.
+
+**Status**: 65/90 tests pass. The failing tests are integration tests that hit actual data queries.
+
+**Fix Required**: Update `services/trace_service.py` and related services to use the new column schema (`link_n1..link_n5` instead of `link_sequence`).
+
+**Workaround**: Run unit tests only with `pytest nlink_api/tests/ -m "not integration"`
+
+---
+
 ## Quick Start
 
 ```bash

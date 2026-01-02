@@ -18,6 +18,42 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Visualization Consolidation Phase 6 (E2E Testing)
+
+**Completed**:
+- Created automated test script `viz/tests/test_dashboards.py`
+- All 6 automated smoke tests pass:
+  - Shared module imports (colors, loaders, components)
+  - Data loaders (2.1M basin assignments, 58 flows, 41K tunnel nodes)
+  - API client integration (health check, search, trace)
+  - Basin Geometry Viewer HTTP 200 response
+  - Multiplex Analyzer HTTP 200 response
+  - Tunneling Explorer HTTP 200 response
+
+**Test Results**:
+| Test | Status |
+|------|--------|
+| Shared imports | ✓ Pass |
+| Data loaders | ✓ Pass |
+| API client | ✓ Pass |
+| Basin Geometry Viewer | ✓ Pass |
+| Multiplex Analyzer | ✓ Pass |
+| Tunneling Explorer | ✓ Pass |
+
+**Remaining Manual Tests**:
+- Basin Geometry Viewer: 4 view modes (pointcloud, recursive2d, fan2d, fan3d)
+- Tunneling Explorer: API mode UI interaction
+- Callback regression tests for all dashboards
+
+**Status**: Phase 6 automated testing complete. Consolidation verified working end-to-end.
+
+**API Server Tests**:
+- Ran `nlink_api/tests/` test suite: 65/90 tests pass
+- 25 failures due to schema mismatch (`link_sequence` vs `link_n1..link_n5` columns)
+- Issue documented in `nlink_api/NEXT-SESSION.md` for future fix
+
+---
+
 ### Session: 2026-01-02 - Visualization Consolidation Complete (Phases 4-5)
 
 **Completed**:

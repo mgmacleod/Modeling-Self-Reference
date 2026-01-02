@@ -18,6 +18,53 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - API Automated Testing Infrastructure
+
+**Completed**:
+- Created comprehensive test suite for N-Link API under `nlink_api/tests/`
+- Built test infrastructure with mock data loader and fixtures (`conftest.py`)
+- 90 total tests across 6 test files:
+  - `test_health.py` (9 tests) - Health & status endpoints
+  - `test_data.py` (11 tests) - Data source, validation, page lookup
+  - `test_traces.py` (21 tests) - Trace single/sample endpoints & schemas
+  - `test_basins.py` (18 tests) - Basin map & branch analysis
+  - `test_tasks.py` (14 tests) - Task manager unit tests
+  - `test_reports.py` (17 tests) - Reports generation endpoints
+- 62 unit tests pass without data dependencies
+- 28 integration tests marked with `@pytest.mark.integration`
+- Added `httpx>=0.26.0` to requirements.txt for FastAPI TestClient
+- Created `pytest.ini` with test configuration
+
+**Decisions Made**:
+- Separate unit vs integration tests with markers - allows CI without real data
+- Mock DataLoader with synthetic Parquet - tests API layer independently
+- Test Pydantic schemas in isolation - validates without full stack
+
+**Discoveries**:
+- `_core` trace engine modules require specific real data schema
+- Full trace/basin integration tests need actual Wikipedia data
+- Task list endpoint returns `{"count": N, "tasks": [...]}` structure
+
+**Validation**:
+```bash
+# Run unit tests only
+pytest nlink_api/tests/ -m "not integration"  # 62 passed
+
+# Run all tests (requires data)
+pytest nlink_api/tests/
+```
+
+**Architecture Impact**:
+- Test infrastructure pattern established for API testing
+- MockDataLoader provides template for future test fixtures
+
+**Next Steps**:
+- Expand integration tests to run with real data in CI
+- Add coverage reporting to CI pipeline
+- Consider adding API contract tests
+
+---
+
 ### Session: 2026-01-02 (Night 8) - Phase 6: Pipeline Integration Complete
 
 **Completed**:

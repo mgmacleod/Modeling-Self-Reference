@@ -18,6 +18,38 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Afternoon) - Hyperstructure Size Analysis
+
+**Completed**:
+- Reviewed human collaboration feedback (wh-mm_on-pr.md, wh-mm_post-pr.md)
+- Answered WH's cycle detection question: Yes, 6 universal cycles found across all N∈{3-10}
+- Computed Massachusetts hyperstructure size (union across N=3-10):
+  - `scripts/compute-hyperstructure-size.py` - Hyperstructure computation script
+  - `empirical-investigations/HYPERSTRUCTURE-ANALYSIS.md` - Full analysis documentation
+  - `data/wikipedia/processed/analysis/hyperstructure_analysis.tsv` - Per-cycle sizes
+  - `data/wikipedia/processed/analysis/massachusetts_hyperstructure_analysis.tsv` - MA metrics
+
+**Discoveries**:
+| Finding | Value | Implication |
+|---------|-------|-------------|
+| Massachusetts hyperstructure size | 1,062,344 pages | 5.91% of Wikipedia |
+| WH's guess (2/3 of 7.1M) | ~4.73M pages | 4.5× optimistic |
+| N=5 contribution | 94.7% of hyperstructure | N=5 IS the hyperstructure |
+| Pages only via non-N=5 | 56,126 (5.3%) | Multi-N adds marginal coverage |
+
+**Key Insight**:
+- Hyperstructure size ≈ 1.05× peak N basin size
+- Multi-N traversal adds only ~5% marginal pages beyond N=5 peak
+- WH's intuition about "hyperstructures touch themselves" is valid, but coverage is sparser than expected
+
+**Files Created**:
+| File | Description |
+|------|-------------|
+| `scripts/compute-hyperstructure-size.py` | Computes union of basin members across N |
+| `empirical-investigations/HYPERSTRUCTURE-ANALYSIS.md` | Full analysis with WH hypothesis test |
+
+---
+
 ### Session: 2026-01-02 - Semantic Tunnel Analysis & Temporal Stability
 
 **Completed**:

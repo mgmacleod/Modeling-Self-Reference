@@ -1,8 +1,8 @@
 # Tunneling Analysis Findings
 
-**Generated**: 2026-01-01 18:49
+**Generated**: 2026-01-01 20:25
 **Source**: Wikipedia English (enwiki-20251220)
-**N Range**: 3-7
+**N Range**: 3-10
 **Theory**: N-Link Rule Theory + Database Inference Graph Theory
 
 ---
@@ -69,15 +69,21 @@ consistent with N=5 being the phase transition point where basin structure chang
 
 | Basin | Stability | Persistence | Jaccard | Pages |
 |-------|-----------|-------------|---------|-------|
-| Gulf_of_Maine__Massachusetts | fragile | 0.00 | 0.00 | 1,053,249 |
-| American_Revolutionary_War__Eastern | moderate | 1.00 | 0.50 | 43,959 |
-| Autumn__Summer | moderate | 1.00 | 0.50 | 162,624 |
-| Animal__Kingdom_(biology) | moderate | 1.00 | 0.50 | 112,805 |
-| Latvia__Lithuania | moderate | 1.00 | 0.50 | 81,656 |
-| Hill__Mountain | moderate | 1.00 | 0.50 | 188,968 |
-| Civil_law__Precedent | moderate | 1.00 | 0.50 | 56,295 |
-| Sea_salt__Seawater | moderate | 1.00 | 0.50 | 265,896 |
-| Curing_(chemistry)__Thermosetting_p | moderate | 1.00 | 0.50 | 61,349 |
+| Autumn__Summer_tunneling | moderate | 0.00 | 0.57 | 6,804 |
+| Animal_tunneling__Kingdom_(biology) | moderate | 0.00 | 0.57 | 52,528 |
+| Latvia__Lithuania_tunneling | moderate | 0.00 | 0.57 | 4,032 |
+| Gulf_of_Maine_tunneling__Massachuse | moderate | 0.00 | 0.57 | 12,273 |
+| Hill_tunneling__Mountain | moderate | 0.00 | 0.57 | 9,045 |
+| Sea_salt__Seawater_tunneling | moderate | 0.00 | 0.57 | 9,899 |
+| Gulf_of_Maine__Massachusetts | fragile | 0.00 | 0.29 | 1,053,249 |
+| American_Revolutionary_War__Eastern | moderate | 1.00 | 0.71 | 43,959 |
+| Autumn__Summer | moderate | 1.00 | 0.71 | 162,624 |
+| Animal__Kingdom_(biology) | moderate | 1.00 | 0.71 | 112,805 |
+| Latvia__Lithuania | moderate | 1.00 | 0.71 | 81,656 |
+| Hill__Mountain | moderate | 1.00 | 0.71 | 188,968 |
+| Civil_law__Precedent | moderate | 1.00 | 0.71 | 56,295 |
+| Sea_salt__Seawater | moderate | 1.00 | 0.71 | 265,896 |
+| Curing_(chemistry)__Thermosetting_p | moderate | 1.00 | 0.71 | 61,349 |
 
 **Interpretation**: Most basins show "moderate" stability - their core pages persist
 across N values, but membership fluctuates significantly. Gulf_of_Maine is uniquely

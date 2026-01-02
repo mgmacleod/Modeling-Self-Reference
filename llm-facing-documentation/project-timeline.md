@@ -18,6 +18,38 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Morning) - Viz & Reporting N=3-10 Full Support
+
+**Completed**:
+- Resolved all N=3-10 data gaps identified in VIZ-DATA-GAP-ANALYSIS.md
+- Regenerated `tunnel_nodes.parquet` with N8-N10 columns (was missing)
+- Updated 3 visualization scripts with hardcoded N ranges:
+  - `path-tracer-tool.py`: `range(3, 8)` → `range(3, 11)` in 5 locations
+  - `dash-multiplex-explorer.py`: Badge text `N=3-7` → `N=3-10`
+  - `generate-tunneling-report.py`: N Range metadata `3-7` → `3-10`
+- Regenerated all tunneling TSV files with extended N range
+
+**Key Discovery - Tunnel Node Explosion**:
+| Metric | N=3-7 | N=3-10 | Change |
+|--------|-------|--------|--------|
+| Total tunnel nodes | 9,018 | 41,732 | +363% |
+| Basin flows | 16 | 58 | +263% |
+| Tracked basins | 9 | 15 | +67% |
+
+**Interpretation**: The N=8-10 range reveals significant additional tunneling. Pages stable at N=5-7 often diverge at higher N values, with 32,714 new tunnel nodes appearing only when N>7.
+
+**Files Updated**:
+- `data/wikipedia/processed/multiplex/tunnel_nodes.parquet` (now has N8-10 columns)
+- `data/wikipedia/processed/multiplex/tunnel_classification.tsv` (41,733 rows)
+- `data/wikipedia/processed/multiplex/tunnel_frequency_ranking.tsv` (41,733 rows)
+- `data/wikipedia/processed/multiplex/basin_stability_scores.tsv` (15 basins)
+- `data/wikipedia/processed/multiplex/basin_flows.tsv` (58 flows)
+- `n-link-analysis/VIZ-DATA-GAP-ANALYSIS.md` (marked RESOLVED)
+
+**Note**: `tunnel_mechanisms.tsv` not regenerated (analysis takes 10+ min for 41k nodes)
+
+---
+
 ### Session: 2026-01-01 (Post-Midnight) - HF Dataset Documentation + Viz Gap Analysis
 
 **Completed**:

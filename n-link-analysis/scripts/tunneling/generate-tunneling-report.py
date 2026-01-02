@@ -46,7 +46,7 @@ def generate_report(
 
 **Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M")}
 **Source**: Wikipedia English (enwiki-20251220)
-**N Range**: 3-7
+**N Range**: 3-10
 **Theory**: N-Link Rule Theory + Database Inference Graph Theory
 
 ---

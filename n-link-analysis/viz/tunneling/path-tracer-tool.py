@@ -3,7 +3,7 @@
 
 A Dash application that allows users to:
 1. Search for a Wikipedia page by title or ID
-2. View its basin membership across all N values (3-7)
+2. View its basin membership across all N values (3-10)
 3. Visualize the tunneling timeline
 4. See depth and entry point information
 
@@ -191,7 +191,7 @@ def get_page_trace(page_id: int) -> Optional[dict]:
     }
 
     # Add per-N info
-    for n in range(3, 8):
+    for n in range(3, 11):
         basin = n_basins.get(n, "")
         depth = n_depths.get(n, None)
         trace["n_values"][n] = {
@@ -211,7 +211,7 @@ def create_timeline_figure(trace: dict) -> go.Figure:
         fig.add_annotation(text="No trace data", showarrow=False)
         return fig
 
-    n_values = list(range(3, 8))
+    n_values = list(range(3, 11))
     basins = [trace["n_values"][n]["basin_short"] for n in n_values]
     colors = [trace["n_values"][n]["color"] for n in n_values]
     depths = [trace["n_values"][n]["depth"] for n in n_values]
@@ -253,7 +253,7 @@ def create_timeline_figure(trace: dict) -> go.Figure:
         title=f"Basin Membership Timeline: {trace['title']}",
         xaxis=dict(visible=False, range=[0, 1.3]),
         yaxis=dict(autorange="reversed"),
-        height=300,
+        height=400,
         margin=dict(t=60, b=20, l=60, r=80),
         bargap=0.3,
     )
@@ -268,7 +268,7 @@ def create_depth_figure(trace: dict) -> go.Figure:
         fig.add_annotation(text="No trace data", showarrow=False)
         return fig
 
-    n_values = list(range(3, 8))
+    n_values = list(range(3, 11))
     depths = [trace["n_values"][n]["depth"] for n in n_values]
     colors = [trace["n_values"][n]["color"] for n in n_values]
 
@@ -530,7 +530,7 @@ def show_trace(trace_clicks, ex1_clicks, ex2_clicks, search_value):
                         ]),
                         html.Td(str(trace["n_values"][n]["depth"]) if trace["n_values"][n]["depth"] else "N/A"),
                     ])
-                    for n in range(3, 8)
+                    for n in range(3, 11)
                 ]),
             ], bordered=True, hover=True),
         ])

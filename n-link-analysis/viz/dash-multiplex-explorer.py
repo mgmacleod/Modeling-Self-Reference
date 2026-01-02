@@ -190,7 +190,7 @@ def create_header():
         dbc.Row([
             dbc.Col([
                 dbc.Badge(f"{len(tunnel_class_df):,} tunnel nodes", color="primary", className="me-2"),
-                dbc.Badge(f"N=3-7 layers", color="secondary", className="me-2"),
+                dbc.Badge(f"N=3-10 layers", color="secondary", className="me-2"),
                 dbc.Badge("Phase 2-3 Analysis", color="success"),
             ], className="text-center mb-3")
         ]),

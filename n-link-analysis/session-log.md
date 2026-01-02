@@ -8,6 +8,43 @@
 
 ---
 
+### 2026-01-02 - Tributary Tree Batch Generation & Git Hygiene
+
+**What was tried**:
+- Make `render-tributary-tree-3d.py` work for all N values, not just N=5
+- Create batch script for generating all N × cycle combinations
+- Clean up git tracking of large generated files
+
+**What worked**:
+- Script already supports any N value (extracts Nth link dynamically from parquet)
+- Created `scripts/batch-render-tributary-trees.py` with filtering and dry-run support
+- Identified 31 N × cycle combinations across N=3-10
+- Updated `.gitignore` to exclude large Plotly HTMLs
+- Untracked 13 files (~45MB) from git
+
+**Discoveries**:
+- N=3,4,6,7 only have Massachusetts↔Gulf_of_Maine cycle
+- N=5 has 9 cycles (full basin set)
+- N=8,9,10 have 6 cycles each (tunneling set)
+- DuckDB edge tables cached per-N (one-time ~2-3s creation)
+
+**Files created**:
+- `scripts/batch-render-tributary-trees.py`
+
+**Usage**:
+```bash
+# Generate all 31 combinations
+python n-link-analysis/scripts/batch-render-tributary-trees.py
+
+# Dry run
+python n-link-analysis/scripts/batch-render-tributary-trees.py --dry-run
+
+# Filter by N and cycle
+python n-link-analysis/scripts/batch-render-tributary-trees.py --n 5 --cycle Massachusetts
+```
+
+---
+
 ### 2026-01-02 - HTML Report Generation for Docker Gallery
 
 **What was tried**:

@@ -125,3 +125,11 @@ analysis-artifacts/**/*.feather
 
 # Generated HTML previews from basin geometry exports
 n-link-analysis/report/assets/basin_pointcloud_3d_*.html
+
+# Large interactive Plotly visualizations (regenerable from data)
+# These embed the full Plotly JS library (~4-5MB each)
+n-link-analysis/report/assets/tributary_tree_*.html
+n-link-analysis/report/assets/tributary_tree_*.json
+n-link-analysis/report/assets/multiplex_visualization.html
+n-link-analysis/report/assets/phase_transition_*.html
+n-link-analysis/report/assets/tunnel_node_explorer.html

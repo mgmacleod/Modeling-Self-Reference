@@ -18,6 +18,41 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Tributary Tree Batch Generation & Git Hygiene
+
+**Completed**:
+- Confirmed `render-tributary-tree-3d.py` works for all N values (3-10), not just N=5
+- Created `n-link-analysis/scripts/batch-render-tributary-trees.py` for batch generation
+- Identified 31 N × cycle combinations available for visualization
+- Updated `.gitignore` to exclude large generated Plotly HTMLs
+- Untracked 13 large files (~45MB) from git
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Don't version control large Plotly HTMLs | Reproducible from data, embed full Plotly JS (~4-5MB each), diffs poorly |
+| Keep tracking small HTMLs and PNGs | "Publication" artifacts, not easily regenerable |
+| Default batch params: k=4, levels=4, depth=10 | Balance detail vs generation time |
+
+**Discoveries**:
+| N Value | Available Cycles |
+|---------|-----------------|
+| 3, 4, 6, 7 | Massachusetts only |
+| 5 | 9 cycles (all basins) |
+| 8, 9, 10 | 6 cycles each |
+
+**Files Created**:
+- `n-link-analysis/scripts/batch-render-tributary-trees.py`
+
+**Files Modified**:
+- `.gitignore` (added exclusions for large interactive HTMLs)
+
+**Next Steps**:
+- Run batch generation: `python n-link-analysis/scripts/batch-render-tributary-trees.py`
+- Add tributary trees section to gallery (next session)
+
+---
+
 ### Session: 2026-01-02 - HTML Report Generation for Docker Gallery
 
 **Completed**:

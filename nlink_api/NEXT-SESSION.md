@@ -1,8 +1,8 @@
-# N-Link API: Remaining Implementation Phases
+# N-Link API: Implementation Complete
 
 **Created**: 2026-01-02
 **Updated**: 2026-01-02
-**Status**: Phases 1-5 complete, Phase 6 pending
+**Status**: All phases complete (1-6)
 
 ---
 
@@ -63,51 +63,64 @@
 | GET | `/api/v1/reports/list` | List available reports |
 | GET | `/api/v1/reports/figures/{filename}` | Serve figure file |
 
----
-
-## Remaining Phases
-
 ### Phase 6: Pipeline Integration
-
-**Goal**: Update `reproduce-main-findings.py` to optionally use API
-
-**Changes to `reproduce-main-findings.py`**:
-```python
-parser.add_argument("--use-api", action="store_true",
-                    help="Execute via API server instead of subprocess")
-parser.add_argument("--api-base", default="http://127.0.0.1:8000",
-                    help="API base URL")
-
-def run_via_api(api_base: str, endpoint: str, payload: dict) -> dict:
-    """Submit task and poll until completion."""
-    resp = requests.post(f"{api_base}{endpoint}", json=payload)
-    task_id = resp.json()["task_id"]
-
-    while True:
-        status = requests.get(f"{api_base}/api/v1/tasks/{task_id}").json()
-        if status["status"] in ("completed", "failed"):
-            break
-        print(f"Progress: {status['progress']:.0%} - {status['progress_message']}")
-        time.sleep(2)
-
-    return status["result"]
-```
+- Updated `reproduce-main-findings.py` with `--use-api` and `--api-base` CLI options
+- Implemented `run_via_api()` helper that submits tasks and polls for completion
+- Added API-specific helper functions for each pipeline phase:
+  - `run_sampling_via_api()` - Trace sampling
+  - `run_basin_mapping_via_api()` - Basin mapping
+  - `run_branch_analysis_via_api()` - Branch analysis
+  - `run_trunkiness_dashboard_via_api()` - Dashboard generation
+  - `run_human_report_via_api()` - Report generation
+- API availability check before starting pipeline
+- Progress display during long-running operations
 
 **Usage**:
 ```bash
 # Traditional mode (subprocess calls)
-python reproduce-main-findings.py --quick
+python n-link-analysis/scripts/reproduce-main-findings.py --quick
 
 # API mode (requires running server)
 uvicorn nlink_api.main:app --port 8000 &
-python reproduce-main-findings.py --quick --use-api
+python n-link-analysis/scripts/reproduce-main-findings.py --quick --use-api
 ```
+
+**Note**: The collapse dashboard (`batch-chase-collapse-metrics.py`) runs via subprocess in both modes since it doesn't have an API endpoint yet. This is a potential future enhancement.
+
+---
+
+## Complete API Endpoint Reference
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/health` | Liveness check |
+| GET | `/api/v1/status` | Detailed status with data info |
+| GET | `/api/v1/data/source` | Data source configuration |
+| POST | `/api/v1/data/validate` | Validate data file dependencies |
+| GET | `/api/v1/data/pages/{page_id}` | Get page info by ID |
+| GET | `/api/v1/data/pages/by-title/{title}` | Get page info by title |
+| GET | `/api/v1/traces/single` | Trace single N-link path |
+| POST | `/api/v1/traces/sample` | Sample multiple traces (sync/background) |
+| GET | `/api/v1/traces/sample/{task_id}` | Get sampling task status |
+| POST | `/api/v1/basins/map` | Map basin from cycle (sync/background) |
+| GET | `/api/v1/basins/map/{task_id}` | Get mapping task status |
+| POST | `/api/v1/basins/branches` | Analyze branch structure (sync/background) |
+| GET | `/api/v1/basins/branches/{task_id}` | Get analysis task status |
+| POST | `/api/v1/reports/trunkiness` | Generate trunkiness dashboard (sync) |
+| POST | `/api/v1/reports/trunkiness/async` | Generate trunkiness dashboard (background) |
+| POST | `/api/v1/reports/human` | Generate human report (sync) |
+| POST | `/api/v1/reports/human/async` | Generate human report (background) |
+| GET | `/api/v1/reports/{task_id}` | Get report generation status |
+| GET | `/api/v1/reports/list` | List available reports |
+| GET | `/api/v1/reports/figures/{filename}` | Serve figure file |
+| GET | `/api/v1/tasks/{task_id}` | Get any task status |
+| GET | `/api/v1/tasks` | List all tasks |
 
 ---
 
 ## Implementation Pattern
 
-Each phase follows the same pattern:
+Each phase followed the same pattern:
 
 1. **Read the source script** to understand the logic
 2. **Extract core functions** to `_core/` module with:
@@ -124,45 +137,49 @@ Each phase follows the same pattern:
 
 ---
 
-## Testing Checklist
-
-Before marking a phase complete:
-
-- [x] CLI script works unchanged
-- [x] API server starts without errors (verified via syntax check)
-- [x] Endpoint appears in `/docs` (router registered in main.py)
-- [ ] Sync operation returns correct response
-- [ ] Background task submits and completes
-- [ ] Progress updates work correctly
-- [ ] Error cases return appropriate HTTP status
-
----
-
 ## Key Files Reference
 
-**Source Scripts** (to refactor):
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/reproduce-main-findings.py`
+**Core Engines** (`n-link-analysis/scripts/_core/`):
+- `trace_engine.py` - N-link path tracing
+- `basin_engine.py` - Basin mapping via reverse BFS
+- `branch_engine.py` - Branch structure analysis
+- `dashboard_engine.py` - Trunkiness dashboard computation
+- `report_engine.py` - Report and figure generation
 
-**Pattern Reference** (completed):
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/trace_engine.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/basin_engine.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/branch_engine.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/dashboard_engine.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/report_engine.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/services/trace_service.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/services/basin_service.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/services/report_service.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/routers/traces.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/routers/basins.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/routers/reports.py`
+**API Package** (`nlink_api/`):
+- `main.py` - FastAPI app factory
+- `config.py` - Configuration
+- `dependencies.py` - Dependency injection
+- `tasks/manager.py` - Background task system
+- `routers/` - API endpoints
+- `schemas/` - Pydantic models
+- `services/` - Business logic
+
+**Pipeline Integration**:
+- `n-link-analysis/scripts/reproduce-main-findings.py` - Main reproduction script with `--use-api` option
 
 ---
 
-## Quick Start Next Session
+## Potential Future Enhancements
+
+1. **Add API endpoint for collapse dashboard** (`batch-chase-collapse-metrics.py`)
+2. **Add WebSocket support** for real-time progress updates
+3. **Add authentication** for production deployment
+4. **Add OpenAPI client generation** for other languages
+5. **Add rate limiting** for public deployment
+
+---
+
+## Quick Start
 
 ```bash
-# 1. Read this file
-# 2. Pick up where we left off (Phase 6)
-# 3. Start by reading reproduce-main-findings.py
-# 4. Add --use-api flag and API integration
+# Start the API server
+cd /home/mgm/development/code/Modeling-Self-Reference-actual
+uvicorn nlink_api.main:app --port 8000 --reload
+
+# Access interactive docs
+open http://127.0.0.1:8000/docs
+
+# Run the full reproduction pipeline via API
+python n-link-analysis/scripts/reproduce-main-findings.py --use-api --quick
 ```

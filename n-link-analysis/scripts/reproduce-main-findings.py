@@ -7,7 +7,12 @@ This script executes the complete analysis pipeline to reproduce the key finding
 3. Dominant-upstream chases reveal stable trunks that eventually collapse
 
 Usage:
+    # Subprocess mode (default)
     python n-link-analysis/scripts/reproduce-main-findings.py [--quick] [--n N] [--tag TAG]
+
+    # API mode (requires running API server)
+    uvicorn nlink_api.main:app --port 8000 &
+    python n-link-analysis/scripts/reproduce-main-findings.py --use-api [--quick]
 
 Options:
     --quick: Run quick version with reduced sample sizes (faster, but less complete)
@@ -18,6 +23,8 @@ Options:
     --skip-branches: Skip branch analysis (if already done)
     --skip-dashboards: Skip dashboard generation (if already done)
     --skip-report: Skip report generation (if already done)
+    --use-api: Execute via API server instead of subprocess calls
+    --api-base URL: API base URL (default: http://127.0.0.1:8000)
 
 Output:
     All results written to data/wikipedia/processed/analysis/
@@ -33,8 +40,17 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
+from typing import Any
+
+# Optional: requests for API mode
+try:
+    import requests
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -78,6 +94,241 @@ def run_command(cmd: list[str], description: str, *, check: bool = True) -> subp
     return result
 
 
+# =============================================================================
+# API Mode Functions
+# =============================================================================
+
+def check_api_available(api_base: str) -> bool:
+    """Check if the API server is available."""
+    if not HAS_REQUESTS:
+        print("ERROR: 'requests' package required for API mode. Install with: pip install requests")
+        return False
+    try:
+        resp = requests.get(f"{api_base}/api/v1/health", timeout=5)
+        return resp.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+
+def run_via_api(
+    api_base: str,
+    endpoint: str,
+    payload: dict[str, Any],
+    description: str,
+    *,
+    poll_interval: float = 2.0,
+) -> dict[str, Any] | None:
+    """Submit a task via API and poll until completion.
+
+    Args:
+        api_base: Base URL of the API server
+        endpoint: API endpoint (e.g., "/api/v1/traces/sample")
+        payload: Request payload
+        description: Human-readable description for logging
+        poll_interval: Seconds between status checks
+
+    Returns:
+        Task result dict, or None if failed
+    """
+    print(f"\n{'='*80}")
+    print(f"Running via API: {description}")
+    print(f"Endpoint: POST {endpoint}")
+    print(f"{'='*80}\n")
+
+    # Submit the request
+    try:
+        resp = requests.post(f"{api_base}{endpoint}", json=payload, timeout=30)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"✗ FAILED to submit: {e}")
+        return None
+
+    data = resp.json()
+
+    # Check if this is a synchronous response (no task_id)
+    if "task_id" not in data:
+        print(f"✓ Completed (sync): {description}\n")
+        return data
+
+    # Background task - poll for completion
+    task_id = data["task_id"]
+    task_type = data.get("task_type", "unknown")
+    print(f"Task submitted: {task_id} ({task_type})")
+
+    # Determine the status endpoint
+    # Reports router uses /api/v1/reports/{task_id}
+    # Traces router uses /api/v1/traces/sample/{task_id}
+    # Basins router uses /api/v1/basins/map/{task_id} or /api/v1/basins/branches/{task_id}
+    if "/reports/" in endpoint:
+        status_endpoint = f"/api/v1/reports/{task_id}"
+    elif "/traces/" in endpoint:
+        status_endpoint = f"/api/v1/traces/sample/{task_id}"
+    elif "/basins/map" in endpoint:
+        status_endpoint = f"/api/v1/basins/map/{task_id}"
+    elif "/basins/branches" in endpoint:
+        status_endpoint = f"/api/v1/basins/branches/{task_id}"
+    else:
+        # Fallback to generic tasks endpoint
+        status_endpoint = f"/api/v1/tasks/{task_id}"
+
+    # Poll until completion
+    last_progress = -1.0
+    while True:
+        try:
+            status_resp = requests.get(f"{api_base}{status_endpoint}", timeout=30)
+            status_resp.raise_for_status()
+            status = status_resp.json()
+        except requests.exceptions.RequestException as e:
+            print(f"  Warning: Failed to get status: {e}")
+            time.sleep(poll_interval)
+            continue
+
+        task_status = status.get("status", "unknown")
+        progress = status.get("progress", 0.0)
+        progress_msg = status.get("progress_message", "")
+
+        # Only print progress if it changed
+        if progress != last_progress:
+            pct = progress * 100
+            if progress_msg:
+                print(f"  Progress: {pct:.0f}% - {progress_msg}")
+            else:
+                print(f"  Progress: {pct:.0f}%")
+            last_progress = progress
+
+        if task_status == "completed":
+            print(f"\n✓ Completed: {description}\n")
+            return status.get("result")
+        elif task_status == "failed":
+            error = status.get("error", "Unknown error")
+            print(f"\n✗ FAILED: {description}")
+            print(f"  Error: {error}")
+            return None
+        elif task_status == "cancelled":
+            print(f"\n✗ CANCELLED: {description}")
+            return None
+
+        time.sleep(poll_interval)
+
+
+def run_sampling_via_api(
+    api_base: str,
+    n: int,
+    num_samples: int,
+    *,
+    seed: int = 0,
+    min_outdegree: int = 50,
+    max_steps: int = 5000,
+    top_cycles: int = 20,
+    resolve_titles: bool = True,
+) -> dict[str, Any] | None:
+    """Run trace sampling via API."""
+    payload = {
+        "n": n,
+        "num_samples": num_samples,
+        "seed": seed,
+        "min_outdegree": min_outdegree,
+        "max_steps": max_steps,
+        "top_cycles_k": top_cycles,
+        "resolve_titles": resolve_titles,
+    }
+    return run_via_api(
+        api_base,
+        "/api/v1/traces/sample",
+        payload,
+        f"Sampling {num_samples} traces (N={n})",
+    )
+
+
+def run_basin_mapping_via_api(
+    api_base: str,
+    n: int,
+    cycle_a: str,
+    cycle_b: str,
+    tag: str,
+    *,
+    max_depth: int = 0,
+) -> dict[str, Any] | None:
+    """Run basin mapping via API."""
+    payload = {
+        "n": n,
+        "cycle_titles": [cycle_a, cycle_b],
+        "max_depth": max_depth,
+        "max_nodes": 0,  # Unlimited
+        "write_membership": True,
+        "tag": tag,
+    }
+    return run_via_api(
+        api_base,
+        "/api/v1/basins/map",
+        payload,
+        f"Map basin for {cycle_a} ↔ {cycle_b}",
+    )
+
+
+def run_branch_analysis_via_api(
+    api_base: str,
+    n: int,
+    cycle_a: str,
+    cycle_b: str,
+    tag: str,
+    *,
+    max_depth: int = 0,
+    top_k: int = 30,
+    write_membership_top_k: int = 10,
+) -> dict[str, Any] | None:
+    """Run branch analysis via API."""
+    payload = {
+        "n": n,
+        "cycle_titles": [cycle_a, cycle_b],
+        "max_depth": max_depth,
+        "top_k": top_k,
+        "write_top_k_membership": write_membership_top_k,
+        "tag": tag,
+    }
+    return run_via_api(
+        api_base,
+        "/api/v1/basins/branches",
+        payload,
+        f"Branch analysis for {cycle_a} ↔ {cycle_b}",
+    )
+
+
+def run_trunkiness_dashboard_via_api(
+    api_base: str,
+    n: int,
+    tag: str,
+) -> dict[str, Any] | None:
+    """Run trunkiness dashboard computation via API."""
+    payload = {
+        "n": n,
+        "tag": tag,
+    }
+    # Use async endpoint for safety (can be slow)
+    return run_via_api(
+        api_base,
+        "/api/v1/reports/trunkiness/async",
+        payload,
+        "Compute trunkiness dashboard",
+    )
+
+
+def run_human_report_via_api(
+    api_base: str,
+    tag: str,
+) -> dict[str, Any] | None:
+    """Generate human report via API."""
+    payload = {
+        "tag": tag,
+    }
+    return run_via_api(
+        api_base,
+        "/api/v1/reports/human/async",
+        payload,
+        "Generate human-facing report",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--quick", action="store_true", help="Quick mode with reduced samples")
@@ -88,20 +339,36 @@ def main() -> int:
     parser.add_argument("--skip-branches", action="store_true", help="Skip branch analysis phase")
     parser.add_argument("--skip-dashboards", action="store_true", help="Skip dashboard generation phase")
     parser.add_argument("--skip-report", action="store_true", help="Skip report generation phase")
+    # API mode options
+    parser.add_argument("--use-api", action="store_true",
+                        help="Execute via API server instead of subprocess calls")
+    parser.add_argument("--api-base", type=str, default="http://127.0.0.1:8000",
+                        help="API base URL (default: http://127.0.0.1:8000)")
     args = parser.parse_args()
 
     # Generate tag
     tag = args.tag or f"reproduction_{datetime.now().strftime('%Y-%m-%d')}"
     n = args.n
+    use_api = args.use_api
+    api_base = args.api_base
 
     print("="*80)
     print("N-Link Basin Analysis - Main Findings Reproduction")
     print("="*80)
     print(f"N-link rule: N={n}")
     print(f"Mode: {'Quick (reduced samples)' if args.quick else 'Full (complete reproduction)'}")
+    print(f"Execution: {'API (' + api_base + ')' if use_api else 'Subprocess'}")
     print(f"Tag: {tag}")
     print(f"Output directory: {ANALYSIS_DIR}")
     print("="*80)
+
+    # Check API availability if using API mode
+    if use_api:
+        if not check_api_available(api_base):
+            print(f"\n✗ ERROR: API server not available at {api_base}")
+            print("  Start the server with: uvicorn nlink_api.main:app --port 8000")
+            return 1
+        print(f"\n✓ API server available at {api_base}")
 
     # Ensure analysis directory exists
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
@@ -112,37 +379,31 @@ def main() -> int:
         print("PHASE 1: SAMPLING - Identify frequent cycles")
         print("="*80)
 
-        if args.quick:
-            # Quick: 500 samples
-            run_command(
-                [
-                    "python", str(SCRIPTS_DIR / "sample-nlink-traces.py"),
-                    "--n", str(n),
-                    "--num", "500",
-                    "--seed0", "0",
-                    "--min-outdegree", "50",
-                    "--max-steps", "5000",
-                    "--top-cycles", "20",
-                    "--resolve-titles",
-                    "--out", str(ANALYSIS_DIR / f"sample_traces_n={n}_num=500_seed0=0_{tag}.tsv"),
-                ],
-                description="Quick sampling (500 traces)",
+        num_samples = 500 if args.quick else 5000
+        top_cycles = 20 if args.quick else 30
+
+        if use_api:
+            result = run_sampling_via_api(
+                api_base, n, num_samples,
+                seed=0, min_outdegree=50, max_steps=5000, top_cycles=top_cycles,
             )
+            if result is None:
+                print("✗ Sampling failed via API")
+                return 1
         else:
-            # Full: 5000 samples (matches original investigation)
             run_command(
                 [
                     "python", str(SCRIPTS_DIR / "sample-nlink-traces.py"),
                     "--n", str(n),
-                    "--num", "5000",
+                    "--num", str(num_samples),
                     "--seed0", "0",
                     "--min-outdegree", "50",
                     "--max-steps", "5000",
-                    "--top-cycles", "30",
+                    "--top-cycles", str(top_cycles),
                     "--resolve-titles",
-                    "--out", str(ANALYSIS_DIR / f"sample_traces_n={n}_num=5000_seed0=0_{tag}.tsv"),
+                    "--out", str(ANALYSIS_DIR / f"sample_traces_n={n}_num={num_samples}_seed0=0_{tag}.tsv"),
                 ],
-                description="Full sampling (5000 traces)",
+                description=f"{'Quick' if args.quick else 'Full'} sampling ({num_samples} traces)",
             )
 
     # Phase 2: Basin Mapping
@@ -156,18 +417,27 @@ def main() -> int:
             cycles_to_map = MAIN_CYCLES + ADDITIONAL_CYCLES
 
         for cycle_a, cycle_b in cycles_to_map:
-            run_command(
-                [
-                    "python", str(SCRIPTS_DIR / "map-basin-from-cycle.py"),
-                    "--n", str(n),
-                    "--cycle-title", cycle_a,
-                    "--cycle-title", cycle_b,
-                    "--max-depth", "0",  # Unlimited depth
-                    "--log-every", "25",
-                    "--out-prefix", f"basin_n={n}_cycle={cycle_a}__{cycle_b}_{tag}",
-                ],
-                description=f"Map basin for {cycle_a} ↔ {cycle_b}",
-            )
+            if use_api:
+                result = run_basin_mapping_via_api(
+                    api_base, n, cycle_a, cycle_b, tag,
+                    max_depth=0,
+                )
+                if result is None:
+                    print(f"✗ Basin mapping failed for {cycle_a} ↔ {cycle_b}")
+                    return 1
+            else:
+                run_command(
+                    [
+                        "python", str(SCRIPTS_DIR / "map-basin-from-cycle.py"),
+                        "--n", str(n),
+                        "--cycle-title", cycle_a,
+                        "--cycle-title", cycle_b,
+                        "--max-depth", "0",  # Unlimited depth
+                        "--log-every", "25",
+                        "--out-prefix", f"basin_n={n}_cycle={cycle_a}__{cycle_b}_{tag}",
+                    ],
+                    description=f"Map basin for {cycle_a} ↔ {cycle_b}",
+                )
 
     # Phase 3: Branch Analysis (Tributary Structure)
     if not args.skip_branches:
@@ -181,22 +451,31 @@ def main() -> int:
 
         for cycle_a, cycle_b in cycles_to_analyze:
             # Write membership only for largest basin in quick mode, all in full mode
-            write_membership = "10" if (not args.quick or (cycle_a, cycle_b) == MAIN_CYCLES[0]) else "0"
+            write_membership_k = 10 if (not args.quick or (cycle_a, cycle_b) == MAIN_CYCLES[0]) else 0
 
-            run_command(
-                [
-                    "python", str(SCRIPTS_DIR / "branch-basin-analysis.py"),
-                    "--n", str(n),
-                    "--cycle-title", cycle_a,
-                    "--cycle-title", cycle_b,
-                    "--max-depth", "0",  # Unlimited depth
-                    "--log-every", "0",  # Quiet
-                    "--top-k", "30",
-                    "--write-membership-top-k", write_membership,
-                    "--out-prefix", f"branches_n={n}_cycle={cycle_a}__{cycle_b}_{tag}",
-                ],
-                description=f"Branch analysis for {cycle_a} ↔ {cycle_b}",
-            )
+            if use_api:
+                result = run_branch_analysis_via_api(
+                    api_base, n, cycle_a, cycle_b, tag,
+                    max_depth=0, top_k=30, write_membership_top_k=write_membership_k,
+                )
+                if result is None:
+                    print(f"✗ Branch analysis failed for {cycle_a} ↔ {cycle_b}")
+                    return 1
+            else:
+                run_command(
+                    [
+                        "python", str(SCRIPTS_DIR / "branch-basin-analysis.py"),
+                        "--n", str(n),
+                        "--cycle-title", cycle_a,
+                        "--cycle-title", cycle_b,
+                        "--max-depth", "0",  # Unlimited depth
+                        "--log-every", "0",  # Quiet
+                        "--top-k", "30",
+                        "--write-membership-top-k", str(write_membership_k),
+                        "--out-prefix", f"branches_n={n}_cycle={cycle_a}__{cycle_b}_{tag}",
+                    ],
+                    description=f"Branch analysis for {cycle_a} ↔ {cycle_b}",
+                )
 
     # Phase 4: Dashboards (Aggregation & Metrics)
     if not args.skip_dashboards:
@@ -205,15 +484,21 @@ def main() -> int:
         print("="*80)
 
         # Trunkiness dashboard
-        run_command(
-            [
-                "python", str(SCRIPTS_DIR / "compute-trunkiness-dashboard.py"),
-                "--tag", tag,
-            ],
-            description="Compute trunkiness dashboard (Gini, HH, entropy)",
-        )
+        if use_api:
+            result = run_trunkiness_dashboard_via_api(api_base, n, tag)
+            if result is None:
+                print("✗ Trunkiness dashboard computation failed via API")
+                return 1
+        else:
+            run_command(
+                [
+                    "python", str(SCRIPTS_DIR / "compute-trunkiness-dashboard.py"),
+                    "--tag", tag,
+                ],
+                description="Compute trunkiness dashboard (Gini, HH, entropy)",
+            )
 
-        # Collapse dashboard (batch chase)
+        # Collapse dashboard (batch chase) - always via subprocess (no API endpoint yet)
         dashboard_path = ANALYSIS_DIR / f"branch_trunkiness_dashboard_n={n}_{tag}.tsv"
         if dashboard_path.exists():
             run_command(
@@ -238,13 +523,19 @@ def main() -> int:
         print("PHASE 5: REPORT GENERATION - Create human-facing summary")
         print("="*80)
 
-        run_command(
-            [
-                "python", str(SCRIPTS_DIR / "render-human-report.py"),
-                "--tag", tag,
-            ],
-            description="Generate human-facing report with charts",
-        )
+        if use_api:
+            result = run_human_report_via_api(api_base, tag)
+            if result is None:
+                print("✗ Human report generation failed via API")
+                return 1
+        else:
+            run_command(
+                [
+                    "python", str(SCRIPTS_DIR / "render-human-report.py"),
+                    "--tag", tag,
+                ],
+                description="Generate human-facing report with charts",
+            )
 
     # Summary
     print("\n\n" + "="*80)

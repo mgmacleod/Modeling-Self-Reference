@@ -18,6 +18,42 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Post-Midnight) - HF Dataset Documentation + Viz Gap Analysis
+
+**Completed**:
+- Created comprehensive Hugging Face dataset documentation:
+  - `n-link-analysis/report/HUGGINGFACE-DATASET-README.md` — Full dataset docs with schemas, usage examples
+  - `n-link-analysis/report/DATASET_CARD.md` — HF-format card with YAML frontmatter
+  - `n-link-analysis/report/HUGGINGFACE-UPLOAD-MANIFEST.md` — Upload checklist, 3 size configurations
+- Assessed all visualization/reporting scripts for N=8-10 compatibility
+- Created `n-link-analysis/VIZ-DATA-GAP-ANALYSIS.md` documenting gaps
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Recommend 115MB "minimal" HF config | Sufficient for research; source data optional |
+| Document gaps vs fix immediately | Fixes blocked on regenerating `tunnel_nodes.parquet` |
+
+**Discoveries**:
+- `tunnel_nodes.parquet` only has N3-N7 columns despite `multiplex_basin_assignments.parquet` having N3-N10
+- 3 scripts hardcode `range(3, 8)`: `path-tracer-tool.py`, `dash-multiplex-explorer.py`, `generate-tunneling-report.py`
+- Most viz tools (dashboard, sankey, explorer) read dynamic TSV files and work without changes
+
+**Files Created**:
+| File | Size | Purpose |
+|------|------|---------|
+| `n-link-analysis/report/HUGGINGFACE-DATASET-README.md` | ~8KB | Comprehensive dataset documentation |
+| `n-link-analysis/report/DATASET_CARD.md` | ~4KB | HF dataset card format |
+| `n-link-analysis/report/HUGGINGFACE-UPLOAD-MANIFEST.md` | ~5KB | Upload checklist + configurations |
+| `n-link-analysis/VIZ-DATA-GAP-ANALYSIS.md` | ~4KB | Gap analysis for N=8-10 support |
+
+**Next Steps**:
+- Regenerate `tunnel_nodes.parquet` with N8-N10 columns (run `find-tunnel-nodes.py`)
+- Update hardcoded N ranges in 3 visualization scripts
+- Regenerate reports after data update
+
+---
+
 ### Session: 2026-01-01 (Late Night) - Extended Tunneling Analysis N=8-10
 
 **Completed**:

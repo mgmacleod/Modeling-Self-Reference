@@ -8,6 +8,37 @@
 
 ---
 
+### 2026-01-01 (Post-Midnight) - HF Dataset Documentation + Viz Gap Analysis
+
+**What was tried**:
+- Comprehensive inventory of all parquet/data files for Hugging Face dataset
+- Created 3-tier HF documentation (README, dataset card, upload manifest)
+- Assessed all viz/reporting scripts for N=8-10 data compatibility
+
+**What worked**:
+- Complete HF dataset documentation with schemas, usage examples, upload options
+- Gap analysis identified root cause: `tunnel_nodes.parquet` missing N8-10 columns
+- Identified 3 scripts with hardcoded `range(3, 8)`
+
+**Key findings**:
+- `multiplex_basin_assignments.parquet` has N=3-10 (correct)
+- `tunnel_nodes.parquet` only has `basin_at_N{3-7}` columns (gap)
+- Most viz tools read dynamic TSV files and work without changes
+- 3 scripts need updates: path-tracer-tool.py, dash-multiplex-explorer.py, generate-tunneling-report.py
+
+**Files created**:
+- `n-link-analysis/report/HUGGINGFACE-DATASET-README.md` (~8KB)
+- `n-link-analysis/report/DATASET_CARD.md` (~4KB)
+- `n-link-analysis/report/HUGGINGFACE-UPLOAD-MANIFEST.md` (~5KB)
+- `n-link-analysis/VIZ-DATA-GAP-ANALYSIS.md` (~4KB)
+
+**Next steps**:
+- Regenerate `tunnel_nodes.parquet` with N8-10 columns
+- Update hardcoded N ranges in 3 scripts
+- Regenerate reports
+
+---
+
 ### 2026-01-01 (Late Night) - Extended Tunneling to N=8-10
 
 **What was tried**:

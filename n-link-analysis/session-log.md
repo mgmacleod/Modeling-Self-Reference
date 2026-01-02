@@ -8,6 +8,30 @@
 
 ---
 
+### 2026-01-02 (Night 2) - HuggingFace Dataset Upload Complete
+
+**What was tried**:
+- Upload dataset to HuggingFace using prepared script
+- Add `.env` support for credential management
+
+**What worked**:
+- Dataset uploaded successfully: https://huggingface.co/datasets/mgmacleod/wikidata1
+- 73 files (~1.74 GB) uploaded with "full" config
+- `.env` loading added to upload script
+- `.env.example` template created for reproducibility
+
+**Key discoveries**:
+- WebFetch shows stale cache - use HfApi for verification
+- System Python differs from venv - must use `.venv/bin/python` explicitly
+
+**Files created/modified**:
+- `.env.example` (new)
+- `.gitignore` (added `.env`)
+- `requirements.txt` (added `huggingface_hub>=0.20.0`)
+- `n-link-analysis/scripts/upload-to-huggingface.py` (added `.env` loading)
+
+---
+
 ### 2026-01-02 (Night) - Hugging Face Dataset Validation & Upload Script
 
 **What was tried**:

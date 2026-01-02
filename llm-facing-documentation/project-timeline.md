@@ -18,6 +18,33 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Night 2) - HuggingFace Dataset Upload Complete
+
+**Completed**:
+- Successfully uploaded dataset to HuggingFace: https://huggingface.co/datasets/mgmacleod/wikidata1
+- 73 files uploaded (~1.74 GB) using "full" config
+- Added `huggingface_hub>=0.20.0` to requirements.txt
+- Created `.env.example` template for HF_TOKEN credential
+- Updated `upload-to-huggingface.py` to load credentials from `.env`
+- Added `.env` to `.gitignore` to protect secrets
+
+**Decisions Made**:
+- **Credential management via .env**: Chose project-root `.env` file over `huggingface-cli login` for explicit, reproducible auth
+
+**Validation**:
+- Verified upload via `HfApi().dataset_info()` - confirmed 73 files present
+- Dataset structure: `data/source/`, `data/multiplex/`, `data/analysis/`
+
+**Files Created/Modified**:
+| File | Change |
+|------|--------|
+| `.env.example` | New - HF_TOKEN template |
+| `.gitignore` | Added `.env` |
+| `requirements.txt` | Added `huggingface_hub>=0.20.0` |
+| `n-link-analysis/scripts/upload-to-huggingface.py` | Added `.env` loading |
+
+---
+
 ### Session: 2026-01-02 (Night) - Hugging Face Dataset Validation & Upload Script
 
 **Completed**:

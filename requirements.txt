@@ -40,3 +40,6 @@ mypy>=1.5.0
 # Jupyter support (optional)
 jupyter>=1.0.0
 ipykernel>=6.25.0
+
+# Dataset publishing
+huggingface_hub>=0.20.0

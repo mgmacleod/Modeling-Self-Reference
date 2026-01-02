@@ -8,6 +8,33 @@
 
 ---
 
+### 2026-01-02 (Night 8) - Phase 6: Pipeline Integration Complete
+
+**What was tried**:
+- Add `--use-api` mode to `reproduce-main-findings.py` to execute via API server instead of subprocess calls
+
+**What worked**:
+- `run_via_api()` helper function for task submission and polling
+- API-specific helpers for each pipeline phase (sampling, basin mapping, branch analysis, dashboards, reports)
+- API availability check before pipeline starts
+- Progress display during long-running background operations
+- All 5 pipeline phases support dual-mode execution
+
+**Key decisions**:
+- Collapse dashboard (`batch-chase-collapse-metrics.py`) kept as subprocess-only - no API endpoint exists yet
+- Use async endpoints for dashboards/reports to handle potentially long operations
+
+**Files modified**:
+- `n-link-analysis/scripts/reproduce-main-findings.py` (API mode added)
+- `nlink_api/NEXT-SESSION.md` (marked all 6 phases complete)
+
+**Validation**:
+- Syntax check passes (`py_compile`)
+- `--help` shows new options
+- API unavailable error works correctly
+
+---
+
 ### 2026-01-02 (Night 4) - HuggingFace Data Pipeline Integration
 
 **What was tried**:

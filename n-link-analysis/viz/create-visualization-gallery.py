@@ -114,6 +114,25 @@ ADDITIONAL_ANALYSIS = [
     ("tunnel_summary_chart.png", "Tunnel Summary", "Summary chart of tunneling statistics"),
 ]
 
+# Wrap-up analysis (from 2026-01-02 comprehensive analysis)
+WRAPUP_ANALYSIS = [
+    # Semantic Model
+    ("semantic_model_central_entities.html", "Central Tunnel Entities", "Top 30 tunnel nodes by score - interactive"),
+    ("subsystem_stability_comparison.html", "Basin Stability Analysis", "Persistence scores and stability classes"),
+    ("hidden_relationships_flow.html", "Cross-Basin Flows", "Sankey diagram of hidden relationships"),
+    ("tunnel_type_breakdown.html", "Tunnel Type Distribution", "Alternating vs progressive tunnel types"),
+    ("depth_vs_tunnel_score.html", "Depth vs Tunnel Score", "Scatter plot of depth vs tunnel score"),
+    # Edit-Stability Correlation
+    ("edit_vs_stability_correlation.html", "Edit-Stability Correlation", "Edit frequency vs basin stability"),
+    # Universal Cycle Analysis
+    ("universal_cycle_n_evolution.html", "Universal Cycle Evolution", "Basin size evolution N=3-10 for universal cycles"),
+    ("universal_cycle_properties.html", "Universal Cycle Properties", "Comparison of the 6 universal cycles"),
+    ("universal_cycle_domains.html", "Semantic Domain Breakdown", "Universal cycles by semantic domain"),
+    # Basin Statistics
+    ("universal_attractors_chart.html", "Universal Attractors", "Attractors by total page count"),
+    ("basin_stats_summary.html", "Basin Statistics Summary", "Per-N basin statistics overview"),
+]
+
 
 def generate_gallery_html() -> str:
     """Generate responsive HTML gallery with thumbnails and metadata."""
@@ -424,6 +443,35 @@ def generate_gallery_html() -> str:
             <p class="section-intro">Supplementary analysis figures covering trunkiness, tunneling, and multiplex connectivity.</p>
             <div class="analysis-grid">
                 {''.join(additional_items)}
+            </div>
+        </section>
+        """
+
+    # Build wrap-up analysis section (2026-01-02 comprehensive wrap-up)
+    wrapup_items = []
+    for filename, title, description in WRAPUP_ANALYSIS:
+        file_path = ASSETS_DIR / filename
+        if file_path.exists():
+            size_kb = file_path.stat().st_size / 1024
+            is_html = filename.endswith('.html')
+            btn_class = "btn interactive" if is_html else "btn"
+            btn_text = "Interactive" if is_html else "PNG"
+            wrapup_items.append(f"""
+            <div class="tool-card">
+                <h4>{title}</h4>
+                <p>{description}</p>
+                <a href="{filename}" class="{btn_class}" target="_blank">{btn_text} ({size_kb:.0f} KB)</a>
+            </div>
+            """)
+
+    wrapup_section = ""
+    if wrapup_items:
+        wrapup_section = f"""
+        <section class="tools-section">
+            <h2>Wrap-Up Analysis</h2>
+            <p class="section-intro">Comprehensive analysis of underutilized data: semantic model visualization, edit-stability correlation, universal cycle analysis, and basin statistics.</p>
+            <div class="tools-grid">
+                {''.join(wrapup_items)}
             </div>
         </section>
         """
@@ -881,6 +929,8 @@ def generate_gallery_html() -> str:
         {coverage_section}
 
         {additional_section}
+
+        {wrapup_section}
 
         {written_reports_section}
     </div>

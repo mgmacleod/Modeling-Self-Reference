@@ -18,6 +18,52 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Night 8) - Phase 6: Pipeline Integration Complete
+
+**Completed**:
+- Updated `reproduce-main-findings.py` with `--use-api` and `--api-base` CLI options
+- Implemented `run_via_api()` helper function for submitting tasks and polling completion
+- Added API-specific helper functions for each pipeline phase:
+  - `run_sampling_via_api()` - Trace sampling via `/api/v1/traces/sample`
+  - `run_basin_mapping_via_api()` - Basin mapping via `/api/v1/basins/map`
+  - `run_branch_analysis_via_api()` - Branch analysis via `/api/v1/basins/branches`
+  - `run_trunkiness_dashboard_via_api()` - Dashboard via `/api/v1/reports/trunkiness/async`
+  - `run_human_report_via_api()` - Report via `/api/v1/reports/human/async`
+- Added API availability check before starting pipeline
+- Progress display during long-running background operations
+- Updated `nlink_api/NEXT-SESSION.md` to mark all phases complete
+
+**Usage**:
+```bash
+# Traditional mode (subprocess calls)
+python n-link-analysis/scripts/reproduce-main-findings.py --quick
+
+# API mode (requires running server)
+uvicorn nlink_api.main:app --port 8000 &
+python n-link-analysis/scripts/reproduce-main-findings.py --quick --use-api
+```
+
+**Architecture Notes**:
+- The collapse dashboard (`batch-chase-collapse-metrics.py`) runs via subprocess in both modes since it doesn't have an API endpoint yet
+- API mode polls task status endpoints and displays progress updates
+- Proper error handling with early exit on failures
+
+**Validation**:
+- Script syntax verified via `py_compile`
+- `--help` output shows new options correctly
+- API unavailable check works (tested without running server)
+
+**API Implementation Complete**:
+All 6 phases of the N-Link API are now complete:
+1. Foundation (package structure, task manager)
+2. Core Engine Extraction (`_core/` modules)
+3. Data & Traces API
+4. Basin Operations API
+5. Reports & Figures API
+6. Pipeline Integration
+
+---
+
 ### Session: 2026-01-02 (Night 7) - Phase 5: Reports & Figures API
 
 **Completed**:

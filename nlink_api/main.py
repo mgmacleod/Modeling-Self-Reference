@@ -78,17 +78,21 @@ def create_app() -> FastAPI:
         )
 
     # Include routers
-    from nlink_api.routers import health, tasks
+    from nlink_api.routers import data, health, tasks, traces
 
     app.include_router(health.router, prefix=settings.api_prefix, tags=["health"])
     app.include_router(
         tasks.router, prefix=f"{settings.api_prefix}/tasks", tags=["tasks"]
     )
+    app.include_router(
+        data.router, prefix=f"{settings.api_prefix}/data", tags=["data"]
+    )
+    app.include_router(
+        traces.router, prefix=f"{settings.api_prefix}/traces", tags=["traces"]
+    )
 
     # Additional routers will be added as implemented
-    # from nlink_api.routers import data, traces, basins, reports
-    # app.include_router(data.router, prefix=f"{settings.api_prefix}/data", tags=["data"])
-    # app.include_router(traces.router, prefix=f"{settings.api_prefix}/traces", tags=["traces"])
+    # from nlink_api.routers import basins, reports
     # app.include_router(basins.router, prefix=f"{settings.api_prefix}/basins", tags=["basins"])
     # app.include_router(reports.router, prefix=f"{settings.api_prefix}/reports", tags=["reports"])
 

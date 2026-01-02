@@ -10,10 +10,11 @@ This project applies **formal graph theory to self-referential systems** (Wikipe
 
 **Step 1 - Read universal context** (Tier 1, ~8-10k tokens):
 1. This README.md - Project overview and navigation guide
-2. [project-timeline.md](project-timeline.md) - Read latest 3-5 entries for current state
-3. [llm-project-management-instructions/documentation-standards.md](llm-project-management-instructions/documentation-standards.md) - How to write documentation
-4. [llm-project-management-instructions/project-management-practices.md](llm-project-management-instructions/project-management-practices.md) - How to maintain the project
-5. [contracts/README.md](contracts/README.md) - Theory ↔ experiment ↔ evidence contracts (prevents stealth edits)
+2. [development-arc-summary.md](development-arc-summary.md) - High-level project evolution and key discoveries
+3. [project-timeline.md](project-timeline.md) - Read latest 3-5 entries for current state
+4. [llm-project-management-instructions/documentation-standards.md](llm-project-management-instructions/documentation-standards.md) - How to write documentation
+5. [llm-project-management-instructions/project-management-practices.md](llm-project-management-instructions/project-management-practices.md) - How to maintain the project
+6. [contracts/README.md](contracts/README.md) - Theory ↔ experiment ↔ evidence contracts (prevents stealth edits)
 
 **Step 2 - Load working context** (Tier 2, ~10-20k tokens):
 - **If working on theory**: Load [theories-proofs-conjectures/INDEX.md](theories-proofs-conjectures/INDEX.md), then specific theory docs as needed
@@ -46,5 +47,5 @@ This project uses **cumulative, sparse documentation** that grows over time rath
 
 ---
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2026-01-01
 **Status**: Active development

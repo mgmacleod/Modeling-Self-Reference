@@ -156,6 +156,43 @@ This is the *primary index* for contract objects, and should be treated as appen
 
 ---
 
+### NLR-C-0005 — HALT Probability Conjectures (Wikipedia)
+
+- **Status**: validated (empirical; scope: Wikipedia namespace 0, 17.97M pages)
+- **Provenance**:
+  - Theory originator: WH (Conjectures 6.1 and 6.3 in n-link-rule-theory.md)
+  - Implementation & empirical analysis: MM (2026-01-01)
+- **Theory**:
+  - [n-link-rule-theory.md](../theories-proofs-conjectures/n-link-rule-theory.md) (Section 6: Probabilistic Conjectures)
+- **Experiment**:
+  - [analyze-halt-probability.py](../../n-link-analysis/scripts/analyze-halt-probability.py) (compute P_HALT(N) from degree distribution)
+- **Evidence**:
+  - `data/wikipedia/processed/analysis/halt_probability_analysis.tsv` (P_HALT, P_CYCLE for N=1-50)
+  - `data/wikipedia/processed/analysis/link_degree_distribution_exact.tsv` (source data)
+- **Key Findings**:
+  - **Conjecture 6.1 VALIDATED**: P_HALT(N) is strictly monotonically increasing with N
+    - At N=1: P_HALT = 0% (all pages have ≥1 link)
+    - At N=5: P_HALT = 67.4%
+    - At N=50: P_HALT = 95.4%
+  - **Conjecture 6.3 VALIDATED**: Phase transition N* exists where P_HALT = P_CYCLE = 0.5
+    - Crossover point N* ≈ 1.82 (interpolated)
+    - At N=2: P_HALT = 61%, P_CYCLE = 39% (closest integer)
+- **Theory Claims Evaluated**:
+  - **Validated**: "P_HALT increases monotonically with N" → Strictly true for all N tested (1-50)
+  - **Validated**: "Critical N* exists" → N* ≈ 1.82, but this is DIFFERENT from basin SIZE peak
+- **Key Insight**:
+  - HALT/CYCLE crossover (N* ≈ 2) and basin SIZE peak (N=5) are **distinct phenomena**
+  - N* marks the eligibility threshold (can vs cannot follow N-th link)
+  - N=5 peak marks depth dynamics optimum (exploration vs convergence tradeoff)
+  - At N=5: Only 32.6% of pages are eligible (P_CYCLE), yet basin SIZE peaks
+  - This confirms the phase transition is driven by **depth dynamics**, not mere eligibility
+- **Notes**:
+  - The extreme N=1 distribution (61% of pages have exactly 1 link) explains why N=2 is near crossover
+  - Wikipedia's link structure is heavily skewed: most pages have few links, few pages have many
+  - Eligibility (P_CYCLE) and basin mass are decoupled: fewer eligible pages can create larger basins
+
+---
+
 ### NLR-C-0002 — Citation & integration lineage for sqsd.html → N-Link theory
 
 - **Status**: proposed

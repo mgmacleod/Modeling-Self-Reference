@@ -8,6 +8,30 @@
 
 ---
 
+### 2026-01-01 (Late Night) - HALT Probability Conjectures Validated
+
+**What was tried**:
+- Test Conjectures 6.1 (Monotonic HALT) and 6.3 (Phase Transition N*) from n-link-rule-theory.md
+- Compute P_HALT(N) for N=1-50 using existing degree distribution data
+
+**What worked**:
+- Conjecture 6.1 VALIDATED: P_HALT(N) strictly increases with N (monotonic)
+- Conjecture 6.3 VALIDATED: Crossover N* ≈ 1.82 (interpolated between N=1 and N=2)
+- At N=5: P_HALT = 67.4%, P_CYCLE = 32.6%
+
+**Key discovery**:
+- HALT/CYCLE crossover (N* ≈ 2) and basin SIZE peak (N=5) are **distinct phenomena**
+- Eligibility (P_CYCLE) and basin mass are decoupled
+- Confirms phase transition is driven by depth dynamics, not mere eligibility
+
+**Files created**:
+- `scripts/analyze-halt-probability.py` (~150 lines)
+- `data/wikipedia/processed/analysis/halt_probability_analysis.tsv`
+
+**Contract**: NLR-C-0005 added to registry
+
+---
+
 ### 2026-01-01 (Night) - Visualization Suite Validation
 
 **What was tried**:

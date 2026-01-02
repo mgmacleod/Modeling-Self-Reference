@@ -18,6 +18,64 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Late Night) - HALT Probability Conjectures Validated
+
+**Completed**:
+- Created `n-link-analysis/scripts/analyze-halt-probability.py` (~150 lines)
+- Tested Conjecture 6.1 (Monotonic HALT) and Conjecture 6.3 (Phase Transition N*)
+- Added NLR-C-0005 contract to registry
+
+**Discoveries**:
+| Finding | Value |
+|---------|-------|
+| **Conjecture 6.1 VALIDATED** | P_HALT(N) strictly increases with N |
+| **Conjecture 6.3 VALIDATED** | Crossover N* ≈ 1.82 (interpolated) |
+| At N=5 | P_HALT = 67.4%, P_CYCLE = 32.6% |
+| At N=2 | P_HALT = 61%, P_CYCLE = 39% (closest to 50/50) |
+
+**Key Insight**:
+- HALT/CYCLE crossover (N* ≈ 2) and basin SIZE peak (N=5) are **distinct phenomena**
+- N* marks eligibility threshold (can vs cannot follow N-th link)
+- N=5 peak marks depth dynamics optimum (exploration vs convergence)
+- At N=5: Only 32.6% of pages are eligible, yet basin SIZE peaks
+- Confirms phase transition is driven by **depth dynamics**, not mere eligibility
+
+**Files Created**:
+| File | Description |
+|------|-------------|
+| `scripts/analyze-halt-probability.py` | Computes P_HALT(N) and tests conjectures |
+| `data/.../halt_probability_analysis.tsv` | P_HALT, P_CYCLE for N=1-50 |
+
+**Data**:
+- Wikipedia has 17.97M pages
+- 61% of pages have exactly 1 link (extreme skew)
+- By N=50, 95.4% of pages would HALT
+
+---
+
+### Session: 2026-01-01 (Late Night) - Development Arc Summary Document
+
+**Completed**:
+- Created `llm-facing-documentation/development-arc-summary.md` (~400 lines)
+  - High-level narrative of project evolution from theory through empirical validation
+  - Synthesizes 5 development phases: Theory, Data Infrastructure, N=5 Discovery, Tunneling, Visualization
+  - Documents key discoveries, metrics, architectural patterns, and scientific significance
+  - Provides quick reference for future LLM sessions
+- Updated `llm-facing-documentation/README.md` bootstrap instructions to include new document
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Place in llm-facing-documentation/ | Project-level summary, not specific to n-link-analysis |
+| Synthesize from timeline | Timeline has detailed entries; summary provides narrative arc |
+| Add to Tier 1 bootstrap | Provides faster context than reading many timeline entries |
+
+**Architecture Impact**:
+- New Tier 1 document for rapid project orientation
+- Complements detailed timeline with narrative overview
+
+---
+
 ### Session: 2026-01-01 (Night) - Visualization Suite Validation
 
 **Completed**:

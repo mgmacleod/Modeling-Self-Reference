@@ -38,11 +38,15 @@ except ImportError:
     print("Install with: pip install dash dash-bootstrap-components")
     exit(1)
 
+# Import shared API client
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 try:
-    import httpx
-    HTTPX_AVAILABLE = True
+    from api_client import NLinkAPIClient, HTTPX_AVAILABLE
 except ImportError:
+    # Fallback if api_client module not found
     HTTPX_AVAILABLE = False
+    NLinkAPIClient = None
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MULTIPLEX_DIR = REPO_ROOT / "data" / "wikipedia" / "processed" / "multiplex"
@@ -50,83 +54,6 @@ MULTIPLEX_DIR = REPO_ROOT / "data" / "wikipedia" / "processed" / "multiplex"
 # Global configuration (set by CLI args)
 USE_API = False
 API_URL = "http://localhost:8000"
-
-
-# ============================================================================
-# API Client
-# ============================================================================
-
-class NLinkAPIClient:
-    """Client for N-Link Basin Analysis API."""
-
-    def __init__(self, base_url: str = "http://localhost:8000"):
-        self.base_url = base_url.rstrip("/")
-        self._client = None
-
-    @property
-    def client(self):
-        if self._client is None:
-            self._client = httpx.Client(base_url=self.base_url, timeout=30.0)
-        return self._client
-
-    def health_check(self) -> bool:
-        """Check if API is available."""
-        try:
-            resp = self.client.get("/api/v1/health")
-            return resp.status_code == 200
-        except Exception:
-            return False
-
-    def search_pages(self, query: str, limit: int = 20) -> list[dict]:
-        """Search for pages by title."""
-        try:
-            resp = self.client.get(
-                "/api/v1/data/pages/search",
-                params={"q": query, "limit": limit}
-            )
-            if resp.status_code == 200:
-                data = resp.json()
-                return data.get("results", [])
-            return []
-        except Exception as e:
-            print(f"API search error: {e}")
-            return []
-
-    def get_page(self, page_id: int) -> Optional[dict]:
-        """Get page by ID."""
-        try:
-            resp = self.client.get(f"/api/v1/data/pages/{page_id}")
-            if resp.status_code == 200:
-                return resp.json()
-            return None
-        except Exception:
-            return None
-
-    def trace_single(
-        self,
-        n: int,
-        start_title: Optional[str] = None,
-        start_page_id: Optional[int] = None,
-        max_steps: int = 1000,
-    ) -> Optional[dict]:
-        """Trace a single N-link path."""
-        try:
-            params = {"n": n, "max_steps": max_steps, "resolve_titles": True}
-            if start_title:
-                params["start_title"] = start_title
-            elif start_page_id:
-                params["start_page_id"] = start_page_id
-            else:
-                return None
-
-            resp = self.client.get("/api/v1/traces/single", params=params)
-            if resp.status_code == 200:
-                return resp.json()
-            return None
-        except Exception as e:
-            print(f"API trace error: {e}")
-            return None
-
 
 # Global API client instance (initialized when --use-api is set)
 api_client: Optional[NLinkAPIClient] = None

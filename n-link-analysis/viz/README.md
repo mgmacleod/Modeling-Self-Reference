@@ -198,6 +198,39 @@ python n-link-analysis/viz/generate-multi-n-figures.py --phase-transition --coll
 - **Parquet data**: `data/wikipedia/processed/analysis/basin_pointcloud_n={N}_cycle={CYCLE}.parquet`
 - **Edge databases**: `data/wikipedia/processed/analysis/edges_n={N}.duckdb`
 
+## Shared API Client
+
+The `api_client.py` module provides a reusable client for connecting visualization tools to the N-Link API server.
+
+```python
+from viz.api_client import NLinkAPIClient, check_api_available
+
+# Quick availability check
+if check_api_available("http://localhost:8000"):
+    client = NLinkAPIClient("http://localhost:8000")
+
+    # Search for pages
+    results = client.search_pages("Massachusetts", limit=10)
+
+    # Trace N-link path
+    trace = client.trace_single(n=5, start_title="Massachusetts")
+
+    # Get page info
+    page = client.get_page(12345)
+```
+
+**Key Methods**:
+| Method | Description |
+|--------|-------------|
+| `health_check()` | Check if API is available |
+| `search_pages(query, limit)` | Search pages by title |
+| `get_page(page_id)` | Get page by ID |
+| `get_page_by_title(title)` | Get page by title |
+| `trace_single(n, start_title=, start_page_id=)` | Trace N-link path |
+| `map_basin(n, cycle_titles, background=)` | Map basin from cycle |
+| `get_task_status(task_id)` | Get background task status |
+| `wait_for_task(task_id)` | Wait for task completion |
+
 ## Dependencies
 
 Core visualization:

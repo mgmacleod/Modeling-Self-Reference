@@ -201,23 +201,26 @@ The Path Tracer tool has been integrated with the API as a proof-of-concept. Oth
   - Live tracing via `trace_page_live()` for any page (not just tunnel nodes)
   - Search all 17.9M pages in API mode (vs 41K tunnel nodes in local mode)
 
+- **Shared API Client** (`n-link-analysis/viz/api_client.py`) ✅
+  - Extracted `NLinkAPIClient` to shared module
+  - Added comprehensive docstrings and type hints
+  - Added `check_api_available()` helper function
+  - Added `wait_for_task()` for polling background tasks
+  - Added `map_basin()` and `generate_report()` methods
+  - Path Tracer updated to import from shared module
+
 ### Recommended Next Steps
 
-1. **Extract shared API client module**
-   - Move `NLinkAPIClient` from `path-tracer-tool.py` to a shared location
-   - Suggested: `n-link-analysis/viz/api_client.py` or `nlink_api/client.py`
-   - Other viz tools can import and reuse
-
-2. **Integrate Multiplex Explorer** (`n-link-analysis/viz/dash-multiplex-explorer.py`, port 8056)
+1. **Integrate Multiplex Explorer** (`n-link-analysis/viz/dash-multiplex-explorer.py`, port 8056)
    - Could use API for page lookups in tunnel node table
    - Lower priority since it mostly displays precomputed data
 
-3. **Add report generation buttons to dashboards**
+2. **Add report generation buttons to dashboards**
    - Dashboards could trigger report generation via API
    - Show progress via task polling
    - Example: "Generate Report" button → `POST /api/v1/reports/human/async`
 
-4. **Add API endpoint for collapse dashboard**
+3. **Add API endpoint for collapse dashboard**
    - `batch-chase-collapse-metrics.py` currently runs as subprocess
    - Extract to `_core/collapse_engine.py`
    - Add `/api/v1/reports/collapse` endpoint

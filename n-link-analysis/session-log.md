@@ -8,6 +8,33 @@
 
 ---
 
+### 2026-01-01 (Late Night) - Extended Tunneling to N=8-10
+
+**What was tried**:
+- Run analysis harness for N=8, 9, 10
+- Generate parquet assignment files for extended N range
+- Run full tunneling pipeline on N=3-10
+
+**What worked**:
+- Harness completed 34/34 scripts for each N=8,9,10
+- Manual `branch-basin-analysis.py --write-membership-top-k` for parquet generation
+- Tunneling pipeline successfully processed extended range
+
+**Key discoveries**:
+- **Basin collapse beyond N=5 confirmed**: 10-1000× reduction in basin sizes
+- Massachusetts: 1,009,471 (N=5) → 5,226 (N=10) = 193× collapse
+- Autumn__Summer: 162,689 → 148 = 1,100× collapse (most dramatic)
+- N=5 is unique peak; no secondary peaks at N=8-10
+
+**Artifacts produced**:
+- 18 new parquet files (`branches_n={8,9,10}_*_assignments.parquet`)
+- Updated `multiplex_basin_assignments.parquet` (2.1M rows, N=3-10)
+- Updated TUNNELING-FINDINGS.md, NEXT-STEPS.md, TUNNELING-ROADMAP.md
+
+**Technical note**: Harness generates TSV but NOT parquet by default. Must run branch-basin-analysis.py with `--write-membership-top-k` flag separately.
+
+---
+
 ### 2026-01-01 (Night) - TUNNELING-ROADMAP Complete: All 5 Phases
 
 **What was tried**:

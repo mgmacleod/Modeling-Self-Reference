@@ -44,31 +44,27 @@ Keep an eye on tag consistency when comparing cross-N outputs (e.g., `test_*` vs
 
 ### Tier 1: High-Impact Extensions (1-3 sessions)
 
-#### 1.1 Multi-N Systematic Comparison
-**Goal**: Map the complete phase transition curve N=3 through N=10+
+#### 1.1 Multi-N Systematic Comparison ✅ COMPLETED (2026-01-01)
 
-**Why**: Current findings show N=5 is an isolated peak. Need finer resolution to:
-- Identify if there are other peaks (N=8? N=10?)
-- Understand alternating high-low pattern (N=3,5,7 high vs N=4,6 low)
-- Test percolation hypothesis (coverage threshold ~32%)
+**Status**: DONE - Extended analysis to N=8-10
 
-**Approach**:
-```bash
-# Run harness for each N
-for N in 3 4 5 6 7 8 9 10; do
-  python run-analysis-harness.py --quick --n $N --tag multi_n_2026_01_01
-done
+**Findings**:
+- N=5 confirmed as unique peak (no other peaks at N=8-10)
+- Basin collapse beyond N=5: 10-1000× smaller basins
+- N=10 basins: 148-7,867 pages (vs N=5: 60K-1M pages)
 
-# Compare results
-python scripts/compare-across-n.py --n-values 3 4 5 6 7 8 9 10
-```
+**Key Results**:
+| Cycle | N=5 Size | N=10 Size | Collapse |
+|-------|----------|-----------|----------|
+| Massachusetts | 1,009,471 | 5,226 | 193× |
+| Autumn__Summer | 162,689 | 148 | 1,100× |
+| Sea_salt__Seawater | 265,896 | 4,391 | 61× |
 
-**Outputs**:
-- Basin mass curves across N (identify all peaks)
-- Coverage-basin correlation (test 32% hypothesis)
-- Universality classes (group N by behavior)
+**Data Generated**:
+- `branches_n={8,9,10}_*_assignments.parquet` (18 files)
+- `multiplex_basin_assignments.parquet` updated for N=3-10
 
-**Investigation doc**: Create `empirical-investigations/MULTI-N-PHASE-MAP.md`
+**Investigation doc**: See timeline entry 2026-01-01 (Late Night)
 
 ---
 

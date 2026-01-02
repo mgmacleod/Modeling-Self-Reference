@@ -18,6 +18,37 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-01 (Late Night) - Extended Tunneling Analysis N=8-10
+
+**Completed**:
+- Extended tunneling analysis from N=3-7 to N=3-10
+- Generated basin assignments for N=8, 9, 10 across all 6 tracked cycles
+- Ran full tunneling pipeline on extended N range
+
+**Key Finding - Basin Collapse Beyond N=5**:
+| Cycle | N=5 Size | N=10 Size | Collapse Factor |
+|-------|----------|-----------|-----------------|
+| Massachusetts__Gulf_of_Maine | 1,009,471 | 5,226 | 193× |
+| Autumn__Summer | 162,689 | 148 | 1,100× |
+| Sea_salt__Seawater | 265,896 | 4,391 | 61× |
+| Mountain__Hill | 188,968 | 801 | 236× |
+| Kingdom_(biology)__Animal | 112,805 | 7,867 | 14× |
+| Latvia__Lithuania | 81,656 | 2,499 | 33× |
+
+**Interpretation**: N=5 phase transition confirmed as unique peak. Beyond N=5, basins collapse by 10-1000×, explaining why tunneling concentrates at N=5→N=6 transition.
+
+**Technical Notes**:
+- Harness generates TSV files but NOT parquet files by default
+- Had to manually run `branch-basin-analysis.py --write-membership-top-k` for each N/cycle
+- Tunneling pipeline scripts process N values independently; extended range just works
+
+**Files Updated**:
+- `data/wikipedia/processed/analysis/branches_n={8,9,10}_*_assignments.parquet` (18 files)
+- `data/wikipedia/processed/multiplex/multiplex_basin_assignments.parquet` (now includes N=8-10)
+- `n-link-analysis/report/TUNNELING-FINDINGS.md`
+
+---
+
 ### Session: 2026-01-01 (Night) - Tunneling Visualization Suite
 
 **Completed**:

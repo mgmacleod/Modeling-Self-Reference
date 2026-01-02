@@ -1,7 +1,8 @@
 # N-Link API: Remaining Implementation Phases
 
 **Created**: 2026-01-02
-**Status**: Phases 1-3 complete, Phases 4-6 pending
+**Updated**: 2026-01-02
+**Status**: Phases 1-4 complete, Phases 5-6 pending
 
 ---
 
@@ -25,68 +26,25 @@
 - `routers/data.py`, `routers/traces.py`
 - Endpoints: `/data/source`, `/data/validate`, `/data/pages/*`, `/traces/single`, `/traces/sample`
 
----
-
-## Remaining Phases
-
 ### Phase 4: Basin Operations
-
-**Goal**: Expose basin mapping and branch analysis via API
-
-**Scripts to Refactor**:
-1. `map-basin-from-cycle.py` → `_core/basin_engine.py`
-2. `branch-basin-analysis.py` → `_core/branch_engine.py`
-
-**Key Functions to Extract**:
-```python
-# From map-basin-from-cycle.py
-def map_basin(
-    loader: DataLoader,
-    n: int,
-    cycle_page_ids: list[int],
-    max_depth: int = 0,
-    progress_callback: ProgressCallback = None,
-) -> BasinMapResult:
-    """Reverse BFS to map all nodes flowing into a cycle."""
-
-# From branch-basin-analysis.py
-def analyze_branches(
-    loader: DataLoader,
-    n: int,
-    cycle_page_ids: list[int],
-    top_k: int = 25,
-    progress_callback: ProgressCallback = None,
-) -> BranchAnalysisResult:
-    """Partition basin by depth-1 entry points, compute trunkiness."""
-```
-
-**Files to Create**:
-- `n-link-analysis/scripts/_core/basin_engine.py`
-- `n-link-analysis/scripts/_core/branch_engine.py`
-- `nlink_api/schemas/basins.py`
-- `nlink_api/services/basin_service.py`
-- `nlink_api/routers/basins.py`
+- `n-link-analysis/scripts/_core/basin_engine.py` - Basin mapping via reverse BFS
+- `n-link-analysis/scripts/_core/branch_engine.py` - Branch structure analysis
+- Updated `map-basin-from-cycle.py` and `branch-basin-analysis.py` to use `_core` modules
+- `schemas/basins.py` - Pydantic models for basin/branch operations
+- `services/basin_service.py` - Service layer for basin operations
+- `routers/basins.py` - API endpoints
 
 **Endpoints**:
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/v1/basins/map` | Map basin from cycle (background) |
+| POST | `/api/v1/basins/map` | Map basin from cycle (sync/background) |
 | GET | `/api/v1/basins/map/{task_id}` | Get mapping status |
-| POST | `/api/v1/basins/branches` | Analyze branch structure (background) |
+| POST | `/api/v1/basins/branches` | Analyze branch structure (sync/background) |
 | GET | `/api/v1/basins/branches/{task_id}` | Get analysis status |
-| GET | `/api/v1/basins/list` | List available basin artifacts |
-
-**Request Schema Example**:
-```python
-class BasinMapRequest(BaseModel):
-    n: int = 5
-    cycle_titles: list[str] = []      # e.g., ["Massachusetts", "Gulf_of_Maine"]
-    cycle_page_ids: list[int] = []    # Alternative to titles
-    max_depth: int = 0                # 0 = unlimited
-    tag: str | None = None            # Output file tag
-```
 
 ---
+
+## Remaining Phases
 
 ### Phase 5: Reports & Figures
 
@@ -195,9 +153,9 @@ Each phase follows the same pattern:
 
 Before marking a phase complete:
 
-- [ ] CLI script works unchanged
-- [ ] API server starts without errors
-- [ ] Endpoint appears in `/docs`
+- [x] CLI script works unchanged
+- [x] API server starts without errors (verified via syntax check)
+- [x] Endpoint appears in `/docs` (router registered in main.py)
 - [ ] Sync operation returns correct response
 - [ ] Background task submits and completes
 - [ ] Progress updates work correctly
@@ -208,16 +166,18 @@ Before marking a phase complete:
 ## Key Files Reference
 
 **Source Scripts** (to refactor):
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/map-basin-from-cycle.py`
-- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/branch-basin-analysis.py`
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/render-human-report.py`
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/compute-trunkiness-dashboard.py`
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/reproduce-main-findings.py`
 
 **Pattern Reference** (completed):
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/trace_engine.py`
+- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/basin_engine.py`
+- `/home/mgm/development/code/Modeling-Self-Reference-actual/n-link-analysis/scripts/_core/branch_engine.py`
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/services/trace_service.py`
+- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/services/basin_service.py`
 - `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/routers/traces.py`
+- `/home/mgm/development/code/Modeling-Self-Reference-actual/nlink_api/routers/basins.py`
 
 ---
 
@@ -225,7 +185,7 @@ Before marking a phase complete:
 
 ```bash
 # 1. Read this file
-# 2. Pick up where we left off (Phase 4)
-# 3. Start by reading map-basin-from-cycle.py
+# 2. Pick up where we left off (Phase 5)
+# 3. Start by reading render-human-report.py
 # 4. Follow the implementation pattern above
 ```

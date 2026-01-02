@@ -58,19 +58,34 @@ TEST_PAGES = pd.DataFrame({
     "is_redirect": [False, False, False, False, False, False, False, False, False, False],
 })
 
-# N-link sequences: for each page_id, the N-th link (link position)
-# Format: page_id, link_n1, link_n2, link_n3, link_n4, link_n5...
-# Each column represents the target page_id when following the N-th link
+# N-link sequences: for each page_id, the link_sequence is an array of all link targets
+# The N-th element (1-indexed) is the target when following the N-th link rule
+# Example: link_sequence[4] (5th element, 0-indexed) = link_n5
+# Massachusetts(1)->Gulf(2)->Mass(1) cycle at N=5
 TEST_NLINK_SEQUENCES = pd.DataFrame({
     "page_id": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    "link_n1": [3, 1, 4, 5, 6, 7, 8, 9, 10, 3],
-    "link_n2": [2, 3, 5, 6, 7, 8, 9, 10, 3, 4],
-    "link_n3": [4, 4, 6, 7, 8, 9, 10, 3, 4, 5],
-    "link_n4": [5, 5, 7, 8, 9, 10, 3, 4, 5, 6],
-    "link_n5": [2, 1, 8, 9, 10, 3, 4, 5, 6, 7],  # Massachusetts(1)->Gulf(2)->Mass(1): cycle!
-    "link_n6": [6, 6, 9, 10, 3, 4, 5, 6, 7, 8],
-    "link_n7": [7, 7, 10, 3, 4, 5, 6, 7, 8, 9],
-    "out_degree": [50, 50, 60, 70, 80, 90, 100, 110, 120, 130],
+    "link_sequence": [
+        # page 1: n1=3, n2=2, n3=4, n4=5, n5=2, n6=6, n7=7
+        [3, 2, 4, 5, 2, 6, 7],
+        # page 2: n1=1, n2=3, n3=4, n4=5, n5=1, n6=6, n7=7 (cycle back to 1 at n5)
+        [1, 3, 4, 5, 1, 6, 7],
+        # page 3: n1=4, n2=5, n3=6, n4=7, n5=8, n6=9, n7=10
+        [4, 5, 6, 7, 8, 9, 10],
+        # page 4: n1=5, n2=6, n3=7, n4=8, n5=9, n6=10, n7=3
+        [5, 6, 7, 8, 9, 10, 3],
+        # page 5: n1=6, n2=7, n3=8, n4=9, n5=10, n6=3, n7=4
+        [6, 7, 8, 9, 10, 3, 4],
+        # page 6: n1=7, n2=8, n3=9, n4=10, n5=3, n6=4, n7=5
+        [7, 8, 9, 10, 3, 4, 5],
+        # page 7: n1=8, n2=9, n3=10, n4=3, n5=4, n6=5, n7=6
+        [8, 9, 10, 3, 4, 5, 6],
+        # page 8: n1=9, n2=10, n3=3, n4=4, n5=5, n6=6, n7=7
+        [9, 10, 3, 4, 5, 6, 7],
+        # page 9: n1=10, n2=3, n3=4, n4=5, n5=6, n6=7, n7=8
+        [10, 3, 4, 5, 6, 7, 8],
+        # page 10: n1=3, n2=4, n3=5, n4=6, n5=7, n6=8, n7=9
+        [3, 4, 5, 6, 7, 8, 9],
+    ],
 })
 
 
@@ -131,17 +146,16 @@ class MockDataLoader:
     def load_pages(self) -> pd.DataFrame:
         return pd.read_parquet(self._pages_path)
 
-    def validate(self) -> tuple[bool, list[str], list[str]]:
+    def validate(self) -> tuple[bool, list[str]]:
         """Validate that test data files exist."""
         errors = []
-        warnings = []
 
         if not self._nlink_path.exists():
             errors.append(f"Missing: {self._nlink_path}")
         if not self._pages_path.exists():
             errors.append(f"Missing: {self._pages_path}")
 
-        return len(errors) == 0, errors, warnings
+        return len(errors) == 0, errors
 
 
 # =============================================================================

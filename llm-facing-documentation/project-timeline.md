@@ -18,6 +18,34 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Fix API Test Suite (Mock Data Format)
+
+**Completed**:
+- Fixed 25 failing API tests in `nlink_api/tests/conftest.py`
+- Fixed 2 additional test failures related to `validate()` return signature
+- All 90 API tests now pass
+- All 6 viz dashboard smoke tests confirmed passing
+
+**Root Causes Fixed**:
+| Issue | Failing Tests | Fix |
+|-------|---------------|-----|
+| Mock data format mismatch | 25 tests | Changed `TEST_NLINK_SEQUENCES` from individual `link_n1..link_n7` columns to `link_sequence` array column (matching real parquet format) |
+| `validate()` return signature | 2 tests | Changed `MockDataLoader.validate()` to return `(bool, list)` instead of `(bool, list, list)` |
+
+**Discoveries**:
+- Real `nlink_sequences.parquet` uses `link_sequence: BIGINT[]` array column
+- `trace_engine.py` uses DuckDB `list_extract(link_sequence, n)` to get nth link
+- Previous test failures were schema mismatch, not logic errors
+
+**Validation**:
+- Ran `pytest` in `nlink_api/`: 90/90 passed
+- Ran `test_dashboards.py`: 6/6 passed
+
+**Files Modified**:
+- `nlink_api/tests/conftest.py`
+
+---
+
 ### Session: 2026-01-02 - Visualization Consolidation Phase 6 (E2E Testing)
 
 **Completed**:
@@ -50,7 +78,7 @@
 **API Server Tests**:
 - Ran `nlink_api/tests/` test suite: 65/90 tests pass
 - 25 failures due to schema mismatch (`link_sequence` vs `link_n1..link_n5` columns)
-- Issue documented in `nlink_api/NEXT-SESSION.md` for future fix
+- **RESOLVED**: Fixed in subsequent session (see "Fix API Test Suite" entry above)
 
 ---
 

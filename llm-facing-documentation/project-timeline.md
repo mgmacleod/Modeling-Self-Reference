@@ -18,6 +18,30 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Shared API Client & Viz Consolidation Planning
+
+**Completed**:
+- Extracted `NLinkAPIClient` to shared module `n-link-analysis/viz/api_client.py`
+- Updated `path-tracer-tool.py` to import from shared module
+- Added comprehensive methods: `wait_for_task()`, `map_basin()`, `generate_report()`, `check_api_available()`
+- Documented shared API client in `n-link-analysis/viz/README.md`
+- Documented 3 future API integration tasks in README
+- Created `NEXT-SESSION-VIZ-CONSOLIDATION.md` with assessment plan for unifying 5 dashboard tools
+
+**Decisions Made**:
+- Shared API client located at `viz/api_client.py` (co-located with visualization tools)
+- Added methods beyond current needs to support future tool integration
+
+**Architecture Impact**:
+- Established reusable API client pattern for viz tools
+- Next session will assess consolidating 5 separate dashboards (ports 8055-8062) into unified interface
+
+**Next Steps**:
+- Visualization consolidation assessment (see `NEXT-SESSION-VIZ-CONSOLIDATION.md`)
+- Evaluate 4 architecture options: mega-dashboard, micro-frontends, selective consolidation, unified launcher
+
+---
+
 ### Session: 2026-01-02 - Visualization Tool API Integration
 
 **Completed**:

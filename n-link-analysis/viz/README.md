@@ -4,13 +4,13 @@ This directory contains tools for visualizing Wikipedia N-link basin structures.
 
 ## Dashboard Quick Start
 
-| Dashboard | Port | Command |
-|-----------|------|---------|
-| Basin Geometry Viewer | 8055 | `python n-link-analysis/viz/dash-basin-geometry-viewer.py` |
-| Multiplex Explorer | 8056 | `python n-link-analysis/viz/dash-multiplex-explorer.py` |
-| Tunneling Dashboard | 8060 | `python n-link-analysis/viz/tunneling/tunneling-dashboard.py` |
-| Path Tracer | 8061 | `python n-link-analysis/viz/tunneling/path-tracer-tool.py` |
-| **Cross-N Comparison** | 8062 | `python n-link-analysis/viz/dash-cross-n-comparison.py` |
+| Dashboard | Port | Command | Description |
+|-----------|------|---------|-------------|
+| Basin Geometry Viewer | 8055 | `python n-link-analysis/viz/dash-basin-geometry-viewer.py` | 3D point clouds, interval layouts |
+| Multiplex Analyzer | 8056 | `python n-link-analysis/viz/multiplex-analyzer.py` | Cross-N analysis, tunnel browser |
+| Tunneling Explorer | 8060 | `python n-link-analysis/viz/tunneling/tunneling-explorer.py` | Flows, tracing, validation |
+
+**Note**: Consolidation complete (2026-01-02). Original 5 dashboards merged into 3. Archived files in `_archive/`.
 
 ## Quick Start
 
@@ -45,8 +45,11 @@ python n-link-analysis/viz/render-full-basin-geometry.py \
 # Basin geometry viewer (3D point clouds, interval layouts)
 python n-link-analysis/viz/dash-basin-geometry-viewer.py --port 8055
 
-# Multiplex tunnel explorer (cross-N connectivity, tunnel nodes)
-python n-link-analysis/viz/dash-multiplex-explorer.py --port 8056
+# Multiplex analyzer (cross-N connectivity, phase transitions, tunnel nodes)
+python n-link-analysis/viz/multiplex-analyzer.py --port 8056
+
+# Tunneling explorer (basin flows, path tracing, validation)
+python n-link-analysis/viz/tunneling/tunneling-explorer.py --port 8060
 ```
 
 ## Scripts
@@ -121,54 +124,59 @@ python n-link-analysis/viz/dash-basin-geometry-viewer.py
 python n-link-analysis/viz/dash-basin-geometry-viewer.py --port 8060
 ```
 
-### `dash-multiplex-explorer.py`
-**Purpose**: Interactive exploration of cross-N basin connectivity and tunnel nodes
+### `multiplex-analyzer.py`
+**Purpose**: Unified dashboard for cross-N basin analysis (merged from `dash-multiplex-explorer.py` + `dash-cross-n-comparison.py`)
 
 **Key Features**:
+- Basin size comparison across N values (log/linear scale)
+- Depth distribution analysis (violin plots, statistics)
+- Phase transition explorer with N slider
 - Layer connectivity matrix (N×N heatmap)
 - Tunnel node browser with filtering and scoring
 - Basin pair network visualization
-- Cycle reachability analysis
 
-**Tabs**:
-1. **Layer Connectivity**: Heatmap of within-N vs cross-N edges
-2. **Tunnel Nodes**: Searchable table with 9,018 tunnel nodes
-3. **Basin Pairs**: Network showing which basins connect via tunneling
-4. **Reachability**: Per-cycle BFS reach across N layers
-
-**Common Usage**:
-```bash
-# Launch on default port
-python n-link-analysis/viz/dash-multiplex-explorer.py
-
-# Custom port
-python n-link-analysis/viz/dash-multiplex-explorer.py --port 8080
-```
-
-**See**: [MULTIPLEX-EXPLORER-GUIDE.md](MULTIPLEX-EXPLORER-GUIDE.md) for detailed usage
-
-### `dash-cross-n-comparison.py`
-**Purpose**: Side-by-side comparison of basin properties across N values (N=3-10)
-
-**Key Features**:
-- Basin size comparison with log/linear scale toggle
-- Depth distribution analysis (violin plots, statistics)
-- Phase transition explorer with N slider
-- Tunneling flow Sankey diagram
-
-**Tabs**:
+**Tabs** (6 total):
 1. **Basin Size**: Compare sizes across N for selected cycles
 2. **Depth Analysis**: Violin plots and depth statistics per cycle
 3. **Phase Transition**: Slider-based N selection with size charts
-4. **Tunneling Flows**: Sankey diagram of cross-basin page movements
+4. **Layer Connectivity**: Heatmap of within-N vs cross-N edges
+5. **Tunnel Browser**: Searchable table with 41K+ tunnel nodes
+6. **Basin Pairs**: Network showing which basins connect via tunneling
 
 **Common Usage**:
 ```bash
 # Launch on default port
-python n-link-analysis/viz/dash-cross-n-comparison.py
+python n-link-analysis/viz/multiplex-analyzer.py
 
 # Custom port
-python n-link-analysis/viz/dash-cross-n-comparison.py --port 8062
+python n-link-analysis/viz/multiplex-analyzer.py --port 8080
+```
+
+### `tunneling/tunneling-explorer.py`
+**Purpose**: Unified dashboard for tunneling analysis (merged from `tunneling-dashboard.py` + `path-tracer-tool.py`)
+
+**Key Features**:
+- Basin flow visualization (Sankey diagrams)
+- Tunnel node metrics and mechanism breakdown
+- Path tracer with search and live tracing
+- Hypothesis validation results
+- Dual-mode: local files or API mode for live tracing
+
+**Tabs** (6 total):
+1. **Overview**: Metrics, mechanism pie chart, scatter plots
+2. **Basin Flows**: Sankey diagram of cross-basin movements
+3. **Tunnel Nodes**: Filterable table of tunnel nodes
+4. **Path Tracer**: Search + trace any page's N-link path
+5. **Stability**: Basin stability analysis
+6. **Validation**: Hypothesis test results
+
+**Common Usage**:
+```bash
+# Launch on default port (local file mode)
+python n-link-analysis/viz/tunneling/tunneling-explorer.py
+
+# With API mode for live tracing
+python n-link-analysis/viz/tunneling/tunneling-explorer.py --use-api --api-url http://localhost:8000
 ```
 
 ### `generate-multi-n-figures.py`
@@ -327,34 +335,55 @@ python n-link-analysis/viz/dash-basin-geometry-viewer.py --port 8055
 
 **Slow rendering**: Use `--max-depth 10` for quick previews, full depth for final renders
 
+## Shared Modules
+
+The `shared/` directory contains reusable components for all dashboards:
+
+| Module | Contents |
+|--------|----------|
+| `colors.py` | `BASIN_COLORS`, `BASIN_SHORT_NAMES`, `get_basin_color()`, `get_short_name()`, `hex_to_rgba()` |
+| `loaders.py` | Cached data loaders: `load_basin_assignments()`, `load_basin_flows()`, `load_tunnel_ranking()` |
+| `components.py` | UI factories: `metric_card()`, `filter_row()`, `badge()`, `info_card()` |
+
+**Usage**:
+```python
+from shared import BASIN_COLORS, get_basin_color, load_basin_assignments, metric_card
+```
+
+## Archived Files
+
+Previous dashboard files (before consolidation) are preserved in `_archive/`:
+- `dash-multiplex-explorer.py.bak` → merged into `multiplex-analyzer.py`
+- `dash-cross-n-comparison.py.bak` → merged into `multiplex-analyzer.py`
+- `tunneling-dashboard.py.bak` → merged into `tunneling/tunneling-explorer.py`
+- `path-tracer-tool.py.bak` → merged into `tunneling/tunneling-explorer.py`
+
 ## Future Work
 
 ### API Integration
 
-1. **Integrate Multiplex Explorer** (`dash-multiplex-explorer.py`, port 8056)
-   - Add API for page lookups in tunnel node table
-   - Lower priority since it mostly displays precomputed data
-
-2. **Add report generation buttons to dashboards**
+1. **Add report generation buttons to dashboards**
    - Dashboards could trigger report generation via API
    - Show progress via task polling
    - Example: "Generate Report" button → `POST /api/v1/reports/human/async`
 
-3. **Add API endpoint for collapse dashboard**
+2. **Add API endpoint for collapse dashboard**
    - `batch-chase-collapse-metrics.py` currently runs as subprocess
    - Extract to `_core/collapse_engine.py`
    - Add `/api/v1/reports/collapse` endpoint
 
-### Consolidation (Planned)
+### ~~Consolidation~~ ✓ COMPLETE (2026-01-02)
 
-The current visualization tools are spread across multiple scripts and ports. A future consolidation effort should:
+Dashboard consolidation completed in 5 phases:
+- **Phase 1**: Extracted shared modules (`shared/colors.py`, `loaders.py`, `components.py`)
+- **Phase 2**: Merged Tunneling Dashboard + Path Tracer → `tunneling-explorer.py`
+- **Phase 3**: Merged Multiplex Explorer + Cross-N Comparison → `multiplex-analyzer.py`
+- **Phase 4**: Updated Basin Geometry Viewer with shared imports
+- **Phase 5**: Archived old files, updated documentation
 
-- Unify dashboards into a single multi-tab application
-- Provide a single deployment unit (one port, one process)
-- Share common components (search, page lookup, basin selectors)
-- Reduce code duplication across visualization scripts
+**Results**: 5 dashboards → 3 dashboards, 5 ports → 3 ports, shared component library established.
 
-See `NEXT-SESSION-VIZ-CONSOLIDATION.md` for assessment plan.
+See `VIZ-CONSOLIDATION-PLAN.md` for full implementation details.
 
 ---
 

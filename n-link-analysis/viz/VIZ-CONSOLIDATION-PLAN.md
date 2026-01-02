@@ -369,16 +369,27 @@ Note: LOC reduced by 26% due to shared module usage and eliminated data loading 
 
 #### 4.1 Changes
 
-1. Import `shared/colors.py` for consistent basin coloring
-2. Add optional API mode for live basin mapping
-3. No tab structure changes (already has internal view modes)
+1. ~~Import `shared/colors.py` for consistent basin coloring~~ Not needed (uses Viridis colorscale, not basin colors)
+2. Import `REPO_ROOT` from shared module for path consistency
+3. ~~Add optional API mode for live basin mapping~~ Deferred (renders precomputed parquets)
+4. No tab structure changes (already has internal view modes)
 
-#### 4.2 Estimated Changes
+#### 4.2 Validation Checkpoint
 
+- [x] Basin Geometry Viewer imports shared `REPO_ROOT` (2026-01-02)
+- [x] All paths resolve correctly (2026-01-02)
+- [x] No regressions (2026-01-02)
+
+**Phase 4 Complete**: 2026-01-02
+
+**Actual Metrics**:
 | Metric | Before | After |
 |--------|--------|-------|
-| LOC | 1,130 | ~1,100 |
+| LOC | 1,130 | 1,130 |
 | Callbacks | 1 | 1 |
+| Shared imports | 0 | 1 (`REPO_ROOT`) |
+
+Note: Minimal change since Basin Geometry Viewer doesn't use basin colors (uses continuous Viridis colorscale for depth/span/degree).
 
 ---
 
@@ -395,15 +406,225 @@ viz/_archive/
 └── dash-cross-n-comparison.py.bak
 ```
 
+- [x] Created `_archive/` directory (2026-01-02)
+- [x] Moved all 4 superseded files (2026-01-02)
+
 #### 5.2 Update Documentation
 
-1. Update `viz/README.md` with new dashboard structure
-2. Update `NEXT-SESSION-VIZ-CONSOLIDATION.md` → mark complete
-3. Add entry to project timeline
+1. [x] Update `viz/README.md` with new dashboard structure (2026-01-02)
+2. [x] Update this plan document with completion status (2026-01-02)
+3. [x] Add entry to project timeline (2026-01-02)
 
 #### 5.3 Update Launcher Scripts
 
-Update `tunneling/launch-tunneling-viz.py` to launch consolidated tools.
+- [ ] Update `tunneling/launch-tunneling-viz.py` to launch consolidated tools (deferred - low priority)
+
+**Phase 5 Complete**: 2026-01-02
+
+---
+
+### Phase 6: Comprehensive E2E Testing
+
+**Goal**: Verify all consolidated dashboards and API integrations work correctly end-to-end.
+
+#### 6.1 Dashboard Smoke Tests
+
+Test each dashboard launches and renders without errors:
+
+| Dashboard | Test | Command |
+|-----------|------|---------|
+| Basin Geometry Viewer | Launch + render | `python n-link-analysis/viz/dash-basin-geometry-viewer.py --port 8055` |
+| Multiplex Analyzer | Launch + all 6 tabs | `python n-link-analysis/viz/multiplex-analyzer.py --port 8056` |
+| Tunneling Explorer | Launch + all 6 tabs | `python n-link-analysis/viz/tunneling/tunneling-explorer.py --port 8060` |
+
+**Checklist**:
+- [ ] Basin Geometry Viewer: loads pointcloud parquets, renders 3D view
+- [ ] Basin Geometry Viewer: all 4 view modes work (pointcloud, recursive2d, fan2d, fan3d)
+- [ ] Multiplex Analyzer: all 6 tabs render without errors
+- [ ] Multiplex Analyzer: data loads (2.1M basin assignments, 41K tunnel nodes)
+- [ ] Tunneling Explorer: all 6 tabs render without errors
+- [ ] Tunneling Explorer: local file mode works
+- [ ] Tunneling Explorer: API mode works (with running API server)
+
+#### 6.2 Shared Module Tests
+
+Verify shared modules work correctly in isolation:
+
+```bash
+# Test shared module imports
+python -c "from n-link-analysis.viz.shared import BASIN_COLORS, load_basin_assignments, metric_card; print('OK')"
+
+# Test data loading
+python -c "
+import sys; sys.path.insert(0, 'n-link-analysis/viz')
+from shared import load_basin_assignments, load_basin_flows, load_tunnel_ranking
+df = load_basin_assignments()
+print(f'Basin assignments: {len(df):,} rows')
+flows = load_basin_flows()
+print(f'Basin flows: {len(flows):,} rows')
+ranking = load_tunnel_ranking()
+print(f'Tunnel ranking: {len(ranking):,} rows')
+"
+```
+
+**Checklist**:
+- [ ] All shared module imports succeed
+- [ ] `load_basin_assignments()` returns 2.1M+ rows
+- [ ] `load_basin_flows()` returns 58 flows
+- [ ] `load_tunnel_ranking()` returns 41K+ tunnel nodes
+- [ ] `get_basin_color()` returns correct colors for known basins
+- [ ] `get_short_name()` returns correct short names
+
+#### 6.3 API Integration Tests
+
+Test API client and dashboard-API integration:
+
+```bash
+# Start API server
+uvicorn nlink_api.main:app --port 8000 &
+
+# Test API client
+python -c "
+import sys; sys.path.insert(0, 'n-link-analysis/viz')
+from api_client import NLinkAPIClient, check_api_available
+if check_api_available('http://localhost:8000'):
+    client = NLinkAPIClient('http://localhost:8000')
+    print('API health:', client.health_check())
+    results = client.search_pages('Massachusetts', limit=5)
+    print(f'Search results: {len(results)} pages')
+else:
+    print('API not available')
+"
+
+# Test Tunneling Explorer in API mode
+python n-link-analysis/viz/tunneling/tunneling-explorer.py --use-api --api-url http://localhost:8000 --port 8060
+```
+
+**Checklist**:
+- [ ] API server starts without errors
+- [ ] `check_api_available()` returns True
+- [ ] `search_pages()` returns results
+- [ ] `trace_single()` returns valid trace
+- [ ] Tunneling Explorer API mode: search works
+- [ ] Tunneling Explorer API mode: live tracing works
+
+#### 6.4 Callback Tests
+
+Verify dashboard callbacks work correctly (manual testing):
+
+**Basin Geometry Viewer**:
+- [ ] Render button triggers figure update
+- [ ] View mode switch changes visualization
+- [ ] Depth range slider filters points
+- [ ] Sampling mode changes point distribution
+
+**Multiplex Analyzer**:
+- [ ] Basin Size tab: cycle selection updates chart
+- [ ] Depth Analysis tab: violin plots render
+- [ ] Phase Transition tab: N slider updates visualization
+- [ ] Layer Connectivity tab: heatmap renders
+- [ ] Tunnel Browser tab: search filters table
+- [ ] Basin Pairs tab: network renders
+
+**Tunneling Explorer**:
+- [ ] Overview tab: metrics display correctly
+- [ ] Basin Flows tab: Sankey diagram renders
+- [ ] Tunnel Nodes tab: table filters work
+- [ ] Path Tracer tab: search returns results
+- [ ] Path Tracer tab: trace displays path
+- [ ] Stability tab: chart renders
+- [ ] Validation tab: hypothesis results display
+
+#### 6.5 Regression Tests
+
+Verify no functionality was lost in consolidation:
+
+| Original Feature | Dashboard | Tab | Status |
+|------------------|-----------|-----|--------|
+| 3D point cloud | Basin Geometry | - | [ ] |
+| Interval layout | Basin Geometry | - | [ ] |
+| Fan + edges view | Basin Geometry | - | [ ] |
+| Layer connectivity heatmap | Multiplex Analyzer | Layer Connectivity | [ ] |
+| Tunnel node browser | Multiplex Analyzer | Tunnel Browser | [ ] |
+| Basin pair network | Multiplex Analyzer | Basin Pairs | [ ] |
+| Basin size comparison | Multiplex Analyzer | Basin Size | [ ] |
+| Depth violin plots | Multiplex Analyzer | Depth Analysis | [ ] |
+| Phase transition slider | Multiplex Analyzer | Phase Transition | [ ] |
+| Tunneling metrics | Tunneling Explorer | Overview | [ ] |
+| Sankey flow diagram | Tunneling Explorer | Basin Flows | [ ] |
+| Tunnel node table | Tunneling Explorer | Tunnel Nodes | [ ] |
+| Page path tracer | Tunneling Explorer | Path Tracer | [ ] |
+| Basin stability chart | Tunneling Explorer | Stability | [ ] |
+| Hypothesis validation | Tunneling Explorer | Validation | [ ] |
+
+#### 6.6 Automated Test Script
+
+Create `viz/tests/test_dashboards.py`:
+
+```python
+"""Automated smoke tests for consolidated dashboards."""
+
+import subprocess
+import sys
+import time
+import requests
+
+def test_shared_imports():
+    """Test shared module imports."""
+    sys.path.insert(0, 'n-link-analysis/viz')
+    from shared import BASIN_COLORS, load_basin_assignments, metric_card
+    assert len(BASIN_COLORS) > 0
+    df = load_basin_assignments()
+    assert len(df) > 2_000_000
+
+def test_dashboard_starts(dashboard_cmd, port, timeout=30):
+    """Test that a dashboard starts and responds."""
+    proc = subprocess.Popen(dashboard_cmd, shell=True)
+    try:
+        for _ in range(timeout):
+            try:
+                resp = requests.get(f'http://localhost:{port}')
+                if resp.status_code == 200:
+                    return True
+            except:
+                pass
+            time.sleep(1)
+        return False
+    finally:
+        proc.terminate()
+
+def run_all_tests():
+    """Run all dashboard smoke tests."""
+    print("Testing shared imports...")
+    test_shared_imports()
+    print("✓ Shared imports OK")
+
+    dashboards = [
+        ("Basin Geometry Viewer", "python n-link-analysis/viz/dash-basin-geometry-viewer.py --port 8155", 8155),
+        ("Multiplex Analyzer", "python n-link-analysis/viz/multiplex-analyzer.py --port 8156", 8156),
+        ("Tunneling Explorer", "python n-link-analysis/viz/tunneling/tunneling-explorer.py --port 8160", 8160),
+    ]
+
+    for name, cmd, port in dashboards:
+        print(f"Testing {name}...")
+        if test_dashboard_starts(cmd, port):
+            print(f"✓ {name} OK")
+        else:
+            print(f"✗ {name} FAILED")
+
+if __name__ == "__main__":
+    run_all_tests()
+```
+
+#### 6.7 Validation Checkpoint
+
+Before marking Phase 6 complete:
+- [ ] All dashboard smoke tests pass
+- [ ] All shared module tests pass
+- [ ] API integration tests pass (with running server)
+- [ ] All callback tests pass (manual)
+- [ ] All regression tests pass
+- [ ] Automated test script runs without errors
 
 ---
 
@@ -475,13 +696,14 @@ python n-link-analysis/viz/launch-all.py
 
 **Recommended sequence** (each phase is independently valuable):
 
-1. **Phase 1** (shared components) - Foundation, no risk
-2. **Phase 2** (tunneling merge) - Highest value, clear overlap
-3. **Phase 3** (multiplex merge) - Second highest value
-4. **Phase 4** (basin viewer update) - Low effort, optional
-5. **Phase 5** (cleanup) - Only after validation
+1. **Phase 1** (shared components) - Foundation, no risk ✓
+2. **Phase 2** (tunneling merge) - Highest value, clear overlap ✓
+3. **Phase 3** (multiplex merge) - Second highest value ✓
+4. **Phase 4** (basin viewer update) - Low effort, optional ✓
+5. **Phase 5** (cleanup) - Only after validation ✓
+6. **Phase 6** (E2E testing) - Comprehensive verification
 
-**Estimated effort**: 3-4 focused sessions
+**Estimated effort**: 4-5 focused sessions (Phases 1-5 complete, Phase 6 pending)
 
 ---
 

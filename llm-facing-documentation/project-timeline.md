@@ -18,6 +18,43 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Visualization Consolidation Complete (Phases 4-5)
+
+**Completed**:
+- **Phase 4**: Updated Basin Geometry Viewer to use shared `REPO_ROOT` import
+  - Assessed integration needs: viewer uses Viridis colorscale (not basin colors), so `shared/colors.py` not needed
+  - Minimal change: standardized path handling via shared module
+- **Phase 5**: Cleanup and documentation
+  - Archived 4 superseded files to `viz/_archive/`:
+    - `dash-multiplex-explorer.py.bak`
+    - `dash-cross-n-comparison.py.bak`
+    - `tunneling-dashboard.py.bak`
+    - `path-tracer-tool.py.bak`
+  - Updated `viz/README.md` with consolidated dashboard structure
+  - Updated `VIZ-CONSOLIDATION-PLAN.md` with completion status
+
+**Final Consolidation Results**:
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Dashboards | 5 | 3 | -40% |
+| Ports | 5 (8055-8062) | 3 (8055, 8056, 8060) | -40% |
+| Shared modules | 0 | 4 (colors, loaders, components, __init__) | +4 |
+| Archived files | 0 | 4 | +4 |
+
+**Dashboard Mapping**:
+- Basin Geometry Viewer (8055) - standalone, uses shared `REPO_ROOT`
+- Multiplex Analyzer (8056) - merged from Multiplex Explorer + Cross-N Comparison
+- Tunneling Explorer (8060) - merged from Tunneling Dashboard + Path Tracer
+
+**Decisions Made**:
+- Basin Geometry Viewer kept minimal integration (only `REPO_ROOT`) since it uses continuous colorscale, not categorical basin colors
+- Deferred launcher script updates as low priority
+
+**Next Steps**:
+- Phase 6: Comprehensive E2E testing (added to plan with detailed checklists)
+
+---
+
 ### Session: 2026-01-02 - Visualization Consolidation Phase 3 Complete
 
 **Completed**:

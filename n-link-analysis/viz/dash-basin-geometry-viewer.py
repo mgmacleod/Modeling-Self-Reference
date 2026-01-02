@@ -44,8 +44,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import pyarrow.parquet as pq
 
+from shared import REPO_ROOT
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+
 PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
 ANALYSIS_DIR = PROCESSED_DIR / "analysis"
 

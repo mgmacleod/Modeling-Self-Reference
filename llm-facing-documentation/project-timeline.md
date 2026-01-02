@@ -18,6 +18,40 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Visualization Tool API Integration
+
+**Completed**:
+- Integrated Path Tracer Tool (`n-link-analysis/viz/tunneling/path-tracer-tool.py`) with N-Link API
+- Added `--use-api` flag for API mode with live tracing capability
+- Added `NLinkAPIClient` class for API communication
+- Implemented `trace_page_live()` for real-time N-link tracing across all N values (3-10)
+- Fixed API route ordering bug: `/pages/search` now correctly precedes `/pages/{page_id}` to avoid route collision
+
+**New Features**:
+- **API Mode**: Search all 17.9M Wikipedia pages (vs 41K tunnel nodes in local mode)
+- **Live Tracing**: Trace any page in real-time, not just known tunnel nodes
+- **Mode Indicator**: UI badge shows current mode (API vs Local Files)
+
+**Usage**:
+```bash
+# Local file mode (default) - searches tunnel nodes only
+python n-link-analysis/viz/tunneling/path-tracer-tool.py
+
+# API mode - full search and live tracing
+python n-link-analysis/viz/tunneling/path-tracer-tool.py --use-api --api-url http://localhost:8000
+```
+
+**Decisions Made**:
+- Path Tracer chosen as first API integration target due to clear benefits (expanded search, live tracing)
+- Hybrid approach: local data for known tunnel nodes, API fallback for live tracing
+- Non-breaking change: tool works both with and without API
+
+**Architecture Impact**:
+- Established pattern for API integration in visualization tools
+- `NLinkAPIClient` can be extracted to shared module for other viz tools
+
+---
+
 ### Session: 2026-01-02 - Human-Facing API Documentation
 
 **Completed**:

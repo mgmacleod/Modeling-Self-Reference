@@ -42,21 +42,7 @@ async def validate_data(
     return service.validate()
 
 
-@router.get("/pages/{page_id}")
-async def get_page_by_id(
-    page_id: int,
-    service: DataService = Depends(get_data_service),
-) -> dict[str, Any]:
-    """Look up a page by its ID.
-
-    Returns page metadata including title, namespace, and redirect status.
-    """
-    page = service.lookup_page_by_id(page_id)
-    if page is None:
-        raise HTTPException(status_code=404, detail=f"Page not found: {page_id}")
-    return page
-
-
+# NOTE: /pages/search must come BEFORE /pages/{page_id} to avoid route collision
 @router.get("/pages/search")
 async def search_pages(
     q: str = Query(..., min_length=1, description="Search query (case-insensitive contains)"),
@@ -73,3 +59,18 @@ async def search_pages(
         "results": results,
         "count": len(results),
     }
+
+
+@router.get("/pages/{page_id}")
+async def get_page_by_id(
+    page_id: int,
+    service: DataService = Depends(get_data_service),
+) -> dict[str, Any]:
+    """Look up a page by its ID.
+
+    Returns page metadata including title, namespace, and redirect status.
+    """
+    page = service.lookup_page_by_id(page_id)
+    if page is None:
+        raise HTTPException(status_code=404, detail=f"Page not found: {page_id}")
+    return page

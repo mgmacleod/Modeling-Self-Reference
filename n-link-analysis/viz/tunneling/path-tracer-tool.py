@@ -6,9 +6,14 @@ A Dash application that allows users to:
 2. View its basin membership across all N values (3-10)
 3. Visualize the tunneling timeline
 4. See depth and entry point information
+5. [API Mode] Perform live N-link traces on any page
 
 Usage:
+    # Local file mode (default)
     python path-tracer-tool.py [--port PORT]
+
+    # API mode (connects to N-Link API server)
+    python path-tracer-tool.py --use-api [--api-url http://localhost:8000]
 
 The tracer will be available at http://localhost:PORT
 """
@@ -33,8 +38,98 @@ except ImportError:
     print("Install with: pip install dash dash-bootstrap-components")
     exit(1)
 
+try:
+    import httpx
+    HTTPX_AVAILABLE = True
+except ImportError:
+    HTTPX_AVAILABLE = False
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MULTIPLEX_DIR = REPO_ROOT / "data" / "wikipedia" / "processed" / "multiplex"
+
+# Global configuration (set by CLI args)
+USE_API = False
+API_URL = "http://localhost:8000"
+
+
+# ============================================================================
+# API Client
+# ============================================================================
+
+class NLinkAPIClient:
+    """Client for N-Link Basin Analysis API."""
+
+    def __init__(self, base_url: str = "http://localhost:8000"):
+        self.base_url = base_url.rstrip("/")
+        self._client = None
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = httpx.Client(base_url=self.base_url, timeout=30.0)
+        return self._client
+
+    def health_check(self) -> bool:
+        """Check if API is available."""
+        try:
+            resp = self.client.get("/api/v1/health")
+            return resp.status_code == 200
+        except Exception:
+            return False
+
+    def search_pages(self, query: str, limit: int = 20) -> list[dict]:
+        """Search for pages by title."""
+        try:
+            resp = self.client.get(
+                "/api/v1/data/pages/search",
+                params={"q": query, "limit": limit}
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                return data.get("results", [])
+            return []
+        except Exception as e:
+            print(f"API search error: {e}")
+            return []
+
+    def get_page(self, page_id: int) -> Optional[dict]:
+        """Get page by ID."""
+        try:
+            resp = self.client.get(f"/api/v1/data/pages/{page_id}")
+            if resp.status_code == 200:
+                return resp.json()
+            return None
+        except Exception:
+            return None
+
+    def trace_single(
+        self,
+        n: int,
+        start_title: Optional[str] = None,
+        start_page_id: Optional[int] = None,
+        max_steps: int = 1000,
+    ) -> Optional[dict]:
+        """Trace a single N-link path."""
+        try:
+            params = {"n": n, "max_steps": max_steps, "resolve_titles": True}
+            if start_title:
+                params["start_title"] = start_title
+            elif start_page_id:
+                params["start_page_id"] = start_page_id
+            else:
+                return None
+
+            resp = self.client.get("/api/v1/traces/single", params=params)
+            if resp.status_code == 200:
+                return resp.json()
+            return None
+        except Exception as e:
+            print(f"API trace error: {e}")
+            return None
+
+
+# Global API client instance (initialized when --use-api is set)
+api_client: Optional[NLinkAPIClient] = None
 
 # Basin colors
 BASIN_COLORS = {
@@ -123,7 +218,16 @@ print(f"  Loaded {len(multiplex_df):,} multiplex assignments")
 
 
 def search_pages(query: str, limit: int = 20) -> list[dict]:
-    """Search for pages by title or ID."""
+    """Search for pages by title or ID.
+
+    When USE_API is True, uses the API for search (searches all pages).
+    Otherwise, uses local tunnel node data (only searches known tunnel nodes).
+    """
+    # Use API if available
+    if USE_API and api_client is not None:
+        return api_client.search_pages(query, limit=limit)
+
+    # Fall back to local data
     results = []
     query_lower = query.lower().strip()
 
@@ -152,6 +256,89 @@ def search_pages(query: str, limit: int = 20) -> list[dict]:
                 break
 
     return results
+
+
+def trace_page_live(page_id: int, title: str) -> Optional[dict]:
+    """Trace a page live across all N values using the API.
+
+    Returns a trace dict similar to get_page_trace but computed on-the-fly.
+    """
+    if not USE_API or api_client is None:
+        return None
+
+    trace = {
+        "page_id": page_id,
+        "title": title,
+        "tunnel_score": 0,
+        "tunnel_type": "live_trace",
+        "n_basins_bridged": 0,
+        "n_transitions": 0,
+        "mean_depth": 0,
+        "basin_list": "",
+        "stable_ranges": "",
+        "n_values": {},
+        "live_traces": {},  # Store full trace paths
+    }
+
+    seen_basins = set()
+    depths = []
+    prev_cycle = None
+    transitions = 0
+
+    # Trace for each N value
+    for n in range(3, 11):
+        result = api_client.trace_single(n=n, start_page_id=page_id)
+        if result is None:
+            trace["n_values"][n] = {
+                "basin": "",
+                "basin_short": "N/A",
+                "depth": None,
+                "color": "#cccccc",
+                "terminal_type": "ERROR",
+            }
+            continue
+
+        terminal_type = result.get("terminal_type", "UNKNOWN")
+        steps = result.get("steps", 0)
+        cycle_titles = result.get("cycle_titles", [])
+
+        # Build basin key from cycle
+        if terminal_type == "CYCLE" and cycle_titles:
+            basin_key = "__".join(sorted(cycle_titles[:2]))
+        else:
+            basin_key = f"_{terminal_type}_"
+
+        seen_basins.add(basin_key)
+        depths.append(steps)
+
+        if prev_cycle is not None and basin_key != prev_cycle:
+            transitions += 1
+        prev_cycle = basin_key
+
+        trace["n_values"][n] = {
+            "basin": basin_key,
+            "basin_short": get_short_name(basin_key) if terminal_type == "CYCLE" else terminal_type,
+            "depth": steps,
+            "color": get_basin_color(basin_key) if terminal_type == "CYCLE" else "#cccccc",
+            "terminal_type": terminal_type,
+        }
+
+        # Store full trace for path visualization
+        trace["live_traces"][n] = {
+            "path": result.get("path", []),
+            "path_titles": result.get("path_titles", []),
+            "cycle_start_index": result.get("cycle_start_index"),
+            "cycle_len": result.get("cycle_len"),
+        }
+
+    # Compute summary stats
+    trace["n_basins_bridged"] = len(seen_basins)
+    trace["n_transitions"] = transitions
+    trace["mean_depth"] = sum(depths) / len(depths) if depths else 0
+    trace["tunnel_score"] = transitions / 7.0  # Normalized score (max 7 transitions for N=3-10)
+    trace["basin_list"] = ", ".join(sorted(seen_basins))
+
+    return trace
 
 
 def get_page_trace(page_id: int) -> Optional[dict]:
@@ -314,70 +501,89 @@ app = dash.Dash(
     title="Path Tracer"
 )
 
-app.layout = dbc.Container([
-    # Header
-    dbc.Row([
-        dbc.Col([
-            html.H1("Tunnel Path Tracer", className="mb-2"),
-            html.P(
-                "Explore how Wikipedia pages move between basins across N values",
-                className="text-muted"
-            ),
-        ])
-    ], className="mb-4"),
+def get_mode_badge():
+    """Return badge component showing current mode."""
+    if USE_API:
+        return dbc.Badge("API Mode", color="success", className="ms-2")
+    return dbc.Badge("Local Files", color="secondary", className="ms-2")
 
-    # Search Row
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([
-                dbc.CardBody([
-                    dbc.Row([
-                        dbc.Col([
-                            dbc.Label("Search for a Wikipedia page:"),
-                            dbc.InputGroup([
-                                dbc.Input(
-                                    id="search-input",
-                                    type="text",
-                                    placeholder="Enter page title or ID...",
-                                    debounce=True,
-                                ),
-                                dbc.Button("Trace", id="trace-btn", color="primary"),
-                            ]),
-                        ], md=8),
-                        dbc.Col([
-                            dbc.Label("Quick examples:"),
-                            dbc.ButtonGroup([
-                                dbc.Button("Kidder_family", id="ex1-btn", color="secondary", size="sm", className="me-1"),
-                                dbc.Button("Massachusetts", id="ex2-btn", color="secondary", size="sm"),
-                            ]),
-                        ], md=4),
-                    ]),
+
+def get_mode_description():
+    """Return description of current mode."""
+    if USE_API:
+        return "Connected to N-Link API — search all 17.9M pages and trace any page live"
+    return "Using local tunnel node data — search limited to 41K known tunnel nodes"
+
+
+def create_layout():
+    """Create app layout (called after args are parsed)."""
+    return dbc.Container([
+        # Header
+        dbc.Row([
+            dbc.Col([
+                html.H1([
+                    "Tunnel Path Tracer",
+                    get_mode_badge(),
+                ], className="mb-2"),
+                html.P(
+                    get_mode_description(),
+                    className="text-muted"
+                ),
+            ])
+        ], className="mb-4"),
+
+        # Search Row
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Search for a Wikipedia page:"),
+                                dbc.InputGroup([
+                                    dbc.Input(
+                                        id="search-input",
+                                        type="text",
+                                        placeholder="Enter page title or ID...",
+                                        debounce=True,
+                                    ),
+                                    dbc.Button("Trace", id="trace-btn", color="primary"),
+                                ]),
+                            ], md=8),
+                            dbc.Col([
+                                dbc.Label("Quick examples:"),
+                                dbc.ButtonGroup([
+                                    dbc.Button("Kidder_family", id="ex1-btn", color="secondary", size="sm", className="me-1"),
+                                    dbc.Button("Massachusetts", id="ex2-btn", color="secondary", size="sm"),
+                                ]),
+                            ], md=4),
+                        ]),
+                    ])
                 ])
             ])
-        ])
-    ], className="mb-4"),
+        ], className="mb-4"),
 
-    # Search Results
-    dbc.Row([
-        dbc.Col([
-            html.Div(id="search-results")
-        ])
-    ], className="mb-4"),
+        # Search Results
+        dbc.Row([
+            dbc.Col([
+                html.Div(id="search-results")
+            ])
+        ], className="mb-4"),
 
-    # Trace Display
-    dbc.Row([
-        dbc.Col([
-            html.Div(id="trace-display")
-        ])
-    ]),
+        # Trace Display
+        dbc.Row([
+            dbc.Col([
+                html.Div(id="trace-display")
+            ])
+        ]),
 
-    # Footer
-    html.Hr(),
-    html.Footer([
-        html.P("Wikipedia N-Link Rule Analysis | Path Tracer Tool", className="text-muted text-center")
-    ]),
+        # Footer
+        html.Hr(),
+        html.Footer([
+            html.P("Wikipedia N-Link Rule Analysis | Path Tracer Tool", className="text-muted text-center")
+        ]),
 
-], fluid=True, className="p-4")
+    ], fluid=True, className="p-4")
 
 
 # ============================================================================
@@ -435,11 +641,13 @@ def show_trace(trace_clicks, ex1_clicks, ex2_clicks, search_value):
     # Handle example buttons
     if trigger_id == "ex1-btn":
         page_id = 14758846  # Kidder_family
+        title = "Kidder_family"
     elif trigger_id == "ex2-btn":
         # Search for Massachusetts
         results = search_pages("massachusetts")
         if results:
             page_id = results[0]["page_id"]
+            title = results[0].get("title", f"page_{page_id}")
         else:
             return dbc.Alert("Massachusetts not found", color="warning")
     else:
@@ -451,12 +659,20 @@ def show_trace(trace_clicks, ex1_clicks, ex2_clicks, search_value):
         if not results:
             return dbc.Alert("No matching page found", color="warning")
         page_id = results[0]["page_id"]
+        title = results[0].get("title", f"page_{page_id}")
 
-    # Get trace
+    # Get trace - try local data first, then API live trace
     trace = get_page_trace(page_id)
 
+    if not trace and USE_API:
+        # Try live tracing via API
+        trace = trace_page_live(page_id, title)
+
     if not trace:
-        return dbc.Alert(f"Page ID {page_id} not found in tunnel nodes", color="warning")
+        msg = f"Page ID {page_id} not found"
+        if not USE_API:
+            msg += " in tunnel nodes. Enable --use-api for live tracing of any page."
+        return dbc.Alert(msg, color="warning")
 
     # Build display
     return dbc.Card([
@@ -542,21 +758,67 @@ def show_trace(trace_clicks, ex1_clicks, ex2_clicks, search_value):
 # ============================================================================
 
 def main():
+    global USE_API, API_URL, api_client
+
     parser = argparse.ArgumentParser(description="Run path tracer tool")
     parser.add_argument("--port", type=int, default=8061, help="Port to run on")
     parser.add_argument("--debug", action="store_true", help="Run in debug mode")
+    parser.add_argument(
+        "--use-api",
+        action="store_true",
+        help="Use N-Link API for page search and live tracing (requires API server running)"
+    )
+    parser.add_argument(
+        "--api-url",
+        type=str,
+        default="http://localhost:8000",
+        help="N-Link API base URL (default: http://localhost:8000)"
+    )
     args = parser.parse_args()
 
     print("=" * 70)
     print("Tunnel Path Tracer Tool")
     print("=" * 70)
     print()
+
+    # Configure API mode
+    if args.use_api:
+        if not HTTPX_AVAILABLE:
+            print("Error: httpx library required for API mode")
+            print("Install with: pip install httpx")
+            return 1
+
+        USE_API = True
+        API_URL = args.api_url
+        api_client = NLinkAPIClient(API_URL)
+
+        print(f"Mode: API (connecting to {API_URL})")
+
+        # Test API connection
+        if api_client.health_check():
+            print("  API connection: OK")
+        else:
+            print("  API connection: FAILED - is the server running?")
+            print(f"  Start with: uvicorn nlink_api.main:app --port 8000")
+            return 1
+    else:
+        print("Mode: Local files")
+        print(f"  Loaded {len(tunnel_df):,} tunnel nodes")
+        print(f"  Loaded {len(multiplex_df):,} multiplex assignments")
+        if tunnel_df.empty:
+            print("  Warning: No tunnel data found. Run with --use-api for full search.")
+
+    print()
     print(f"Starting server on http://localhost:{args.port}")
     print("Press Ctrl+C to stop")
     print()
 
+    # Set layout after globals are configured
+    app.layout = create_layout()
+
     app.run(debug=args.debug, port=args.port)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

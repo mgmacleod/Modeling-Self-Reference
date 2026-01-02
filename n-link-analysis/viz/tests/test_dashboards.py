@@ -52,7 +52,6 @@ def test_shared_imports():
     assert callable(hex_to_rgba)
 
     print("  ✓ All shared imports successful")
-    return True
 
 
 def test_data_loaders():
@@ -73,11 +72,13 @@ def test_data_loaders():
     assert len(ranking) > 40_000, f"Tunnel ranking: expected >40K rows, got {len(ranking):,}"
     print(f"  ✓ Tunnel ranking: {len(ranking):,} rows")
 
-    return True
 
+def _check_dashboard_starts(name: str, command: str, port: int, timeout: int = 20) -> bool:
+    """Check that a dashboard starts and responds with HTTP 200.
 
-def test_dashboard_starts(name: str, command: str, port: int, timeout: int = 20) -> bool:
-    """Test that a dashboard starts and responds with HTTP 200."""
+    Note: Named with underscore prefix to avoid pytest auto-discovery.
+    Called by run_all_tests() when running as standalone script.
+    """
     import requests
 
     print(f"Testing {name} (port {port})...")
@@ -147,8 +148,6 @@ def test_api_client():
     else:
         print(f"  (API server not running - skipping live tests)")
 
-    return True
-
 
 def run_all_tests():
     """Run all dashboard smoke tests."""
@@ -190,7 +189,7 @@ def run_all_tests():
 
     for name, cmd, port in dashboards:
         try:
-            results[name] = test_dashboard_starts(name, cmd, port, timeout=20)
+            results[name] = _check_dashboard_starts(name, cmd, port, timeout=20)
         except Exception as e:
             print(f"  ✗ {name} test failed: {e}")
             results[name] = False

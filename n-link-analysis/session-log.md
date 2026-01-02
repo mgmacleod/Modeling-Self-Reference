@@ -8,6 +8,25 @@
 
 ---
 
+### 2026-01-02 - Test Suite Fix (Pytest Compatibility)
+
+**What was tried**:
+- Fix pytest fixture error in `viz/tests/test_dashboards.py`
+
+**What worked**:
+- Renamed `test_dashboard_starts(name, command, port, timeout)` → `_check_dashboard_starts(...)`
+- Underscore prefix prevents pytest auto-discovery (function has parameters, not fixtures)
+- Function still called by `run_all_tests()` when running as standalone script
+
+**Validation**:
+- All 3 pytest-compatible tests pass: `test_shared_imports`, `test_data_loaders`, `test_api_client`
+- Standalone script execution still works via `python test_dashboards.py`
+
+**Files modified**:
+- `n-link-analysis/viz/tests/test_dashboards.py`
+
+---
+
 ### 2026-01-02 (Night 8) - Phase 6: Pipeline Integration Complete
 
 **What was tried**:

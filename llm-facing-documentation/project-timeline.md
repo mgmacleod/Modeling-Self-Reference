@@ -18,6 +18,32 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - New Machine Initialization & Test Fix
+
+**Completed**:
+- Initialized workspace from fresh git clone on new machine
+- Created Python 3.12 virtual environment, installed all dependencies
+- Downloaded dataset from Hugging Face (`mgmacleod/wikidata1`, 1.8 GB, 73 files)
+- Created symlinks from HF cache (`~/.cache/wikipedia-nlink-basins/`) to `data/wikipedia/processed/`
+- Verified both data sources work: `--data-source local` and `--data-source huggingface`
+- Fixed pytest fixture error in `n-link-analysis/viz/tests/test_dashboards.py`
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Rename `test_dashboard_starts()` → `_check_dashboard_starts()` | Function has parameters (name, command, port) that pytest interprets as fixtures; underscore prefix prevents auto-discovery while preserving standalone script functionality |
+
+**Validation**:
+| Test Suite | Result |
+|------------|--------|
+| API tests (`nlink_api/tests/`) | 90/90 passed |
+| Viz tests (`n-link-analysis/viz/tests/`) | 3/3 passed |
+
+**Files Modified**:
+- `n-link-analysis/viz/tests/test_dashboards.py`
+
+---
+
 ### Session: 2026-01-02 - Docker-Based Deployment Infrastructure
 
 **Completed**:

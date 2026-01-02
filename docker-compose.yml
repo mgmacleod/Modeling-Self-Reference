@@ -8,6 +8,15 @@
 # Prerequisites:
 #   - Data must be downloaded to ./data/wikipedia/processed/
 #   - See docker/README.md for data setup instructions
+#
+# Port Configuration:
+#   Set these environment variables to customize host ports:
+#   - NLINK_API_PORT (default: 8000)
+#   - NLINK_BASIN_PORT (default: 8055)
+#   - NLINK_MULTIPLEX_PORT (default: 8056)
+#   - NLINK_TUNNELING_PORT (default: 8060)
+#
+#   Example: NLINK_API_PORT=28000 docker-compose up
 
 services:
   # ============================================
@@ -21,7 +30,7 @@ services:
     container_name: nlink-api
     command: ["api"]
     ports:
-      - "8000:8000"
+      - "${NLINK_API_PORT:-8000}:8000"
     volumes:
       - ./data:/app/data:ro
     environment:
@@ -49,7 +58,7 @@ services:
     container_name: nlink-basin-viewer
     command: ["basin-viewer"]
     ports:
-      - "8055:8055"
+      - "${NLINK_BASIN_PORT:-8055}:8055"
     volumes:
       - ./data:/app/data:ro
     depends_on:
@@ -67,7 +76,7 @@ services:
     container_name: nlink-multiplex
     command: ["multiplex"]
     ports:
-      - "8056:8056"
+      - "${NLINK_MULTIPLEX_PORT:-8056}:8056"
     volumes:
       - ./data:/app/data:ro
     depends_on:
@@ -85,7 +94,7 @@ services:
     container_name: nlink-tunneling
     command: ["tunneling"]
     ports:
-      - "8060:8060"
+      - "${NLINK_TUNNELING_PORT:-8060}:8060"
     volumes:
       - ./data:/app/data:ro
     environment:

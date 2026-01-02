@@ -18,9 +18,9 @@ link graph under the N-link rule. Tunneling occurs when a page belongs to differ
 | Metric | Value |
 |--------|-------|
 | Pages in hyperstructure | 2,017,783 |
-| Tunnel nodes | 9,018 (0.45%) |
-| Basins analyzed | 9 |
-| Cross-basin flows | 16 |
+| Tunnel nodes (N=3-10) | 41,732 (2.1%) |
+| Basins analyzed | 15 |
+| Cross-basin flows | 58 |
 
 ### Validated Theory Predictions
 

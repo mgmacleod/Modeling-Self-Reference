@@ -28,110 +28,16 @@ Outputs
 from __future__ import annotations
 
 import argparse
-import time
 from pathlib import Path
 
-import duckdb
-import pyarrow as pa
+from data_loader import get_data_loader
+
+from _core.basin_engine import map_basin, resolve_titles_to_ids
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
-NLINK_PATH = PROCESSED_DIR / "nlink_sequences.parquet"
-PAGES_PATH = PROCESSED_DIR / "pages.parquet"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PROCESSED_DIR = REPO_ROOT.parent / "data" / "wikipedia" / "processed"
 ANALYSIS_DIR = PROCESSED_DIR / "analysis"
-
-
-def _resolve_titles_to_ids(
-    titles: list[str],
-    *,
-    namespace: int,
-    allow_redirects: bool,
-) -> dict[str, int]:
-    if not titles:
-        return {}
-    if not PAGES_PATH.exists():
-        raise FileNotFoundError(f"Missing: {PAGES_PATH}")
-
-    title_tbl = pa.table({"title": pa.array(titles, type=pa.string())})
-
-    con = duckdb.connect()
-    con.register("wanted_titles", title_tbl)
-
-    redirect_clause = "" if allow_redirects else "AND p.is_redirect = FALSE"
-    rows = con.execute(
-        f"""
-        SELECT w.title, min(p.page_id) AS page_id
-        FROM wanted_titles w
-        JOIN read_parquet('{PAGES_PATH.as_posix()}') p
-          ON p.title = w.title
-        WHERE p.namespace = {int(namespace)}
-          {redirect_clause}
-        GROUP BY w.title
-        """.strip()
-    ).fetchall()
-    con.close()
-
-    return {str(t): int(pid) for t, pid in rows}
-
-
-def _ensure_edges_table(con: duckdb.DuckDBPyConnection, *, n: int) -> None:
-    exists_row = con.execute(
-        """
-        SELECT COUNT(*)
-        FROM information_schema.tables
-        WHERE table_schema = 'main' AND table_name = 'edges'
-        """.strip()
-    ).fetchone()
-    exists = int(exists_row[0]) if exists_row is not None else 0
-
-    if exists:
-        return
-
-    if not NLINK_PATH.exists():
-        raise FileNotFoundError(f"Missing: {NLINK_PATH}")
-
-    print(f"Materializing edges table for N={n} (one-time cost)...")
-    t0 = time.time()
-
-    # Keep only defined Nth links (dst_page_id IS NOT NULL).
-    con.execute(
-        f"""
-        CREATE TABLE edges AS
-        SELECT
-            page_id::BIGINT AS src_page_id,
-            list_extract(link_sequence, {int(n)})::BIGINT AS dst_page_id
-        FROM read_parquet('{NLINK_PATH.as_posix()}')
-        WHERE list_extract(link_sequence, {int(n)}) IS NOT NULL
-        """.strip()
-    )
-
-    # An index on dst accelerates reverse expansions.
-    try:
-        con.execute("CREATE INDEX edges_dst_idx ON edges(dst_page_id)")
-    except Exception:
-        # Index creation can fail on older DuckDB builds; it will still work without it.
-        pass
-
-    dt = time.time() - t0
-    n_edges_row = con.execute("SELECT COUNT(*) FROM edges").fetchone()
-    n_edges = int(n_edges_row[0]) if n_edges_row is not None else 0
-    print(f"Edges table ready: {n_edges:,} edges in {dt:.1f}s")
-
-
-def _get_successor(con: duckdb.DuckDBPyConnection, page_id: int) -> int | None:
-    row = con.execute(
-        """
-        SELECT dst_page_id
-        FROM edges
-        WHERE src_page_id = ?
-        LIMIT 1
-        """.strip(),
-        [int(page_id)],
-    ).fetchone()
-    if row is None:
-        return None
-    return int(row[0]) if row[0] is not None else None
 
 
 def main() -> None:
@@ -197,8 +103,13 @@ def main() -> None:
     if args.n <= 0:
         raise SystemExit("--n must be >= 1")
 
-    title_to_id = _resolve_titles_to_ids(
+    # Get loader
+    loader = get_data_loader()
+
+    # Resolve titles to IDs
+    title_to_id = resolve_titles_to_ids(
         args.cycle_title,
+        loader,
         namespace=int(args.namespace),
         allow_redirects=bool(args.allow_redirects),
     )
@@ -214,107 +125,26 @@ def main() -> None:
 
     out_prefix = args.out_prefix or f"basin_from_cycle_n={int(args.n)}"
     out_layers = ANALYSIS_DIR / f"{out_prefix}_layers.tsv"
-    out_members = ANALYSIS_DIR / f"{out_prefix}_members.parquet"
+    out_members = ANALYSIS_DIR / f"{out_prefix}_members.parquet" if args.write_membership else None
 
-    db_path = ANALYSIS_DIR / f"edges_n={int(args.n)}.duckdb"
-    print(f"Using edges DB: {db_path}")
+    # Run basin mapping
+    result = map_basin(
+        loader,
+        n=int(args.n),
+        cycle_page_ids=cycle_ids,
+        max_depth=int(args.max_depth),
+        max_nodes=int(args.max_nodes),
+        log_every=int(args.log_every),
+        write_layers_tsv=out_layers,
+        write_members_parquet=out_members,
+        verbose=True,
+    )
 
-    con = duckdb.connect(str(db_path))
-    _ensure_edges_table(con, n=int(args.n))
-
-    # Quick sanity check: print successors of cycle nodes.
-    print("Cycle nodes:")
-    for pid in cycle_ids:
-        succ = _get_successor(con, pid)
-        print(f"  {pid} -> {succ}")
-
-    # Temp tables.
-    con.execute("CREATE TEMP TABLE seen(page_id BIGINT)")
-    con.execute("CREATE TEMP TABLE frontier(page_id BIGINT)")
-
-    cycle_tbl = pa.table({"page_id": pa.array(cycle_ids, type=pa.int64())})
-    con.register("cycle_tbl", cycle_tbl)
-    con.execute("INSERT INTO seen SELECT page_id FROM cycle_tbl")
-    con.execute("INSERT INTO frontier SELECT page_id FROM cycle_tbl")
-
-    # Track layer sizes.
-    layer_lines: list[str] = ["depth\tnew_nodes\ttotal_seen"]
-    total_seen_row = con.execute("SELECT COUNT(*) FROM seen").fetchone()
-    total_seen = int(total_seen_row[0]) if total_seen_row is not None else 0
-    layer_lines.append(f"0\t{len(cycle_ids)}\t{total_seen}")
-
-    max_depth = int(args.max_depth)
-    max_nodes = int(args.max_nodes)
-    log_every = max(1, int(args.log_every))
-
-    depth = 0
-    t0 = time.time()
-
-    while True:
-        if max_depth and depth >= max_depth:
-            print(f"Reached max_depth={max_depth}")
-            break
-
-        if max_nodes and total_seen >= max_nodes:
-            print(f"Reached max_nodes={max_nodes}")
-            break
-
-        depth += 1
-
-        remaining_clause = ""
-        if max_nodes:
-            remaining = max(0, max_nodes - total_seen)
-            remaining_clause = f"QUALIFY row_number() OVER (ORDER BY page_id) <= {remaining}" if remaining > 0 else "QUALIFY 1=0"
-
-        con.execute("DROP TABLE IF EXISTS new_frontier")
-        con.execute(
-            f"""
-            CREATE TEMP TABLE new_frontier AS
-            SELECT DISTINCT e.src_page_id AS page_id
-            FROM edges e
-            JOIN frontier f
-              ON e.dst_page_id = f.page_id
-            LEFT JOIN seen s
-              ON e.src_page_id = s.page_id
-            WHERE s.page_id IS NULL
-            {remaining_clause}
-            """.strip()
-        )
-
-        new_count_row = con.execute("SELECT COUNT(*) FROM new_frontier").fetchone()
-        new_count = int(new_count_row[0]) if new_count_row is not None else 0
-        if new_count == 0:
-            print("Frontier exhausted (no new nodes).")
-            break
-
-        con.execute("INSERT INTO seen SELECT page_id FROM new_frontier")
-        total_seen_row = con.execute("SELECT COUNT(*) FROM seen").fetchone()
-        total_seen = int(total_seen_row[0]) if total_seen_row is not None else 0
-
-        con.execute("DELETE FROM frontier")
-        con.execute("INSERT INTO frontier SELECT page_id FROM new_frontier")
-
-        layer_lines.append(f"{depth}\t{new_count}\t{total_seen}")
-        dt = time.time() - t0
-        rate = total_seen / max(dt, 1e-9)
-        if depth % log_every == 0:
-            print(f"depth={depth}\tnew={new_count:,}\ttotal={total_seen:,}\t(rate={rate:,.1f} nodes/sec)")
-
-    con.execute("DROP TABLE IF EXISTS frontier")
-    con.execute("DROP TABLE IF EXISTS new_frontier")
-
-    out_layers.write_text("\n".join(layer_lines), encoding="utf-8")
-    print(f"Saved layer sizes: {out_layers}")
-
-    if args.write_membership:
-        print(f"Writing membership set to: {out_members}")
-        con.execute(
-            f"""
-            COPY (SELECT page_id FROM seen) TO '{out_members.as_posix()}' (FORMAT PARQUET)
-            """.strip()
-        )
-
-    con.close()
+    print(f"\nBasin mapping complete:")
+    print(f"  Total nodes: {result.total_nodes:,}")
+    print(f"  Max depth: {result.max_depth_reached}")
+    print(f"  Stopped: {result.stopped_reason}")
+    print(f"  Elapsed: {result.elapsed_seconds:.1f}s")
 
 
 if __name__ == "__main__":

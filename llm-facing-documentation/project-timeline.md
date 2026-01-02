@@ -18,6 +18,173 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Night 7) - Phase 5: Reports & Figures API
+
+**Completed**:
+- Created `n-link-analysis/scripts/_core/dashboard_engine.py` - Trunkiness dashboard computation
+- Created `n-link-analysis/scripts/_core/report_engine.py` - Report and figure generation
+- Updated `compute-trunkiness-dashboard.py` and `render-human-report.py` to use `_core` modules
+- Updated `_core/__init__.py` to export new engines
+- Created `nlink_api/schemas/reports.py` - Pydantic request/response models
+- Created `nlink_api/services/report_service.py` - Service layer for report generation
+- Created `nlink_api/routers/reports.py` - API endpoints
+- Updated `nlink_api/main.py` to register reports router
+- Updated `nlink_api/NEXT-SESSION.md` to reflect Phase 5 completion
+
+**New Endpoints**:
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/reports/trunkiness` | POST | Generate trunkiness dashboard (sync) |
+| `/api/v1/reports/trunkiness/async` | POST | Generate trunkiness dashboard (background) |
+| `/api/v1/reports/human` | POST | Generate human-facing report (sync) |
+| `/api/v1/reports/human/async` | POST | Generate human-facing report (background) |
+| `/api/v1/reports/{task_id}` | GET | Get generation task status |
+| `/api/v1/reports/list` | GET | List available reports |
+| `/api/v1/reports/figures/{filename}` | GET | Serve figure file |
+
+**Architecture**:
+- Followed established `_core` extraction pattern from Phases 2-4
+- Explicit sync/async endpoint split (vs auto-detection in basins router)
+- Added FileResponse for serving generated PNG figures
+
+**Validation**:
+- CLI scripts verified via `--help` (both work correctly)
+- All Python files pass syntax check via `py_compile`
+- Module imports verified
+
+**Next Steps**:
+- Phase 6: Pipeline Integration (`reproduce-main-findings.py` with `--use-api` flag)
+
+---
+
+### Session: 2026-01-02 (Night 6) - Phase 4: Basin Operations API
+
+**Completed**:
+- Created `n-link-analysis/scripts/_core/basin_engine.py` - Basin mapping via reverse BFS
+- Created `n-link-analysis/scripts/_core/branch_engine.py` - Branch structure analysis
+- Updated `map-basin-from-cycle.py` and `branch-basin-analysis.py` to use `_core` modules
+- Created `nlink_api/schemas/basins.py` - Pydantic request/response models
+- Created `nlink_api/services/basin_service.py` - Service layer wrapping engine functions
+- Created `nlink_api/routers/basins.py` - API endpoints for basin operations
+- Updated `nlink_api/main.py` to register basins router
+- Updated `nlink_api/NEXT-SESSION.md` to reflect Phase 4 completion
+
+**New Endpoints**:
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/basins/map` | POST | Map basin from cycle (sync/background) |
+| `/api/v1/basins/map/{task_id}` | GET | Get mapping task status |
+| `/api/v1/basins/branches` | POST | Analyze branch structure (sync/background) |
+| `/api/v1/basins/branches/{task_id}` | GET | Get analysis task status |
+
+**Architecture**:
+- Followed established `_core` extraction pattern from Phase 2
+- Sync/background decision: max_depth ≤ 50 or max_nodes ≤ 100k → sync, otherwise background
+- Shared helper functions (`resolve_titles_to_ids`, `ensure_edges_table`) in `basin_engine.py`
+
+**Validation**:
+- CLI scripts verified via `--help` (both work correctly)
+- All Python files pass syntax check via `py_compile`
+- Module imports verified (core modules OK; API modules require FastAPI)
+
+**Next Steps**:
+- Phase 5: Reports & Figures (render-human-report.py, compute-trunkiness-dashboard.py)
+- Phase 6: Pipeline Integration (reproduce-main-findings.py --use-api)
+
+---
+
+### Session: 2026-01-02 (Night 5) - FastAPI Service Layer Foundation
+
+**Completed**:
+- Created `nlink_api/` FastAPI package with full structure
+- Implemented ThreadPoolExecutor-based background task system
+- Created routers: health, tasks, data, traces
+- Extracted trace sampling logic to `n-link-analysis/scripts/_core/trace_engine.py`
+- Refactored `sample-nlink-traces.py` to use `_core` module
+- Added FastAPI dependencies to `requirements.txt`
+
+**Architecture**:
+- New `nlink_api/` top-level package (separate from `n-link-analysis/`)
+- `_core/` pattern: Extract reusable logic from CLI scripts for API reuse
+- Background tasks via `ThreadPoolExecutor` (lightweight, no Redis/Celery)
+- Requests with `num_samples > 100` run as background tasks with progress tracking
+
+**Key Endpoints**:
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/health` | GET | Liveness check |
+| `/api/v1/status` | GET | Detailed status |
+| `/api/v1/data/source` | GET | Data source info |
+| `/api/v1/data/validate` | POST | Validate data files |
+| `/api/v1/traces/single` | GET | Trace single path |
+| `/api/v1/traces/sample` | POST | Sample traces (sync/background) |
+| `/api/v1/tasks/{id}` | GET | Task status |
+
+**Files Created**:
+| File | Purpose |
+|------|---------|
+| `nlink_api/__init__.py` | Package init |
+| `nlink_api/main.py` | FastAPI app factory |
+| `nlink_api/config.py` | Configuration |
+| `nlink_api/dependencies.py` | Dependency injection |
+| `nlink_api/tasks/manager.py` | Background task system |
+| `nlink_api/routers/*.py` | API endpoints |
+| `nlink_api/schemas/*.py` | Pydantic models |
+| `nlink_api/services/*.py` | Business logic |
+| `n-link-analysis/scripts/_core/trace_engine.py` | Extracted trace logic |
+
+**Validation**:
+- API server starts: `uvicorn nlink_api.main:app`
+- CLI script still works: `python sample-nlink-traces.py --n 5 --num 5`
+- Import successful: `from nlink_api.main import app`
+
+**Next Steps** (documented in `nlink_api/NEXT-SESSION.md`):
+- Phase 4: Extract basin engines, create `/basins/*` endpoints
+- Phase 5: Extract report engine, create `/reports/*` endpoints
+- Phase 6: Add `--use-api` option to `reproduce-main-findings.py`
+
+---
+
+### Session: 2026-01-02 (Night 4) - HuggingFace Data Pipeline Integration
+
+**Completed**:
+- Created `n-link-analysis/scripts/data_loader.py` - unified data source abstraction
+- Supports both local files and HuggingFace dataset (`mgmacleod/wikidata1`)
+- Updated core analysis scripts to use the data loader:
+  - `validate-data-dependencies.py` - now supports `--data-source huggingface`
+  - `trace-nlink-path.py` - now supports `--data-source huggingface`
+  - `sample-nlink-traces.py` - now supports `--data-source huggingface`
+- Updated documentation: `INDEX.md`, `implementation.md`
+
+**Architecture**:
+- `DataLoader` abstract base class with `LocalDataLoader` and `HuggingFaceDataLoader` implementations
+- Factory function `get_data_loader(source="local"|"huggingface")`
+- CLI integration via `add_data_source_args(parser)` and `get_data_loader_from_args(args)`
+- Environment variable support: `DATA_SOURCE`, `HF_DATASET_REPO`, `HF_CACHE_DIR`
+- HF downloads cached to `~/.cache/wikipedia-nlink-basins/`
+
+**Usage**:
+```bash
+# Local data (default)
+python n-link-analysis/scripts/validate-data-dependencies.py
+
+# HuggingFace dataset
+python n-link-analysis/scripts/validate-data-dependencies.py --data-source huggingface
+python n-link-analysis/scripts/trace-nlink-path.py --data-source huggingface --n 5
+```
+
+**Files Created/Modified**:
+| File | Change |
+|------|--------|
+| `n-link-analysis/scripts/data_loader.py` | New - unified data source abstraction |
+| `n-link-analysis/scripts/validate-data-dependencies.py` | Updated - uses data_loader |
+| `n-link-analysis/scripts/trace-nlink-path.py` | Updated - uses data_loader |
+| `n-link-analysis/scripts/sample-nlink-traces.py` | Updated - uses data_loader |
+| `n-link-analysis/INDEX.md` | Updated - documents data sources |
+| `n-link-analysis/implementation.md` | Updated - documents data loader module |
+
+---
+
 ### Session: 2026-01-02 (Night 3) - HuggingFace Dataset Validation Script
 
 **Completed**:

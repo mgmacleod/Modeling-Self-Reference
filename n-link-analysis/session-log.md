@@ -8,6 +8,32 @@
 
 ---
 
+### 2026-01-02 (Night 4) - HuggingFace Data Pipeline Integration
+
+**What was tried**:
+- Create unified data source abstraction to run analysis from HuggingFace dataset
+
+**What worked**:
+- `data_loader.py` module with `LocalDataLoader` and `HuggingFaceDataLoader`
+- Factory pattern: `get_data_loader(source="local"|"huggingface")`
+- CLI integration via `add_data_source_args()` for consistent script interface
+- Updated 3 core scripts: `validate-data-dependencies.py`, `trace-nlink-path.py`, `sample-nlink-traces.py`
+
+**Key decisions**:
+- Abstract base class pattern for extensibility
+- Environment variable support (`DATA_SOURCE`, `HF_DATASET_REPO`, `HF_CACHE_DIR`)
+- HF downloads cached to `~/.cache/wikipedia-nlink-basins/`
+
+**Files created/modified**:
+- `n-link-analysis/scripts/data_loader.py` (new)
+- `n-link-analysis/scripts/validate-data-dependencies.py` (updated)
+- `n-link-analysis/scripts/trace-nlink-path.py` (updated)
+- `n-link-analysis/scripts/sample-nlink-traces.py` (updated)
+- `n-link-analysis/INDEX.md` (updated - Data Sources section)
+- `n-link-analysis/implementation.md` (updated - Data Loader documentation)
+
+---
+
 ### 2026-01-02 (Night 3) - HuggingFace Dataset Validation Script
 
 **What was tried**:

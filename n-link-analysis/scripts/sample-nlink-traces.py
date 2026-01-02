@@ -8,6 +8,8 @@ Purpose
 Quantify how often traces end quickly in short cycles (especially 2-cycles),
 without doing full basin decomposition.
 
+Supports both local data and HuggingFace dataset sources via --data-source.
+
 Outputs
 -------
 Writes a TSV with one row per sample:
@@ -37,12 +39,12 @@ import duckdb
 import numpy as np
 import pyarrow as pa
 
+from data_loader import (
+    DataLoader,
+    add_data_source_args,
+    get_data_loader_from_args,
+)
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
-NLINK_PATH = PROCESSED_DIR / "nlink_sequences.parquet"
-PAGES_PATH = PROCESSED_DIR / "pages.parquet"
-ANALYSIS_DIR = PROCESSED_DIR / "analysis"
 
 TerminalType = Literal["HALT", "CYCLE", "MAX_STEPS"]
 
@@ -58,16 +60,17 @@ class SampleRow:
     cycle_len: int | None
 
 
-def _load_successor_arrays(n: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    if not NLINK_PATH.exists():
-        raise FileNotFoundError(f"Missing: {NLINK_PATH}")
+def _load_successor_arrays(n: int, loader: DataLoader) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    nlink_path = loader.nlink_sequences_path
+    if not nlink_path.exists():
+        raise FileNotFoundError(f"Missing: {nlink_path}")
 
     query = f"""
         SELECT
             page_id::BIGINT AS page_id,
             list_extract(link_sequence, {n})::BIGINT AS next_id,
             list_count(link_sequence)::INTEGER AS out_degree
-        FROM read_parquet('{NLINK_PATH.as_posix()}')
+        FROM read_parquet('{nlink_path.as_posix()}')
     """.strip()
 
     t0 = time.time()
@@ -195,8 +198,9 @@ def trace_once(
     return terminal, path, cycle_start
 
 
-def _resolve_titles(page_ids: Iterable[int]) -> dict[int, str]:
-    if not PAGES_PATH.exists():
+def _resolve_titles(page_ids: Iterable[int], loader: DataLoader) -> dict[int, str]:
+    pages_path = loader.pages_path
+    if not pages_path.exists():
         return {}
 
     unique_ids = sorted(set(int(x) for x in page_ids))
@@ -211,7 +215,7 @@ def _resolve_titles(page_ids: Iterable[int]) -> dict[int, str]:
     rows = con.execute(
         f"""
         SELECT p.page_id, p.title
-        FROM read_parquet('{PAGES_PATH.as_posix()}') p
+        FROM read_parquet('{pages_path.as_posix()}') p
         JOIN trace_ids t USING (page_id)
         """.strip()
     ).fetchall()
@@ -222,6 +226,7 @@ def _resolve_titles(page_ids: Iterable[int]) -> dict[int, str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sample many random N-link traces and summarize cycle statistics.")
+    add_data_source_args(parser)
     parser.add_argument("--n", type=int, default=5, help="N for fixed N-link rule (default: 5)")
     parser.add_argument("--num", type=int, default=100, help="Number of samples to draw (default: 100)")
     parser.add_argument("--seed0", type=int, default=0, help="First RNG seed (default: 0)")
@@ -247,7 +252,7 @@ def main() -> None:
         "--out",
         type=str,
         default=None,
-        help="Optional output TSV path. Default: data/wikipedia/processed/analysis/sample_traces_n=...tsv",
+        help="Optional output TSV path. Default: <analysis_dir>/sample_traces_n=...tsv",
     )
 
     args = parser.parse_args()
@@ -257,8 +262,12 @@ def main() -> None:
     if args.num <= 0:
         raise SystemExit("--num must be >= 1")
 
-    print(f"Using nlink data: {NLINK_PATH}")
-    page_ids, next_ids, out_degree = _load_successor_arrays(args.n)
+    # Get the data loader
+    loader = get_data_loader_from_args(args)
+    print(f"Data source: {loader.source_name}")
+    print(f"Using nlink data: {loader.nlink_sequences_path}")
+
+    page_ids, next_ids, out_degree = _load_successor_arrays(args.n, loader)
 
     rows: list[SampleRow] = []
     term_counts: Counter[str] = Counter()
@@ -312,8 +321,9 @@ def main() -> None:
             rate = (i + 1) / max(dt, 1e-9)
             print(f"Sampled {i+1}/{args.num} traces ({rate:.1f} traces/sec)")
 
-    ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = Path(args.out) if args.out else (ANALYSIS_DIR / f"sample_traces_n={args.n}_num={args.num}_seed0={args.seed0}.tsv")
+    analysis_dir = loader.get_analysis_output_dir()
+    analysis_dir.mkdir(parents=True, exist_ok=True)
+    out_path = Path(args.out) if args.out else (analysis_dir / f"sample_traces_n={args.n}_num={args.num}_seed0={args.seed0}.tsv")
 
     header = "seed\tstart_page_id\tterminal_type\tsteps\tpath_len\ttransient_len\tcycle_len"
     lines = [header]
@@ -353,7 +363,7 @@ def main() -> None:
             ids_to_resolve: set[int] = set()
             for cyc, _cnt in top:
                 ids_to_resolve.update(cyc)
-            titles = _resolve_titles(ids_to_resolve)
+            titles = _resolve_titles(ids_to_resolve, loader)
 
         for cyc, cnt in top:
             if args.resolve_titles and titles:

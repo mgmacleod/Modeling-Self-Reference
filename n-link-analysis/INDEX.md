@@ -78,10 +78,31 @@ These are substantial, question-scoped writeups and validation artifacts. Most o
 
 ---
 
+## Data Sources
+
+Analysis scripts support **two data sources**:
+
+### 1. Local Data (Default)
+- **Location**: `data/wikipedia/processed/`
+- **Files**: `nlink_sequences.parquet`, `pages.parquet`, `multiplex/` (pre-computed)
+- **Usage**: Default behavior, no flags needed
+
+### 2. HuggingFace Dataset
+- **Repository**: [mgmacleod/wikidata1](https://huggingface.co/datasets/mgmacleod/wikidata1)
+- **Files**: Automatically downloaded and cached to `~/.cache/wikipedia-nlink-basins/`
+- **Usage**: Add `--data-source huggingface` to any script
+
+**Environment Variables**:
+- `DATA_SOURCE`: "local" or "huggingface" (default: "local")
+- `HF_DATASET_REPO`: Override HuggingFace repo ID
+- `HF_CACHE_DIR`: Custom cache directory for HF downloads
+
+---
+
 ## Inputs / Outputs
 
-**Primary input**: `data/wikipedia/processed/nlink_sequences.parquet` (page_id, link_sequence)  
-**Outputs** (planned): `data/wikipedia/processed/analysis/` (gitignored)
+**Primary input**: `nlink_sequences.parquet` (page_id, link_sequence) - from local or HuggingFace
+**Outputs**: `data/wikipedia/processed/analysis/` (local) or HF cache (gitignored)
 
 ---
 
@@ -95,21 +116,30 @@ These are substantial, question-scoped writeups and validation artifacts. Most o
 1. **Validate data** (always run first):
    ```bash
    source .venv/bin/activate
+
+   # Validate local data
    python n-link-analysis/scripts/validate-data-dependencies.py
+
+   # Validate HuggingFace dataset
+   python n-link-analysis/scripts/validate-data-dependencies.py --data-source huggingface
    ```
 
 2. **Reproduce main findings** (complete pipeline):
    ```bash
-   # Quick mode (~10-30 min)
+   # Quick mode (~10-30 min) - local data
    python n-link-analysis/scripts/reproduce-main-findings.py --quick
 
-   # Full reproduction (~2-6 hours)
+   # Full reproduction (~2-6 hours) - local data
    python n-link-analysis/scripts/reproduce-main-findings.py
+
+   # Using HuggingFace dataset
+   python n-link-analysis/scripts/reproduce-main-findings.py --quick --data-source huggingface
    ```
 
 3. **Manual exploration** (individual scripts):
    - See [scripts-reference.md](scripts-reference.md) for detailed documentation
-   - Example: `python n-link-analysis/scripts/sample-nlink-traces.py --n 5 --num 100`
+   - Local: `python n-link-analysis/scripts/sample-nlink-traces.py --n 5 --num 100`
+   - HuggingFace: `python n-link-analysis/scripts/sample-nlink-traces.py --n 5 --num 100 --data-source huggingface`
 
 4. **Document findings**:
    - Record results in investigation docs under `empirical-investigations/`

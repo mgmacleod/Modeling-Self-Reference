@@ -9,12 +9,12 @@ Pick a starting Wikipedia page and follow the fixed N-link rule:
 This script is intentionally *not* a full basin analysis. It is a minimal
 "does the data produce long paths?" sanity check.
 
-Data dependencies (produced by the pipeline)
--------------------------------------------
-- data/wikipedia/processed/nlink_sequences.parquet
-    schema: (page_id: int64, link_sequence: list<int64>)
-- data/wikipedia/processed/pages.parquet
-    schema: (page_id: int64, namespace: int32, title: string, is_redirect: bool)
+Data dependencies
+-----------------
+- nlink_sequences.parquet: (page_id: int64, link_sequence: list<int64>)
+- pages.parquet: (page_id: int64, namespace: int32, title: string, is_redirect: bool)
+
+Supports both local data and HuggingFace dataset sources via --data-source.
 
 Notes
 -----
@@ -37,12 +37,11 @@ import duckdb
 import numpy as np
 import pyarrow as pa
 
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = REPO_ROOT / "data" / "wikipedia" / "processed"
-NLINK_PATH = PROCESSED_DIR / "nlink_sequences.parquet"
-PAGES_PATH = PROCESSED_DIR / "pages.parquet"
-ANALYSIS_DIR = PROCESSED_DIR / "analysis"
+from data_loader import (
+    DataLoader,
+    add_data_source_args,
+    get_data_loader_from_args,
+)
 
 
 TerminalType = Literal["HALT", "CYCLE", "MAX_STEPS"]
@@ -58,7 +57,7 @@ class TraceResult:
     max_steps: int
 
 
-def _load_successor_arrays(n: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _load_successor_arrays(n: int, loader: DataLoader) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Load (page_id, next_id, out_degree) arrays for fixed N.
 
     next_id is -1 for HALT (out_degree < N).
@@ -66,16 +65,16 @@ def _load_successor_arrays(n: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     Returns:
         page_ids_sorted, next_ids_sorted, out_degree_sorted
     """
-
-    if not NLINK_PATH.exists():
-        raise FileNotFoundError(f"Missing: {NLINK_PATH}")
+    nlink_path = loader.nlink_sequences_path
+    if not nlink_path.exists():
+        raise FileNotFoundError(f"Missing: {nlink_path}")
 
     query = f"""
         SELECT
             page_id::BIGINT AS page_id,
             list_extract(link_sequence, {n})::BIGINT AS next_id,
             list_count(link_sequence)::INTEGER AS out_degree
-        FROM read_parquet('{NLINK_PATH.as_posix()}')
+        FROM read_parquet('{nlink_path.as_posix()}')
     """.strip()
 
     t0 = time.time()
@@ -187,8 +186,9 @@ def trace_path(
     )
 
 
-def _resolve_titles(page_ids: list[int]) -> dict[int, str]:
-    if not PAGES_PATH.exists():
+def _resolve_titles(page_ids: list[int], loader: DataLoader) -> dict[int, str]:
+    pages_path = loader.pages_path
+    if not pages_path.exists():
         return {}
 
     unique_ids = sorted(set(page_ids))
@@ -201,7 +201,7 @@ def _resolve_titles(page_ids: list[int]) -> dict[int, str]:
     rows = con.execute(
         f"""
         SELECT p.page_id, p.title
-        FROM read_parquet('{PAGES_PATH.as_posix()}') p
+        FROM read_parquet('{pages_path.as_posix()}') p
         JOIN trace_ids t USING (page_id)
         """.strip()
     ).fetchall()
@@ -302,6 +302,7 @@ def _print_summary(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Trace a single fixed-N link path and report basic stats.")
+    add_data_source_args(parser)
     parser.add_argument("--n", type=int, default=5, help="N for the fixed N-link rule (default: 5)")
     parser.add_argument("--start-page-id", type=int, default=None, help="Optional explicit starting page_id")
     parser.add_argument(
@@ -321,15 +322,19 @@ def main() -> None:
     parser.add_argument(
         "--no-save",
         action="store_true",
-        help="Do not write the full trace to a file under data/wikipedia/processed/analysis/",
+        help="Do not write the full trace to a file under the analysis directory",
     )
     args = parser.parse_args()
 
     if args.n <= 0:
         raise SystemExit("--n must be >= 1")
 
-    print(f"Using nlink data: {NLINK_PATH}")
-    page_ids, next_ids, out_degree = _load_successor_arrays(args.n)
+    # Get the data loader
+    loader = get_data_loader_from_args(args)
+    print(f"Data source: {loader.source_name}")
+    print(f"Using nlink data: {loader.nlink_sequences_path}")
+
+    page_ids, next_ids, out_degree = _load_successor_arrays(args.n, loader)
 
     if args.start_page_id is None:
         start_page_id = _choose_start_page(
@@ -350,12 +355,13 @@ def main() -> None:
         max_steps=args.max_steps,
     )
 
-    titles = _resolve_titles(trace.path_page_ids)
+    titles = _resolve_titles(trace.path_page_ids, loader)
 
     trace_file: Path | None = None
     if not args.no_save:
-        ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
-        trace_file = ANALYSIS_DIR / f"trace_n={trace.n}_start={trace.start_page_id}.tsv"
+        analysis_dir = loader.get_analysis_output_dir()
+        analysis_dir.mkdir(parents=True, exist_ok=True)
+        trace_file = analysis_dir / f"trace_n={trace.n}_start={trace.start_page_id}.tsv"
         _write_trace_file(out_path=trace_file, trace=trace, titles=titles)
 
     _print_summary(

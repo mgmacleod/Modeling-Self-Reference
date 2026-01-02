@@ -18,6 +18,46 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Night 4) - HuggingFace Data Pipeline Integration
+
+**Completed**:
+- Created `n-link-analysis/scripts/data_loader.py` - unified data source abstraction
+- Supports both local files and HuggingFace dataset (`mgmacleod/wikidata1`)
+- Updated core analysis scripts to use the data loader:
+  - `validate-data-dependencies.py` - now supports `--data-source huggingface`
+  - `trace-nlink-path.py` - now supports `--data-source huggingface`
+  - `sample-nlink-traces.py` - now supports `--data-source huggingface`
+- Updated documentation: `INDEX.md`, `implementation.md`
+
+**Architecture**:
+- `DataLoader` abstract base class with `LocalDataLoader` and `HuggingFaceDataLoader` implementations
+- Factory function `get_data_loader(source="local"|"huggingface")`
+- CLI integration via `add_data_source_args(parser)` and `get_data_loader_from_args(args)`
+- Environment variable support: `DATA_SOURCE`, `HF_DATASET_REPO`, `HF_CACHE_DIR`
+- HF downloads cached to `~/.cache/wikipedia-nlink-basins/`
+
+**Usage**:
+```bash
+# Local data (default)
+python n-link-analysis/scripts/validate-data-dependencies.py
+
+# HuggingFace dataset
+python n-link-analysis/scripts/validate-data-dependencies.py --data-source huggingface
+python n-link-analysis/scripts/trace-nlink-path.py --data-source huggingface --n 5
+```
+
+**Files Created/Modified**:
+| File | Change |
+|------|--------|
+| `n-link-analysis/scripts/data_loader.py` | New - unified data source abstraction |
+| `n-link-analysis/scripts/validate-data-dependencies.py` | Updated - uses data_loader |
+| `n-link-analysis/scripts/trace-nlink-path.py` | Updated - uses data_loader |
+| `n-link-analysis/scripts/sample-nlink-traces.py` | Updated - uses data_loader |
+| `n-link-analysis/INDEX.md` | Updated - documents data sources |
+| `n-link-analysis/implementation.md` | Updated - documents data loader module |
+
+---
+
 ### Session: 2026-01-02 (Night 3) - HuggingFace Dataset Validation Script
 
 **Completed**:

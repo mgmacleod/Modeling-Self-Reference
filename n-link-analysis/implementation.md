@@ -32,16 +32,58 @@ The analysis goal is to compute:
 
 ---
 
+## Data Sources
+
+Analysis scripts support two data sources via the `data_loader.py` module:
+
+### Local Data (Default)
+- **Location**: `data/wikipedia/processed/`
+- **Usage**: Default behavior, no flags needed
+- **Files**:
+  - `nlink_sequences.parquet` - Link sequences per page
+  - `pages.parquet` - Page ID to title mapping
+  - `multiplex/` - Pre-computed cross-N analysis results
+
+### HuggingFace Dataset
+- **Repository**: `mgmacleod/wikidata1`
+- **Usage**: Add `--data-source huggingface` to any script
+- **Cache**: Downloaded to `~/.cache/wikipedia-nlink-basins/`
+- **Files**: Same structure as local, under `data/source/` and `data/multiplex/`
+
+### Data Loader Module
+
+The `scripts/data_loader.py` module provides a unified interface:
+
+```python
+from data_loader import get_data_loader, add_data_source_args
+
+# In script main():
+parser = argparse.ArgumentParser()
+add_data_source_args(parser)  # Adds --data-source, --hf-repo, etc.
+args = parser.parse_args()
+
+loader = get_data_loader_from_args(args)
+nlink_path = loader.nlink_sequences_path
+pages_path = loader.pages_path
+```
+
+**Environment Variables**:
+- `DATA_SOURCE`: "local" or "huggingface"
+- `HF_DATASET_REPO`: Override HuggingFace repo ID
+- `HF_CACHE_DIR`: Custom cache directory
+
+---
+
 ## Inputs
 
 ### Required
 
-- `data/wikipedia/processed/nlink_sequences.parquet`
+- `nlink_sequences.parquet` (from local or HuggingFace)
   - Columns: `page_id`, `link_sequence` (list of resolved target page_ids)
 
 ### Optional (for labeling / interpretation)
 
-- `data/wikipedia/processed/pages.parquet` (title lookup for reporting)
+- `pages.parquet` (title lookup for reporting)
 
 ---
 

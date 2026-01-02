@@ -87,6 +87,14 @@ def generate_gallery_html() -> str:
     # Find all basin PNG files
     basin_pngs = sorted(ASSETS_DIR.glob("basin_3d_n=5_cycle=*.png"))
 
+    # Find multi-N analysis figures
+    multi_n_pngs = [
+        ("phase_transition_n3_n10.png", "Phase Transition (N=3-10)", "Basin size across N values, showing N=5 peak"),
+        ("basin_collapse_n5_vs_n10.png", "Basin Collapse", "Size comparison N=5 vs N=10 with collapse factors"),
+        ("tunnel_node_distribution.png", "Tunnel Distribution", "Distribution of tunnel nodes by basins bridged"),
+        ("depth_distribution_by_n.png", "Depth by N", "Mean, median, and max depth across N values"),
+    ]
+
     if not basin_pngs:
         return "<p>No basin visualizations found. Run batch-render-basin-images.py first.</p>"
 
@@ -157,13 +165,79 @@ def generate_gallery_html() -> str:
         </section>
         """
 
+    # Build multi-N analysis section
+    multi_n_items = []
+    for filename, title, description in multi_n_pngs:
+        png_path = ASSETS_DIR / filename
+        if png_path.exists():
+            size_kb = png_path.stat().st_size / 1024
+            # Check for interactive HTML version
+            html_name = filename.replace(".png", ".html")
+            html_path = ASSETS_DIR / html_name
+            interactive_link = f'<a href="{html_name}" class="btn interactive" target="_blank">Interactive</a>' if html_path.exists() else ""
+            multi_n_items.append(f"""
+            <div class="analysis-card">
+                <img src="{filename}" alt="{title}" loading="lazy">
+                <div class="card-info">
+                    <h4>{title}</h4>
+                    <p>{description}</p>
+                    <div class="links">
+                        <a href="{filename}" class="btn" download>PNG ({size_kb:.0f} KB)</a>
+                        {interactive_link}
+                    </div>
+                </div>
+            </div>
+            """)
+
+    multi_n_section = ""
+    if multi_n_items:
+        multi_n_section = f"""
+        <section class="analysis-section">
+            <h2>Multi-N Analysis (N=3-10)</h2>
+            <p class="section-intro">Cross-N analysis revealing phase transitions, basin collapse, and tunneling behavior.</p>
+            <div class="analysis-grid">
+                {''.join(multi_n_items)}
+            </div>
+        </section>
+        """
+
+    # Check for tunneling visualizations
+    tunneling_htmls = [
+        ("tunneling_sankey.html", "Tunneling Sankey", "Interactive flow diagram of cross-basin page transitions"),
+        ("tunnel_node_explorer.html", "Tunnel Explorer", "Searchable table of 41,732 tunnel nodes"),
+        ("multi_n_summary_table.html", "Summary Table", "Key statistics across all N values"),
+    ]
+    tunneling_items = []
+    for filename, title, description in tunneling_htmls:
+        html_path = ASSETS_DIR / filename
+        if html_path.exists():
+            size_kb = html_path.stat().st_size / 1024
+            tunneling_items.append(f"""
+            <div class="tool-card">
+                <h4>{title}</h4>
+                <p>{description}</p>
+                <a href="{filename}" class="btn interactive" target="_blank">Open ({size_kb:.0f} KB)</a>
+            </div>
+            """)
+
+    tunneling_section = ""
+    if tunneling_items:
+        tunneling_section = f"""
+        <section class="tools-section">
+            <h2>Interactive Tools</h2>
+            <div class="tools-grid">
+                {''.join(tunneling_items)}
+            </div>
+        </section>
+        """
+
     # Full HTML document
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N=5 Basin Geometry Gallery</title>
+    <title>N-Link Basin Analysis Gallery</title>
     <style>
         * {{
             margin: 0;
@@ -322,6 +396,92 @@ def generate_gallery_html() -> str:
             margin-bottom: 1rem;
         }}
 
+        .analysis-section, .tools-section {{
+            margin-top: 3rem;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }}
+
+        .analysis-section h2, .tools-section h2 {{
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }}
+
+        .section-intro {{
+            color: #666;
+            margin-bottom: 1.5rem;
+        }}
+
+        .analysis-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }}
+
+        .analysis-card {{
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }}
+
+        .analysis-card img {{
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }}
+
+        .card-info {{
+            padding: 1rem;
+        }}
+
+        .card-info h4 {{
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }}
+
+        .card-info p {{
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }}
+
+        .tools-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }}
+
+        .tool-card {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }}
+
+        .tool-card h4 {{
+            margin-bottom: 0.5rem;
+        }}
+
+        .tool-card p {{
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }}
+
+        .tool-card .btn {{
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }}
+
+        .tool-card .btn:hover {{
+            background: rgba(255,255,255,0.3);
+        }}
+
         footer {{
             text-align: center;
             padding: 2rem;
@@ -342,8 +502,8 @@ def generate_gallery_html() -> str:
 </head>
 <body>
     <header>
-        <h1>N=5 Basin Geometry Gallery</h1>
-        <p>Interactive visualizations of Wikipedia's 9 terminal cycles under the 5-link traversal rule</p>
+        <h1>N-Link Basin Analysis Gallery</h1>
+        <p>Visualizations of Wikipedia's link graph structure under N-link rules (N=3-10)</p>
     </header>
 
     <div class="container">
@@ -355,7 +515,11 @@ def generate_gallery_html() -> str:
             </p>
         </section>
 
-        <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: #2c3e50;">Individual Basins</h2>
+        {multi_n_section}
+
+        {tunneling_section}
+
+        <h2 style="font-size: 1.8rem; margin: 2rem 0 1rem; color: #2c3e50;">N=5 Basin Geometries</h2>
         <div class="gallery">
             {''.join(items_html)}
         </div>

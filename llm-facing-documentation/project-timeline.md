@@ -18,6 +18,42 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 (Night 6) - Phase 4: Basin Operations API
+
+**Completed**:
+- Created `n-link-analysis/scripts/_core/basin_engine.py` - Basin mapping via reverse BFS
+- Created `n-link-analysis/scripts/_core/branch_engine.py` - Branch structure analysis
+- Updated `map-basin-from-cycle.py` and `branch-basin-analysis.py` to use `_core` modules
+- Created `nlink_api/schemas/basins.py` - Pydantic request/response models
+- Created `nlink_api/services/basin_service.py` - Service layer wrapping engine functions
+- Created `nlink_api/routers/basins.py` - API endpoints for basin operations
+- Updated `nlink_api/main.py` to register basins router
+- Updated `nlink_api/NEXT-SESSION.md` to reflect Phase 4 completion
+
+**New Endpoints**:
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/basins/map` | POST | Map basin from cycle (sync/background) |
+| `/api/v1/basins/map/{task_id}` | GET | Get mapping task status |
+| `/api/v1/basins/branches` | POST | Analyze branch structure (sync/background) |
+| `/api/v1/basins/branches/{task_id}` | GET | Get analysis task status |
+
+**Architecture**:
+- Followed established `_core` extraction pattern from Phase 2
+- Sync/background decision: max_depth ≤ 50 or max_nodes ≤ 100k → sync, otherwise background
+- Shared helper functions (`resolve_titles_to_ids`, `ensure_edges_table`) in `basin_engine.py`
+
+**Validation**:
+- CLI scripts verified via `--help` (both work correctly)
+- All Python files pass syntax check via `py_compile`
+- Module imports verified (core modules OK; API modules require FastAPI)
+
+**Next Steps**:
+- Phase 5: Reports & Figures (render-human-report.py, compute-trunkiness-dashboard.py)
+- Phase 6: Pipeline Integration (reproduce-main-findings.py --use-api)
+
+---
+
 ### Session: 2026-01-02 (Night 5) - FastAPI Service Layer Foundation
 
 **Completed**:

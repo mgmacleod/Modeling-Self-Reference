@@ -95,7 +95,13 @@ Open `tunnel_node_explorer.html` in a browser, then click the "Score" column hea
 1. Start the path tracer: `python path-tracer-tool.py`
 2. Go to http://localhost:8061
 3. Search for a page title (e.g., "Massachusetts")
-4. View the basin membership timeline across N=3-7
+4. View the basin membership timeline across N=3-10
+
+### Use API mode for live tracing (any page)
+1. Start the API server: `uvicorn nlink_api.main:app --port 8000`
+2. Start the path tracer in API mode: `python path-tracer-tool.py --use-api`
+3. Search any Wikipedia page (17.9M pages vs 41K in local mode)
+4. Pages not in tunnel node data are traced live via API
 
 ### Explore basin transition flows
 1. Generate the Sankey: `python sankey-basin-flows.py`

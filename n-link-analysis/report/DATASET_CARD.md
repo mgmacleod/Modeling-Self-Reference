@@ -32,37 +32,45 @@ At N=5, Wikipedia's link graph exhibits a dramatic phase transition where basin 
 
 ### Configurations
 
-#### `multiplex` (Recommended, 115 MB)
-Cross-N analysis with basin assignments, tunnel nodes, and graph structure.
+#### `default` (Recommended, 1.8 GB)
+Full reproducibility package - everything needed to regenerate all reports, figures, and visualizations.
+
+#### `multiplex` (125 MB)
+Cross-N analysis results only. Sufficient for exploring findings.
 
 #### `source` (1.6 GB)
-Raw link sequences for full reproducibility.
+Raw link sequences for computing any N value from scratch.
 
-#### `analysis` (50 MB)
-Per-N individual basin assignment files.
+#### `analysis` (44 MB)
+Per-N basin assignments and 3D geometry data for visualizations.
 
 ### Data Files
 
 | Split | File | Rows | Description |
 |-------|------|------|-------------|
-| multiplex | `multiplex_basin_assignments.parquet` | 2.1M | Basin membership per page per N |
-| multiplex | `tunnel_nodes.parquet` | 2.0M | Pages that switch basins across N |
-| multiplex | `multiplex_edges.parquet` | 9.7M | Multiplex graph edges |
-| source | `nlink_sequences.parquet` | 18.0M | First 3873 links per page |
+| source | `nlink_sequences.parquet` | 18.0M | Link sequences per page (up to 3873 links) |
 | source | `pages.parquet` | 64.7M | Page ID to title mapping |
+| multiplex | `multiplex_basin_assignments.parquet` | 2.1M | Basin membership per page per N |
+| multiplex | `tunnel_nodes.parquet` | 2.1M | Pages that switch basins across N |
+| multiplex | `multiplex_edges.parquet` | 9.7M | Multiplex graph edges |
+| analysis | `branches_n={3-10}_*_assignments.parquet` | varies | Per-N basin assignments |
+| analysis | `basin_pointcloud_*.parquet` | varies | 3D geometry for visualizations |
 
 ### Data Fields
 
 #### `multiplex_basin_assignments`
 - `page_id` (int64): Wikipedia page identifier
 - `N` (int8): N-link rule value (3-10)
-- `canonical_cycle_id` (string): Basin identifier
+- `cycle_key` (string): Raw cycle identifier for this N
+- `canonical_cycle_id` (string): Normalized basin identifier (stable across N)
+- `entry_id` (int64): Page ID of entry point into terminal cycle
 - `depth` (int32): Distance from terminal cycle
 
 #### `tunnel_nodes`
 - `page_id` (int64): Wikipedia page identifier
-- `basin_at_N{3-7}` (string): Basin at each N value
-- `is_tunnel_node` (bool): True if page switches basins
+- `basin_at_N3` through `basin_at_N10` (string): Basin assignment at each N value (null if page not in any basin at that N)
+- `n_distinct_basins` (int8): Number of unique basins this page belongs to across N values
+- `is_tunnel_node` (bool): True if page switches basins across N values
 
 ## Dataset Statistics
 

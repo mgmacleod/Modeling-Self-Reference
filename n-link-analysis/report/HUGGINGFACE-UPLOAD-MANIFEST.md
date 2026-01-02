@@ -6,55 +6,59 @@
 
 ## Upload Configurations
 
-### Option A: Minimal (Recommended) — 115 MB
+### Option A: Minimal — 125 MB
 
-The multiplex analysis results only. Sufficient for most research use cases.
+The multiplex analysis results only. Sufficient for exploring findings but cannot regenerate figures.
 
 ```
 wikipedia-nlink-basins/
 ├── README.md                    # DATASET_CARD.md content
 └── data/
     └── multiplex/
-        ├── multiplex_basin_assignments.parquet   # 11.7 MB
-        ├── tunnel_nodes.parquet                   # 9.7 MB
-        ├── multiplex_edges.parquet                # 87 MB
-        ├── tunnel_frequency_ranking.tsv           # 972 KB
-        ├── tunnel_classification.tsv              # 1.6 MB
-        ├── tunnel_mechanisms.tsv                  # 1.8 MB
-        ├── basin_flows.tsv                        # 1 KB
-        ├── basin_stability_scores.tsv             # 1 KB
-        ├── cycle_identity_map.tsv                 # 1 KB
-        └── semantic_model_wikipedia.json          # 43 KB
+        ├── multiplex_basin_assignments.parquet   # 11.2 MB
+        ├── tunnel_nodes.parquet                  # 10.3 MB
+        ├── multiplex_edges.parquet               # 86.3 MB
+        ├── tunnel_frequency_ranking.tsv          # 4.7 MB
+        ├── tunnel_classification.tsv             # 7.5 MB
+        ├── tunnel_mechanisms.tsv                 # 1.8 MB
+        ├── tunnel_nodes_summary.tsv              # 3.2 MB
+        ├── basin_flows.tsv                       # 4 KB
+        ├── basin_stability_scores.tsv            # 1 KB
+        ├── cycle_identity_map.tsv                # 1 KB
+        └── semantic_model_wikipedia.json         # 43 KB
 ```
 
 **Pros**: Small, focused, contains all key findings
-**Cons**: Cannot reproduce from scratch (no source links)
+**Cons**: Cannot regenerate reports, figures, or visualizations
 
 ---
 
-### Option B: Full Reproducibility — 1.8 GB
+### Option B: Full Reproducibility (Recommended) — 1.8 GB
 
-Includes source link sequences for complete reproducibility.
+Everything needed to regenerate all reports, figures, and visualizations.
 
 ```
 wikipedia-nlink-basins/
 ├── README.md
 └── data/
     ├── source/
-    │   ├── nlink_sequences.parquet               # 687 MB ⭐
-    │   └── pages.parquet                         # 940 MB ⭐
-    └── multiplex/
-        └── [same as Option A]
+    │   ├── nlink_sequences.parquet               # 686 MB (link sequences for any N)
+    │   └── pages.parquet                         # 939 MB (page ID → title mapping)
+    ├── multiplex/
+    │   └── [all files from Option A]             # 125 MB
+    └── analysis/
+        ├── branches_n={3-10}_*_assignments.parquet  # 20 MB (per-N basin assignments)
+        └── basin_pointcloud_n=5_*.parquet           # 16 MB (3D geometry data)
 ```
 
-**Pros**: Full reproducibility, can compute any N
-**Cons**: Large download, redundant if user already has Wikipedia
+**Pros**: Full reproducibility - regenerate any report, figure, or visualization
+**Cons**: Large download (1.8 GB)
 
 ---
 
-### Option C: Research Complete — 2.0 GB
+### Option C: Research Complete — 1.85 GB
 
-Includes per-N analysis files for studying individual N values.
+Includes all TSV analysis artifacts for detailed per-N study.
 
 ```
 wikipedia-nlink-basins/
@@ -65,15 +69,11 @@ wikipedia-nlink-basins/
     ├── multiplex/
     │   └── [same as Option A]
     └── analysis/
-        ├── branches_n=3_*.parquet                # Per-cycle basins at N=3
-        ├── branches_n=4_*.parquet
-        ├── branches_n=5_*.parquet                # Most important
-        ├── branches_n=6_*.parquet
-        ├── branches_n=7_*.parquet
-        ├── branches_n=8_*.parquet
-        ├── branches_n=9_*.parquet
-        ├── branches_n=10_*.parquet
-        └── basin_pointcloud_*.parquet            # 3D geometry data
+        ├── branches_n={3-10}_*_assignments.parquet  # Per-cycle basins
+        ├── basin_pointcloud_*.parquet               # 3D geometry data
+        ├── branches_*_branches_all.tsv              # Branch statistics
+        ├── basin_n=*_*_layers.tsv                   # Layer breakdowns
+        └── branch_trunkiness_*.tsv                  # Trunkiness metrics
 ```
 
 ---
@@ -84,25 +84,25 @@ wikipedia-nlink-basins/
 
 | File | Size | Rows | Priority | Notes |
 |------|------|------|----------|-------|
-| `multiplex_basin_assignments.parquet` | 11.7 MB | 2.1M | **Required** | Core finding data |
-| `tunnel_nodes.parquet` | 9.7 MB | 2.0M | **Required** | Tunnel node classification |
+| `multiplex_basin_assignments.parquet` | 11.2 MB | 2,134,621 | **Required** | Core finding data |
+| `tunnel_nodes.parquet` | 10.3 MB | 2,079,289 | **Required** | Tunnel node classification |
 | `DATASET_CARD.md` → `README.md` | 5 KB | - | **Required** | HF dataset card |
 
 ### Recommended Additions
 
 | File | Size | Rows | Priority | Notes |
 |------|------|------|----------|-------|
-| `multiplex_edges.parquet` | 87 MB | 9.7M | High | Graph structure |
-| `tunnel_frequency_ranking.tsv` | 972 KB | 9K | High | Ranked tunnel nodes |
+| `multiplex_edges.parquet` | 86.3 MB | 9,693,473 | High | Graph structure |
+| `tunnel_frequency_ranking.tsv` | 4.7 MB | 41,732 | High | Ranked tunnel nodes |
 | `semantic_model_wikipedia.json` | 43 KB | - | Medium | Extracted semantic model |
-| `basin_flows.tsv` | 1 KB | 16 | Medium | Cross-basin transitions |
+| `basin_flows.tsv` | 4 KB | 58 | Medium | Cross-basin transitions |
 
 ### Source Data (For Reproducibility)
 
 | File | Size | Rows | Priority | Notes |
 |------|------|------|----------|-------|
-| `nlink_sequences.parquet` | 687 MB | 18M | Optional | Enables any-N computation |
-| `pages.parquet` | 940 MB | 65M | Optional | Page ID → title mapping |
+| `nlink_sequences.parquet` | 686 MB | 17,972,018 | Optional | Enables any-N computation |
+| `pages.parquet` | 939 MB | 64,703,361 | Optional | Page ID → title mapping |
 
 ### Analysis Artifacts (Optional)
 
@@ -119,10 +119,10 @@ wikipedia-nlink-basins/
 
 ### Data Validation
 
-- [ ] All parquet files readable: `python -c "import pandas; pandas.read_parquet('file.parquet')"`
-- [ ] Row counts match documentation
-- [ ] No PII or sensitive data (Wikipedia is public)
-- [ ] Schema matches documentation
+- [x] All parquet files readable: `python -c "import pandas; pandas.read_parquet('file.parquet')"` ✓ Validated 2026-01-02
+- [x] Row counts match documentation ✓ Validated 2026-01-02
+- [x] No PII or sensitive data (Wikipedia is public) ✓ Validated 2026-01-02
+- [x] Schema matches documentation ✓ Updated 2026-01-02
 
 ### Documentation
 
@@ -204,12 +204,12 @@ upload_folder(
 
 | Configuration | Size | Use Case |
 |---------------|------|----------|
-| Minimal (Option A) | 115 MB | Research on tunneling/basins |
-| Full (Option B) | 1.8 GB | Complete reproducibility |
-| Research (Option C) | 2.0 GB | Per-N detailed analysis |
+| Minimal (Option A) | 125 MB | Explore findings only |
+| Full Reproducibility (Option B) | 1.8 GB | Regenerate all reports/figures |
+| Research Complete (Option C) | 1.85 GB | Per-N detailed analysis |
 
-**Recommendation**: Start with Option A. Add source data as separate config if requested.
+**Recommendation**: Use Option B for full reproducibility of all reports, figures, and visualizations.
 
 ---
 
-**Last Updated**: 2026-01-01
+**Last Updated**: 2026-01-02

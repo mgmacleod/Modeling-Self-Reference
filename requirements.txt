@@ -11,7 +11,7 @@ matplotlib>=3.8.0
 
 # Interactive / graph visualization (human-facing)
 plotly>=5.18.0
-kaleido>=1.0.0  # Static image export for plotly
+kaleido==0.2.1  # Static image export for plotly (0.2.1 bundles Chromium; 1.x requires system Chrome deps)
 networkx>=3.2.0
 scipy>=1.11.0
 

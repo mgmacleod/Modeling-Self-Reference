@@ -18,6 +18,29 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-02 - Environment Verification & Kaleido Fix
+
+**Completed**:
+- Verified local dev environment on new machine
+- Confirmed all data present via symlinks (3.2 GB in cache)
+- Diagnosed kaleido 1.x image generation failure (requires system Chrome deps)
+- Fixed by downgrading to kaleido 0.2.1 (bundles Chromium internally)
+- Updated `requirements.txt` to pin working version
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Pin kaleido==0.2.1 | Version 1.x requires system Chrome deps; 0.2.1 is self-contained |
+
+**Discoveries**:
+- Kaleido 1.x downloads Chrome but fails on `Target.getTargets` due to missing libs
+- Despite deprecation warning, kaleido 0.2.1 works reliably for static image export
+
+**Validation**:
+- Tested `generate-multi-n-figures.py --phase-transition` → 173KB PNG generated successfully
+
+---
+
 ### Session: 2026-01-02 - Comprehensive Project Wrap-Up Analysis
 
 **Completed**:

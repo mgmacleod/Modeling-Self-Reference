@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history
 **Target Audience**: LLMs
 **Purpose**: Chronological record of project evolution, decisions, and discoveries
-**Last Updated**: 2026-01-02
+**Last Updated**: 2026-01-03
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,45 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2026-01-03 - Document Archaeology Survey
+
+**Completed**:
+- Surveyed 95+ markdown files across 12 directories for documentation standards conformance
+- Created `DOCUMENT-ARCHAEOLOGY-SURVEY.md` with detailed analysis and cleanup recommendations
+- Identified ~50 files with UPPERCASE naming violations (should be kebab-case)
+- Identified ~45 files missing required metadata blocks
+- Identified ~7 ephemeral files in `working/` and `notes/` for deletion/archival
+- Categorized recommendations into 3 tiers (structural, naming, metadata)
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Survey before cleanup | Need full inventory to understand scope and prioritize |
+| Tier 1: Delete working/ and notes/ contents | These are ephemeral handoff docs that bypass the timeline system |
+| Tier 2: Batch rename UPPERCASE files | ~50 files need kebab-case naming |
+| Tier 3: Add metadata blocks | Lower priority, can be done incrementally |
+
+**Discoveries**:
+- `working/` directory contains 6 ad-hoc "NEXT-SESSION" and "SESSION-SUMMARY" documents that duplicate what should be in project-timeline.md
+- `notes/context-handoff.md` is a 375-line Claude-to-Claude context dump (should use end-of-session protocol instead)
+- 5 of 12 directories fully conform: llm-facing-documentation, meta-maintenance, data-pipeline, human-facing-documentation, .claude/commands
+- n-link-analysis/ is the worst offender with ~40 UPPERCASE files
+
+**Validation**:
+- Glob found all .md files
+- Read documentation-standards.md and project-management-practices.md for conformance criteria
+- Sampled documents from each problem area
+
+**Architecture Impact**:
+- No system changes; this is an audit for future cleanup work
+
+**Next Steps**:
+- Tier 1: Extract key findings from working/ and notes/, then delete
+- Tier 2: Run batch rename script for UPPERCASE files
+- Tier 3: Add metadata blocks to investigation and report documents
+
+---
 
 ### Session: 2026-01-02 - Pipeline Fixes for Semantic Model and Tributary Trees
 

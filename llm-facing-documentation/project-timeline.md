@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history
 **Target Audience**: LLMs
 **Purpose**: Chronological record of project evolution, decisions, and discoveries
-**Last Updated**: 2026-01-02
+**Last Updated**: 2026-01-03
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,37 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2026-01-03 - Git History Analysis Tools
+
+**Completed**:
+- Created `tools/` directory for project-level utilities
+- Created `tools/git_stats.py` - on-demand git repository analysis (447 lines)
+- Created `tools/contributor_aliases.json` - maps git identities to canonical names
+- Created `tools/README.md` - usage documentation
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| New `tools/` directory | Project-level utilities don't belong in domain-specific script directories |
+| Alias-based identity mapping | Consolidates multiple git identities (email variations) per contributor |
+| Dual output format (text/JSON) | Text for human reading, JSON for programmatic use |
+
+**Discoveries**:
+- Will (WH) = "Self Reference Modeling <srm@localhost>" = cgscsystems (30 commits, 20%)
+- Matthew MacLeod = primary contributor (117 commits, 80%)
+- Burst activity pattern: 123 commits on Jan 1-2, 2026 alone
+- Project uses heavy documentation (396 .md files touched) alongside implementation (254 .py files)
+
+**Validation**:
+- Tested `python tools/git_stats.py --aliases tools/contributor_aliases.json` - produces correct report
+- Tested JSON output format - structures correctly for programmatic use
+
+**Next Steps**:
+- Consider adding commit message pattern analysis
+- Could extend to compare branches or time periods
+
+---
 
 ### Session: 2026-01-02 - Environment Verification & Kaleido Fix
 

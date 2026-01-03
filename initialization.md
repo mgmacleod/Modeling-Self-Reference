@@ -4,7 +4,7 @@
 **Target Audience**: LLMs (executing setup)  
 **Purpose**: Get project environment running from fresh clone  
 **Usage**: Run once after cloning repository, never again  
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-02
 
 ---
 
@@ -114,15 +114,105 @@ code self-reference-modeling.code-workspace
 
 ---
 
+## Step 7: Download Data from HuggingFace
+
+The analysis data is hosted on HuggingFace and cached locally. Run the data loader to download:
+
+```bash
+# Download the dataset (~3.2 GB)
+python n-link-analysis/scripts/data_loader.py --data-source huggingface --validate
+```
+
+**Expected result**:
+- Download completes to `~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/`
+- Validation passes: "All checks passed!"
+
+**Files downloaded**:
+- `data/source/nlink_sequences.parquet` - Wikipedia N-link sequences
+- `data/source/pages.parquet` - Page ID to title mapping
+- `data/multiplex/` - Pre-computed cross-N analysis results
+- `data/analysis/` - Basin pointcloud data for visualizations
+
+---
+
+## Step 8: Create Data Symlinks
+
+Create symlinks from the local data directory to the HuggingFace cache:
+
+```bash
+# Create symlinks for data access
+cd data/wikipedia/processed/
+ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/source/nlink_sequences.parquet .
+ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/source/pages.parquet .
+ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/multiplex .
+ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/analysis .
+cd ../../..
+```
+
+**Expected result**:
+- Symlinks created in `data/wikipedia/processed/`
+- `ls -la data/wikipedia/processed/` shows symlinks pointing to cache
+
+**Verify**:
+```bash
+python n-link-analysis/scripts/data_loader.py --validate
+```
+
+---
+
+## Step 9: Generate Basin Visualizations
+
+Generate the 3D basin visualization PNG images for the gallery:
+
+```bash
+# Generate all N=5 basin images (~30 seconds)
+python n-link-analysis/viz/batch-render-basin-images.py --n 5 --all-cycles
+```
+
+**Expected result**:
+- 9 PNG files created in `n-link-analysis/report/assets/`
+- Console shows "Successfully rendered 9/9 basins"
+
+**Note**: Kaleido 0.2.1 deprecation warnings are expected but harmless.
+
+---
+
+## Step 10: Regenerate Gallery
+
+Update the HTML gallery to include the newly generated basin images:
+
+```bash
+python n-link-analysis/viz/create-visualization-gallery.py
+```
+
+**Expected result**:
+- `n-link-analysis/report/assets/gallery.html` regenerated
+- Console shows path to open in browser
+
+**View the gallery**:
+```bash
+# Open in browser (Linux)
+xdg-open n-link-analysis/report/assets/gallery.html
+
+# Or manually navigate to:
+# file:///path/to/repo/n-link-analysis/report/assets/gallery.html
+```
+
+---
+
 ## Validation Checklist
 
 After setup, verify:
 
 - [ ] Virtual environment created (`.venv/` directory exists)
 - [ ] Virtual environment activated (prompt shows `(.venv)`)
-- [ ] Dependencies installed (`pip list` shows mwparserfromhell, mwxml, requests)
+- [ ] Dependencies installed (`pip list` shows pandas, plotly, kaleido, huggingface_hub)
 - [ ] VS Code workspace opens (if using VS Code)
 - [ ] Python interpreter configured (check VS Code status bar)
+- [ ] HuggingFace data downloaded (~3.2 GB in `~/.cache/wikipedia-nlink-basins/`)
+- [ ] Data symlinks created (`data/wikipedia/processed/` has symlinks)
+- [ ] Basin images generated (9 PNGs in `n-link-analysis/report/assets/`)
+- [ ] Gallery accessible (open gallery.html in browser)
 
 ---
 

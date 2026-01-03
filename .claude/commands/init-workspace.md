@@ -35,10 +35,28 @@ Virtual environment status: !`[ -d .venv ] && echo "Virtual environment exists" 
 
 5. **Verify Installation**
    - `python --version` (should be 3.8+)
-   - `pip list` (should show: mwparserfromhell, mwxml, requests)
+   - `pip list` (should show: pandas, plotly, kaleido, huggingface_hub)
 
 6. **Open VS Code Workspace (Optional)**
    - `code self-reference-modeling.code-workspace`
+
+7. **Download Data from HuggingFace**
+   - `python n-link-analysis/scripts/data_loader.py --data-source huggingface --validate`
+   - Downloads ~3.2 GB to `~/.cache/wikipedia-nlink-basins/`
+
+8. **Create Data Symlinks**
+   - `cd data/wikipedia/processed/`
+   - `ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/source/nlink_sequences.parquet .`
+   - `ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/source/pages.parquet .`
+   - `ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/multiplex .`
+   - `ln -sf ~/.cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/analysis .`
+   - `cd ../../..`
+
+9. **Generate Basin Visualizations**
+   - `python n-link-analysis/viz/batch-render-basin-images.py --n 5 --all-cycles`
+
+10. **Regenerate Gallery**
+    - `python n-link-analysis/viz/create-visualization-gallery.py`
 
 ## After Setup
 

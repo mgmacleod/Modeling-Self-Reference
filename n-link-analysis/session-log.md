@@ -8,6 +8,29 @@
 
 ---
 
+### 2026-01-02 - Pipeline Fixes for Semantic Model and Tributary Trees
+
+**What was tried**:
+- Fix `batch-render-tributary-trees.py` path from HF cache to local data directory
+- Add semantic model visualization to pipeline
+- Fix bash `set -e` early exit bug with arithmetic operations
+
+**What worked**:
+- Fixed `ANALYSIS_DIR` path in `batch-render-tributary-trees.py`
+- Added `generate_semantic_model()` calling `visualize-semantic-model.py --all`
+- Added `--skip-semantic` flag
+- Added `|| true` to `((skipped++))` and `((generated++))` to prevent `set -e` exit
+- Generated 5 semantic model visualizations (central entities, stability, flows, types, scatter)
+- Pipeline now has 9 stages
+
+**Discoveries**:
+- `((var++))` returns exit code 1 when var starts at 0, causing `set -e` to abort
+- Semantic model script existed but was never integrated into pipeline
+
+**Commit**: pending
+
+---
+
 ### 2026-01-02 - Report Pipeline Gap Analysis and Fix
 
 **What was tried**:

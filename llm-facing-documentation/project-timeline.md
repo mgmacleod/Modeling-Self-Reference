@@ -3,7 +3,7 @@
 **Document Type**: Cumulative history
 **Target Audience**: LLMs
 **Purpose**: Chronological record of project evolution, decisions, and discoveries
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-02
 **Status**: Active (append-only)
 
 ---
@@ -17,6 +17,37 @@
 ---
 
 ## Timeline Entries
+
+### Session: 2026-01-02 - Pipeline Fixes for Semantic Model and Tributary Trees
+
+**Completed**:
+- Fixed `batch-render-tributary-trees.py` path from HF cache to local `data/wikipedia/processed/analysis/`
+- Added `generate_semantic_model()` function to `generate-all-reports.sh` calling `visualize-semantic-model.py --all`
+- Added `--skip-semantic` flag to pipeline options
+- Fixed bash `set -e` bug with `((skipped++))` and `((generated++))` using `|| true`
+- Generated 5 semantic model visualizations (central entities, stability, flows, types, scatter)
+- Pipeline now has 9 stages (previously 8)
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Use `|| true` for bash arithmetic | `((var++))` returns exit code 1 when var starts at 0, causing `set -e` to exit early |
+| Keep tributary trees inline in bash | Script already defines CYCLE_PAIRS; batch script is alternative entry point |
+
+**Discoveries**:
+- `batch-render-tributary-trees.py` had hardcoded HF cache path that doesn't exist on fresh machines
+- Semantic model visualizations existed as script but were never executed
+- 2 of 9 tributary trees already generated; 7 remaining
+
+**Validation**:
+- Dry-run shows all 9 pipeline stages execute correctly
+- Semantic model visualizations generated successfully (5 HTML + 5 PNG files)
+
+**Architecture Impact**:
+- Report pipeline now includes semantic model visualization as stage 8
+- `--skip-semantic` flag enables selective generation
+
+---
 
 ### Session: 2026-01-02 - Report Pipeline Gap Analysis and Fix
 

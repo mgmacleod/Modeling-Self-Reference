@@ -33,7 +33,7 @@ from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ANALYSIS_DIR = Path.home() / ".cache/wikipedia-nlink-basins/mgmacleod_wikidata1/data/analysis"
+ANALYSIS_DIR = REPO_ROOT / "data" / "wikipedia" / "processed" / "analysis"
 REPORT_ASSETS_DIR = REPO_ROOT / "n-link-analysis" / "report" / "assets"
 RENDER_SCRIPT = REPO_ROOT / "n-link-analysis" / "scripts" / "render-tributary-tree-3d.py"
 

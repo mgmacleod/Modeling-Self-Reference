@@ -9,7 +9,8 @@
 #   5. Render basin geometry visualizations as PNG images
 #   6. Generate tributary tree visualizations (3D HTML + JSON)
 #   7. Generate multi-N comparison figures (phase transition, collapse)
-#   8. Generate gallery HTML
+#   8. Generate semantic model visualizations
+#   9. Generate gallery HTML
 #
 # Prerequisites:
 #   - API server running on $API_BASE (default: http://localhost:28000)
@@ -30,6 +31,7 @@
 #   --skip-basins      Skip basin image rendering (also skips pointcloud generation)
 #   --skip-trees       Skip tributary tree visualization generation
 #   --skip-multi-n     Skip multi-N comparison figure generation
+#   --skip-semantic    Skip semantic model visualization generation
 #   --basins-only LIST Comma-separated list of basins to render (default: all)
 #   --comparison-grid  Generate comparison grid instead of individual images
 #   --dry-run          Show what would be done without executing
@@ -57,6 +59,7 @@ DRY_RUN=false
 SKIP_POINTCLOUDS=false
 SKIP_TREES=false
 SKIP_MULTI_N=false
+SKIP_SEMANTIC=false
 
 # Known cycle pairs for N=5 (from reproduce-main-findings.py)
 # Used to generate basin pointcloud data if missing
@@ -120,6 +123,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --skip-multi-n)
             SKIP_MULTI_N=true
+            shift
+            ;;
+        --skip-semantic)
+            SKIP_SEMANTIC=true
             shift
             ;;
         --basins-only)
@@ -336,14 +343,14 @@ generate_pointclouds() {
 
         if [ -f "$parquet" ]; then
             log_info "Exists: $cycle_a"
-            ((skipped++))
+            ((skipped++)) || true
         else
             log_info "Generating: $cycle_a ↔ $cycle_b"
             if $DRY_RUN; then
                 echo -e "${YELLOW}[DRY-RUN]${NC} Would run: python3 $viz_script --n $N --cycle-title $cycle_a --cycle-title $cycle_b"
             else
                 if python3 "$viz_script" --n "$N" --cycle-title "$cycle_a" --cycle-title "$cycle_b" --max-depth 0 --max-nodes 0 2>&1; then
-                    ((generated++))
+                    ((generated++)) || true
                 else
                     log_warning "Failed to generate pointcloud for $cycle_a - continuing"
                 fi
@@ -432,7 +439,7 @@ generate_tributary_trees() {
 
         if [ -f "$output_file" ]; then
             log_info "Exists: $cycle_a tree"
-            ((skipped++))
+            ((skipped++)) || true
         else
             log_info "Generating: $cycle_a ↔ $cycle_b tree"
             if $DRY_RUN; then
@@ -440,7 +447,7 @@ generate_tributary_trees() {
             else
                 if python3 "$tree_script" --n "$N" --cycle-title "$cycle_a" --cycle-title "$cycle_b" \
                     --top-k "$top_k" --max-levels "$max_levels" --max-depth "$max_depth" 2>&1; then
-                    ((generated++))
+                    ((generated++)) || true
                 else
                     log_warning "Failed to generate tributary tree for $cycle_a - continuing"
                 fi
@@ -483,6 +490,38 @@ generate_multi_n_figures() {
             log_success "Multi-N figures generated"
         else
             log_warning "Multi-N figure generation failed - continuing anyway"
+        fi
+    fi
+}
+
+# Generate semantic model visualizations
+generate_semantic_model() {
+    if $SKIP_SEMANTIC; then
+        log_warning "Skipping semantic model visualizations (--skip-semantic)"
+        return 0
+    fi
+
+    log_step "Generating Semantic Model Visualizations"
+
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local repo_root="$(cd "$script_dir/../.." && pwd)"
+    local viz_script="$repo_root/n-link-analysis/viz/visualize-semantic-model.py"
+    local multiplex_dir="$repo_root/data/wikipedia/processed/multiplex"
+
+    # Check if semantic model JSON exists
+    if [ ! -f "$multiplex_dir/semantic_model_wikipedia.json" ]; then
+        log_warning "Semantic model not found - skipping visualizations"
+        log_info "Run tunneling pipeline first to generate semantic model"
+        return 0
+    fi
+
+    if $DRY_RUN; then
+        echo -e "${YELLOW}[DRY-RUN]${NC} Would run: python3 $viz_script --all"
+    else
+        if python3 "$viz_script" --all 2>&1; then
+            log_success "Semantic model visualizations generated"
+        else
+            log_warning "Semantic model visualization failed - continuing anyway"
         fi
     fi
 }
@@ -554,6 +593,7 @@ main() {
     render_basin_images
     generate_tributary_trees
     generate_multi_n_figures
+    generate_semantic_model
     generate_gallery
     print_summary
 }

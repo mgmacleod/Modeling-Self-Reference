@@ -18,6 +18,39 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-03 - API Endpoints for Report Rendering
+
+**Completed**:
+- Added 4 new API endpoints for HTML and basin image rendering:
+  - `POST /api/v1/reports/render/html` - sync markdown-to-HTML conversion
+  - `POST /api/v1/reports/render/html/async` - async version
+  - `POST /api/v1/reports/render/basins` - sync basin PNG rendering
+  - `POST /api/v1/reports/render/basins/async` - async version (recommended for batch)
+- Modified files:
+  - `nlink_api/schemas/reports.py` - request/response schemas
+  - `nlink_api/services/report_service.py` - service methods wrapping existing scripts
+  - `nlink_api/routers/reports.py` - endpoint handlers
+  - `docker-compose.yml` - added rw volume mount for assets persistence
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Wrap existing scripts directly | Faster than extracting to _core engines; can refactor later |
+| Use `importlib.util` for dynamic loading | Avoids module import conflicts with hyphenated filenames |
+| Mount assets as rw volume | Enables rendered files to persist on host filesystem |
+
+**Validation**:
+- Tested HTML render endpoint - successfully generated 8 HTML files
+- Tested basin render endpoint - successfully generated Massachusetts basin PNG (1.2MB, 7s)
+- Verified files persist to host via volume mount
+- Confirmed static serving works via `/static/assets/` and Reports Gallery (port 28070)
+
+**Architecture Impact**:
+- Render endpoints enable programmatic generation without CLI access to container
+- Assets directory now shared between API (writes) and Reports service (reads)
+
+---
+
 ### Session: 2026-01-03 - Git History Analysis Tools
 
 **Completed**:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import time
 from pathlib import Path
 from typing import Callable
 
@@ -10,6 +11,8 @@ from nlink_api.config import get_settings
 from nlink_api.schemas.reports import (
     FigureInfoResponse,
     HumanReportResponse,
+    RenderBasinImagesResponse,
+    RenderHtmlResponse,
     ReportListItem,
     ReportListResponse,
     TrunkinessCycleStatsResponse,
@@ -190,3 +193,177 @@ class ReportService:
         if path.exists() and path.is_file():
             return path
         return None
+
+    def render_reports_to_html(
+        self,
+        *,
+        dry_run: bool = False,
+        progress_callback: Callable[[float, str], None] | None = None,
+    ) -> RenderHtmlResponse:
+        """Convert markdown reports to styled HTML.
+
+        Args:
+            dry_run: If True, show what would be done without writing files.
+            progress_callback: Optional callback for progress updates.
+
+        Returns:
+            RenderHtmlResponse with list of rendered files.
+        """
+        start_time = time.time()
+
+        # Import the render script functions
+        render_script = self._settings.repo_root / "n-link-analysis" / "scripts" / "render-reports-to-html.py"
+        if str(render_script.parent) not in sys.path:
+            sys.path.insert(0, str(render_script.parent))
+
+        # Import the module components we need
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("render_reports", render_script)
+        render_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(render_module)
+
+        report_dir = self._settings.repo_root / "n-link-analysis" / "report"
+        assets_dir = self._settings.report_assets_dir
+        assets_dir.mkdir(parents=True, exist_ok=True)
+
+        rendered = []
+        total = len(render_module.REPORTS)
+
+        for i, config in enumerate(render_module.REPORTS):
+            if progress_callback:
+                progress_callback(i / total, f"Converting {config.source}")
+
+            if render_module.convert_report(config, report_dir, assets_dir, dry_run):
+                rendered.append(config.output)
+
+        if progress_callback:
+            progress_callback(1.0, f"Completed {len(rendered)} reports")
+
+        elapsed = time.time() - start_time
+
+        return RenderHtmlResponse(
+            rendered=rendered,
+            output_dir=str(assets_dir),
+            count=len(rendered),
+            elapsed_seconds=elapsed,
+        )
+
+    def render_basin_images(
+        self,
+        *,
+        n: int = 5,
+        cycles: list[str] | None = None,
+        comparison_grid: bool = False,
+        width: int = 1200,
+        height: int = 800,
+        format: str = "png",
+        max_plot_points: int = 120_000,
+        progress_callback: Callable[[float, str], None] | None = None,
+    ) -> RenderBasinImagesResponse:
+        """Render basin geometry visualizations as static images.
+
+        Args:
+            n: N for the N-link rule.
+            cycles: Specific cycle names to render. If None, renders all known cycles.
+            comparison_grid: If True, create a comparison grid instead of individual images.
+            width: Image width in pixels.
+            height: Image height in pixels.
+            format: Output format (png, svg, pdf).
+            max_plot_points: Maximum points per plot.
+            progress_callback: Optional callback for progress updates.
+
+        Returns:
+            RenderBasinImagesResponse with list of rendered files.
+        """
+        start_time = time.time()
+
+        # Import the render script functions
+        viz_dir = self._settings.repo_root / "n-link-analysis" / "viz"
+        render_script = viz_dir / "batch-render-basin-images.py"
+        if str(viz_dir) not in sys.path:
+            sys.path.insert(0, str(viz_dir))
+
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("batch_render", render_script)
+        render_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(render_module)
+
+        output_dir = self._settings.report_assets_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        rendered = []
+
+        fig_kwargs = {
+            "max_points": max_plot_points,
+            "seed": 0,
+            "colorscale": "Viridis",
+            "opacity": 0.85,
+            "show_axes": False,
+        }
+
+        if comparison_grid:
+            if progress_callback:
+                progress_callback(0.1, "Creating comparison grid")
+
+            path = render_module.create_comparison_grid(
+                n,
+                render_module.N5_CYCLES,
+                output_dir=output_dir,
+                width=width,
+                height=height,
+                format=format,
+            )
+            if path:
+                rendered.append(path.name)
+
+            if progress_callback:
+                progress_callback(1.0, "Comparison grid complete")
+
+        else:
+            # Determine which cycles to render
+            if cycles:
+                # Match user-specified cycle names
+                cycles_to_render = []
+                for name in cycles:
+                    matched = False
+                    for cycle_slug in render_module.N5_CYCLES:
+                        if name.lower() in cycle_slug.lower():
+                            cycles_to_render.append(cycle_slug)
+                            matched = True
+                            break
+                    if not matched:
+                        # Try exact match
+                        cycles_to_render.append(name)
+            else:
+                cycles_to_render = render_module.N5_CYCLES
+
+            total = len(cycles_to_render)
+            for i, cycle_slug in enumerate(cycles_to_render):
+                if progress_callback:
+                    progress_callback(i / total, f"Rendering {cycle_slug}")
+
+                cycle_name = cycle_slug.replace("_", " ")
+                path = render_module.render_single_basin(
+                    n,
+                    cycle_slug,
+                    cycle_name,
+                    output_dir=output_dir,
+                    width=width,
+                    height=height,
+                    format=format,
+                    **fig_kwargs,
+                )
+                if path:
+                    rendered.append(path.name)
+
+            if progress_callback:
+                progress_callback(1.0, f"Completed {len(rendered)} basins")
+
+        elapsed = time.time() - start_time
+
+        return RenderBasinImagesResponse(
+            rendered=rendered,
+            output_dir=str(output_dir),
+            count=len(rendered),
+            elapsed_seconds=elapsed,
+        )

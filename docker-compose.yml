@@ -42,6 +42,8 @@ services:
       - ./data:/app/data:ro
       # Mount HF cache so symlinks resolve inside container
       - ${NLINK_HF_CACHE:-~/.cache/wikipedia-nlink-basins}:${NLINK_HF_CACHE:-/home/mgm/.cache/wikipedia-nlink-basins}:ro
+      # Mount report assets for render endpoint output persistence
+      - ./n-link-analysis/report/assets:/app/n-link-analysis/report/assets:rw
     environment:
       - DATA_SOURCE=local
       - LOCAL_DATA_DIR=/app/data/wikipedia/processed

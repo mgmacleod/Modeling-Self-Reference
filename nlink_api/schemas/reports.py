@@ -88,3 +88,58 @@ class ReportListResponse(BaseModel):
     """List of available reports."""
 
     reports: list[ReportListItem]
+
+
+# --- Render HTML Endpoints ---
+
+
+class RenderHtmlRequest(BaseModel):
+    """Request for rendering markdown reports to HTML."""
+
+    dry_run: bool = Field(
+        default=False,
+        description="If true, show what would be done without writing files",
+    )
+
+
+class RenderHtmlResponse(BaseModel):
+    """Response for HTML rendering."""
+
+    rendered: list[str] = Field(description="List of generated HTML filenames")
+    output_dir: str = Field(description="Directory where files were written")
+    count: int = Field(description="Number of files rendered")
+    elapsed_seconds: float
+
+
+# --- Render Basin Images Endpoints ---
+
+
+class RenderBasinImagesRequest(BaseModel):
+    """Request for rendering basin geometry images."""
+
+    n: int = Field(default=5, ge=1, le=100, description="N for N-link rule")
+    cycles: list[str] | None = Field(
+        default=None,
+        description="Specific cycle names to render. If None, renders all known cycles.",
+    )
+    comparison_grid: bool = Field(
+        default=False,
+        description="Create a comparison grid of all basins instead of individual images",
+    )
+    width: int = Field(default=1200, ge=100, le=4000, description="Image width in pixels")
+    height: int = Field(default=800, ge=100, le=4000, description="Image height in pixels")
+    format: str = Field(default="png", description="Output format: png, svg, or pdf")
+    max_plot_points: int = Field(
+        default=120_000,
+        ge=1000,
+        description="Maximum points per plot (samples if exceeded)",
+    )
+
+
+class RenderBasinImagesResponse(BaseModel):
+    """Response for basin image rendering."""
+
+    rendered: list[str] = Field(description="List of generated image filenames")
+    output_dir: str = Field(description="Directory where files were written")
+    count: int = Field(description="Number of images rendered")
+    elapsed_seconds: float

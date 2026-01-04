@@ -4,7 +4,7 @@
 **Target Audience**: LLMs (executing setup)  
 **Purpose**: Get project environment running from fresh clone  
 **Usage**: Run once after cloning repository, never again  
-**Last Updated**: 2026-01-02
+**Last Updated**: 2026-01-03
 
 ---
 
@@ -111,6 +111,24 @@ code self-reference-modeling.code-workspace
 - Workspace opens with correct settings
 - Python interpreter auto-detected at `.venv/Scripts/python.exe` (Windows) or `.venv/bin/python` (macOS/Linux)
 - System prompts loaded from `.vscode/settings.json`
+
+---
+
+## Steps 7-10: Data Preparation
+
+**Automated option** (recommended): Use the data preparation script:
+
+```bash
+# Full data preparation (download + symlinks + images + gallery)
+./n-link-analysis/scripts/prepare-data.sh
+
+# Or with options
+./n-link-analysis/scripts/prepare-data.sh --validate-only  # Just check setup
+./n-link-analysis/scripts/prepare-data.sh --skip-images    # Skip slow image generation
+./n-link-analysis/scripts/prepare-data.sh --dry-run        # Preview actions
+```
+
+**Manual steps** (if you prefer): Follow Steps 7-10 below.
 
 ---
 

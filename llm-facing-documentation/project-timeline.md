@@ -18,6 +18,36 @@
 
 ## Timeline Entries
 
+### Session: 2026-01-03 - Workspace Initialization and Data Preparation Script
+
+**Completed**:
+- Full workspace initialization (venv, dependencies, HuggingFace data, symlinks, basin images, gallery)
+- Created `n-link-analysis/scripts/prepare-data.sh` - automates data preparation pipeline
+- Updated `human-facing-documentation/project-setup.md`:
+  - Fixed Python version requirement (3.13+ → 3.8+)
+  - Updated core dependencies list to reflect current stack
+  - Added Data Preparation section referencing new script
+  - Added Report Generation section with API/pipeline instructions
+- Updated `initialization.md` with reference to automated `prepare-data.sh` option
+
+**Decisions Made**:
+| Decision | Rationale |
+|----------|-----------|
+| Create `prepare-data.sh` as standalone script | Encapsulates repeatable data prep; mirrors `generate-all-reports.sh` pattern |
+| Add `--validate-only` and `--dry-run` flags | Allows checking setup without modifications |
+| Document in both human and LLM docs | Single source of truth for data preparation |
+
+**Validation**:
+- Full initialization completed successfully
+- Data loader validation: "All checks passed!"
+- 9/9 basin images generated
+
+**Architecture Impact**:
+- New script `prepare-data.sh` joins `generate-all-reports.sh` as part of data/report pipeline
+- Complete initialization flow: venv → deps → prepare-data.sh → generate-all-reports.sh
+
+---
+
 ### Session: 2026-01-03 - Empirical Investigations Gallery Integration
 
 **Completed**:

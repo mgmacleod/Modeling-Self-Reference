@@ -3,7 +3,7 @@
 **Document Type**: Setup Guide  
 **Target Audience**: New human collaborators/researchers  
 **Purpose**: Complete environment configuration for reproducible work on this project  
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2026-01-03
 **Status**: Active
 
 ---
@@ -16,8 +16,8 @@ This project applies formal graph theory to self-referential systems (Wikipedia,
 
 ## Prerequisites
 
-- **VS Code** with GitHub Copilot extension
-- **Python 3.13+** (for data pipeline work)
+- **VS Code** with GitHub Copilot extension (or Claude Code CLI)
+- **Python 3.8+** (3.12 recommended)
 - **Git** for version control
 - Basic understanding of graph theory (helpful but not required)
 
@@ -49,10 +49,12 @@ See [initialization.md](../initialization.md) for detailed platform-specific com
 2. Activate environment: `.venv\Scripts\Activate.ps1` (Windows) or `source .venv/bin/activate` (macOS/Linux)
 3. Install dependencies: `pip install -r requirements.txt`
 
-**Core dependencies**:
-- mwparserfromhell (Wikipedia parsing)
-- mwxml (MediaWiki XML processing)
-- requests (HTTP client)
+**Core dependencies** (see `requirements.txt` for full list):
+- pandas, numpy (data processing)
+- duckdb, pyarrow (columnar analytics)
+- plotly, kaleido (visualization)
+- fastapi, uvicorn (API server)
+- huggingface_hub (dataset access)
 
 ---
 
@@ -67,6 +69,51 @@ The workspace automatically configures:
 - File exclusions and formatting rules
 
 **No manual configuration needed** - workspace settings are committed to repository
+
+---
+
+## Data Preparation
+
+After installing dependencies, you need to download the Wikipedia N-link analysis data and prepare visualizations.
+
+### Automated (Recommended)
+
+Run the data preparation script:
+
+```bash
+# Full data preparation (~3.2 GB download + image generation)
+./n-link-analysis/scripts/prepare-data.sh
+
+# Or validate existing setup
+./n-link-analysis/scripts/prepare-data.sh --validate-only
+
+# Preview what would be done
+./n-link-analysis/scripts/prepare-data.sh --dry-run
+```
+
+**What it does**:
+1. Downloads data from HuggingFace (~3.2 GB, cached in `~/.cache/wikipedia-nlink-basins/`)
+2. Creates symlinks in `data/wikipedia/processed/` pointing to the cache
+3. Generates 9 basin visualization PNGs
+4. Regenerates the HTML gallery
+
+### Manual Steps
+
+See [initialization.md](../initialization.md) Steps 7-10 for manual commands.
+
+### Report Generation
+
+After data preparation, you can generate all reports:
+
+```bash
+# Start the API server (required for report generation)
+uvicorn nlink_api.main:app --port 28000
+
+# In another terminal, run the report pipeline
+./n-link-analysis/scripts/generate-all-reports.sh
+```
+
+See `generate-all-reports.sh --help` for options (skip stages, dry-run, etc.).
 
 ---
 
